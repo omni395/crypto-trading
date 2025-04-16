@@ -1,23 +1,3 @@
-<!-- Root page with TailwindCSS Navbar and dynamic content layout -->
-<nav class="bg-gray-900 border-b border-gray-800">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex h-16 items-center justify-between">
-      <div class="flex items-center">
-        <span class="text-white font-bold text-xl">CryptoTradingApp</span>
-        <div class="hidden md:block ml-10 flex items-baseline space-x-4">
-          <button class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Главная</button>
-          <button class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Торги</button>
-          <button class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Портфель</button>
-          <button class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Настройки</button>
-        </div>
-      </div>
-      <div class="flex items-center">
-        <!-- Placeholder for profile/settings -->
-      </div>
-    </div>
-  </div>
-</nav>
-
 <div class="flex flex-row min-h-[calc(100vh-4rem)]">
   <!-- Левая часть: график -->
   <div class="w-5/6 p-6">
@@ -29,10 +9,24 @@
   <!-- Правая часть: фильтры и инструменты -->
   <div class="w-1/6 p-6 bg-gray-100 border-l border-gray-200">
     <div class="mb-6">
-      <div class="bg-gray-800 p-4 rounded shadow">Фильтры</div>
+      <div class="bg-gray-800 p-4 rounded shadow text-white">
+        <span>Фильтры <i class="fa-solid fa-filter"></i></span>
+        <ul class="mt-4 list-disc list-inside text-sm text-gray-200 pl-2 space-y-1">
+          <li>По объему торгов</li>
+          <li>По количеству сделок</li>
+          <li>По росту за 24ч</li>
+          <li>По падению за 24ч</li>
+          <li>По алфавиту</li>
+          <li>По цене</li>
+          <li>По паре (BTC, ETH, USDT...)</li>
+          <li>По бирже (если будет мультибиржевой режим)</li>
+          <li>По наличию фьючерсов/маржи</li>
+          <li>Избранное</li>
+        </ul>
+      </div>
     </div>
     <div>
-      <div class="bg-gray-800 p-4 rounded shadow">Список криптовалют</div>
+      <div class="bg-gray-800 p-4 rounded shadow text-white">Список криптовалют <i class="fa-brands fa-bitcoin"></i></div>
     </div>
   </div>
 </div>

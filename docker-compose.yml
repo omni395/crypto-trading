@@ -21,7 +21,7 @@ services:
 
   web:
     build: .
-    command: bundle exec rails server -b 0.0.0.0
+    command: bin/rails server -b 0.0.0.0
     volumes:
       - .:/app
     ports:
@@ -32,6 +32,22 @@ services:
     environment:
       DATABASE_URL: postgres://postgres:password@db:5432/crypto_trading_development
       REDIS_URL: redis://redis:6379/1
+
+  js:
+    build: .
+    command: yarn watch
+    volumes:
+      - .:/app
+    depends_on:
+      - web
+
+  css:
+    build: .
+    command: yarn watch:tailwind
+    volumes:
+      - .:/app
+    depends_on:
+      - web
 
   sidekiq:
     build: .
