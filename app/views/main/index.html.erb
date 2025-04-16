@@ -1,0 +1,38 @@
+<!-- Root page with TailwindCSS Navbar and dynamic content layout -->
+<nav class="bg-gray-900 border-b border-gray-800">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex h-16 items-center justify-between">
+      <div class="flex items-center">
+        <span class="text-white font-bold text-xl">CryptoTradingApp</span>
+        <div class="hidden md:block ml-10 flex items-baseline space-x-4">
+          <button class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Главная</button>
+          <button class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Торги</button>
+          <button class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Портфель</button>
+          <button class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Настройки</button>
+        </div>
+      </div>
+      <div class="flex items-center">
+        <!-- Placeholder for profile/settings -->
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="flex flex-row min-h-[calc(100vh-4rem)]">
+  <!-- Левая часть: график -->
+  <div class="w-5/6 p-6">
+    <div id="main-chart" class="w-full h-[600px] bg-gray-800 rounded-lg shadow"></div>
+    <div class="mt-6">
+      <!-- Дополнительные графики (плейсхолдер) -->
+    </div>
+  </div>
+  <!-- Правая часть: фильтры и инструменты -->
+  <div class="w-1/6 p-6 bg-gray-100 border-l border-gray-200">
+    <div class="mb-6">
+      <div class="bg-gray-800 p-4 rounded shadow">Фильтры</div>
+    </div>
+    <div>
+      <div class="bg-gray-800 p-4 rounded shadow">Список криптовалют</div>
+    </div>
+  </div>
+</div>
