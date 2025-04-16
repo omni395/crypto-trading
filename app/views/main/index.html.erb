@@ -1,32 +1,24 @@
-<div class="flex flex-row min-h-[calc(100vh-4rem)]">
+<div class="flex flex-row min-h-[calc(100vh-4rem)] bg-gray-700">
   <!-- Левая часть: график -->
-  <div class="w-5/6 p-6">
-    <div id="main-chart" class="w-full h-[600px] bg-gray-800 rounded-lg shadow"></div>
+  <div class="w-5/6 p-2">
+    <%= render 'components/chart' %>
     <div class="mt-6">
       <!-- Дополнительные графики (плейсхолдер) -->
     </div>
   </div>
   <!-- Правая часть: фильтры и инструменты -->
-  <div class="w-1/6 p-6 bg-gray-100 border-l border-gray-200">
+  <div class="w-1/6 p-2 bg-gray-100 border-l border-gray-200">
     <div class="mb-6">
-      <div class="bg-gray-800 p-4 rounded shadow text-white">
+      <div class="bg-gray-800 rounded shadow text-white">
         <span>Фильтры <i class="fa-solid fa-filter"></i></span>
-        <ul class="mt-4 list-disc list-inside text-sm text-gray-200 pl-2 space-y-1">
-          <li>По объему торгов</li>
-          <li>По количеству сделок</li>
-          <li>По росту за 24ч</li>
-          <li>По падению за 24ч</li>
-          <li>По алфавиту</li>
-          <li>По цене</li>
-          <li>По паре (BTC, ETH, USDT...)</li>
-          <li>По бирже (если будет мультибиржевой режим)</li>
-          <li>По наличию фьючерсов/маржи</li>
-          <li>Избранное</li>
-        </ul>
+        <%= render 'components/filters' %>
       </div>
     </div>
     <div>
-      <div class="bg-gray-800 p-4 rounded shadow text-white">Список криптовалют <i class="fa-brands fa-bitcoin"></i></div>
+      <div class="bg-gray-800 rounded shadow text-white mb-2 flex items-center justify-between">
+        <span>Список криптовалют <i class="fa-brands fa-bitcoin"></i></span>
+      </div>
+      <%= render 'components/instruments' %>
     </div>
   </div>
 </div>

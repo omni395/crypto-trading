@@ -43,7 +43,7 @@ services:
 
   css:
     build: .
-    command: yarn watch:tailwind
+    command: yarn watch:css
     volumes:
       - .:/app
     depends_on:
