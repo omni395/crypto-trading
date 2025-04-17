@@ -1,0 +1,16 @@
+<% if local_assigns[:message].present? %>
+  <div id="toastr" class="toastr fixed top-6 right-6 z-50 flex items-center px-4 py-2 rounded shadow-lg 
+    <%= type == 'success' ? 'bg-green-600' : type == 'error' ? 'bg-red-600' : 'bg-blue-600' %>
+    text-white animate-fade-in-up">
+    <span class="mr-2">
+      <% if type == 'success' %>
+        <i class="fa-solid fa-circle-check"></i>
+      <% elsif type == 'error' %>
+        <i class="fa-solid fa-circle-xmark"></i>
+      <% else %>
+        <i class="fa-solid fa-info-circle"></i>
+      <% end %>
+    </span>
+    <span><%= message %></span>
+  </div>
+<% end %>

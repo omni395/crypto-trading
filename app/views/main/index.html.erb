@@ -1,24 +1,27 @@
 <div class="flex flex-row min-h-[calc(100vh-4rem)] bg-gray-700">
   <!-- Левая часть: график -->
-  <div class="w-5/6 p-2">
+  <turbo-frame id="main-chart-frame" class="w-5/6 p-2">
     <%= render 'components/chart' %>
     <div class="mt-6">
       <!-- Дополнительные графики (плейсхолдер) -->
     </div>
-  </div>
+  </turbo-frame>
   <!-- Правая часть: фильтры и инструменты -->
-  <div class="w-1/6 p-2 bg-gray-100 border-l border-gray-200">
+  <turbo-frame id="filters-frame" class="w-1/6 p-2 border-l border-gray-200">
     <div class="mb-6">
-      <div class="bg-gray-800 rounded shadow text-white">
+      <div class="rounded shadow text-white">
         <span>Фильтры <i class="fa-solid fa-filter"></i></span>
-        <%= render 'components/filters' %>
+        <%= render FiltersComponent.new(q: @q) %>
       </div>
     </div>
     <div>
-      <div class="bg-gray-800 rounded shadow text-white mb-2 flex items-center justify-between">
+      <div class="rounded shadow text-white mb-2 flex items-center justify-between">
         <span>Список криптовалют <i class="fa-brands fa-bitcoin"></i></span>
       </div>
-      <%= render 'components/instruments' %>
+      <turbo-frame id="instruments-frame">
+        <%= render InstrumentsComponent.new(cryptocurrencies: @cryptocurrencies) %>
+      </turbo-frame>
     </div>
-  </div>
+  </turbo-frame>
 </div>
+<%= render 'components/settings_modal' %>

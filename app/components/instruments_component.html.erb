@@ -1,0 +1,14 @@
+<div data-controller="instruments"
+     data-instruments-url-value="<%= url_for(controller: 'main', action: 'index', format: :turbo_stream, q: (params[:q]&.to_unsafe_h || {})) %>"
+     data-instruments-interval-value="10000">
+  <div class="flex items-center justify-between mb-2">
+    <span class="text-xs text-gray-300">Монет: <%= @cryptocurrencies&.size || 0 %></span>
+  </div>
+  <ul id="instruments-list" class="divide-y rounded shadow overflow-y-auto max-h-[60vh]">
+    <% @cryptocurrencies.each do |crypto| %>
+      <li class="flex flex-col py-2 px-3 hover:bg-gray-800 transition">
+        <%= render InstrumentComponent.new(coin: crypto) %>
+      </li>
+    <% end %>
+  </ul>
+</div>

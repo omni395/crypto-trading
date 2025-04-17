@@ -1,21 +1,14 @@
-<ul class="divide-y divide-gray-700 bg-gray-700 rounded shadow overflow-y-auto max-h-[60vh]">
-    <% @cryptocurrencies.each do |crypto| %>
-        <li class="flex flex-col py-2 px-3 hover:bg-gray-800 transition">
-            <div class="flex items-center justify-between">
-                <span class="font-semibold text-white"><%= crypto.symbol %></span>
-                <span class="text-xs text-gray-400"><%= crypto.base_asset %>/<%= crypto.quote_asset %></span>
-            </div>
-            <div class="flex items-center justify-between mt-1 text-xs text-gray-300">
-                <span>Объем: <%= number_with_delimiter(crypto.volume.round) %></span>
-                <span>Сделок: <%= crypto.trades %></span>
-                <span class="<%= crypto.price_change_percent.to_f >= 0 ? 'text-green-400' : 'text-red-400' %>">
-                    <%= crypto.price_change_percent %>%
-                </span>
-            </div>
-            <div class="flex items-center justify-between mt-1 text-xs">
-                <span class="text-gray-400">Цена:</span>
-                <span class="text-white"><%= crypto.last_price %></span>
-            </div>
-        </li>
+<div data-controller="instruments"
+     data-instruments-url-value="<%= url_for(controller: 'main', action: 'index', format: :turbo_stream, q: (params[:q]&.to_unsafe_h || {})) %>"
+     data-instruments-interval-value="10000">
+  <div class="flex items-center justify-between mb-2">
+    <span class="text-xs text-gray-300">Монет: <%= @cryptocurrencies_count || (local_assigns[:cryptocurrencies]&.size || 0) %></span>
+  </div>
+  <ul id="instruments-list" class="divide-y rounded shadow overflow-y-auto max-h-[60vh]">
+    <% (local_assigns[:cryptocurrencies] || @cryptocurrencies || []).each do |crypto| %>
+      <li class="flex flex-col py-2 px-3 hover:bg-gray-800 transition">
+        <%= render CoinCardComponent.new(coin: crypto) %>
+      </li>
     <% end %>
-</ul>
+  </ul>
+</div>

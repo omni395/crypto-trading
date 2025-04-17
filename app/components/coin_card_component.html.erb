@@ -1,0 +1,16 @@
+<div class="rounded bg-gray-800 p-4 shadow flex flex-col gap-2">
+  <div class="flex items-center justify-between">
+    <span class="font-bold text-white text-lg"><%= @coin.symbol %></span>
+    <span class="text-xs text-gray-400"><%= @coin.base_asset %>/<%= @coin.quote_asset %></span>
+  </div>
+  <div class="flex items-center justify-between text-xs text-gray-300">
+    <span>Цена: <span class="text-white"><%= @coin.last_price %></span></span>
+    <span>Объем: <%= number_with_delimiter(@coin.volume.round) %></span>
+  </div>
+  <div class="flex items-center justify-between text-xs">
+    <span class="<%= @coin.price_change_percent.to_f >= 0 ? 'text-green-400' : 'text-red-400' %>">
+      <%= @coin.price_change_percent %>%
+    </span>
+    <span>Сделок: <%= @coin.trades %></span>
+  </div>
+</div>

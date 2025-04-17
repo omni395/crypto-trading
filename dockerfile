@@ -11,7 +11,6 @@ WORKDIR /app
 # Копируем только package.json и yarn.lock и ставим node-модули
 COPY package.json yarn.lock ./
 RUN yarn install --check-files
-RUN yarn add esbuild
 
 # Копируем gemfile и lockfile, устанавливаем гемы
 COPY Gemfile Gemfile.lock ./
