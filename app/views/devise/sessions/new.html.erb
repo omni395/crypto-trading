@@ -1,27 +1,33 @@
-<h2 class="text-xl font-bold mb-4">Войти</h2>
+<div class="flex items-center justify-center min-h-[80vh] mt-10">
+  <div class="w-full max-w-md bg-gray-800 rounded-lg shadow-md p-8">
+    <ul class="flex mb-6 py-4 border-b border-gray-600">
+      <li class="px-4 pb-2 border-b-2 border-blue-500 font-semibold text-white">Вход</li>
+      <li class="px-4 pb-2 text-gray-400 cursor-pointer hover:text-white hover:border-b-2 hover:border-blue-400"><a href="<%= new_user_registration_path %>">Регистрация</a></li>
+    </ul>
+    <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+      <div class="mb-4 w-[90%] mx-auto">
+        <%= f.label :email, class: "block text-gray-700 text-white pb-2 px-2" %>
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "w-full px-3 py-2 border rounded" %>
+      </div>
+      <div class="mb-4 w-[90%] mx-auto">
+        <%= f.label :password, class: "block text-gray-700 text-white pb-2 px-2" %>
+        <%= f.password_field :password, autocomplete: "current-password", class: "w-full px-3 py-2 border rounded" %>
+      </div>
+      <div class="mb-4 flex items-center px-2 w-[90%]">
+        <%= f.check_box :remember_me %>
+        <%= f.label :remember_me, class: "ml-2 text-gray-700 text-white" %>
+      </div>
+      <div class="mb-4 w-[90%] mx-auto">
+        <%= f.submit "Войти", class: "w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
+      </div>
+    <% end %>
 
-<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  <div class="mb-4">
-    <%= f.label :email, class: "block text-gray-700" %>
-    <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "w-full px-3 py-2 border rounded" %>
-  </div>
-  <div class="mb-4">
-    <%= f.label :password, class: "block text-gray-700" %>
-    <%= f.password_field :password, autocomplete: "current-password", class: "w-full px-3 py-2 border rounded" %>
-  </div>
-  <div class="mb-4 flex items-center">
-    <%= f.check_box :remember_me %>
-    <%= f.label :remember_me, class: "ml-2 text-gray-700" %>
-  </div>
-  <div class="mb-4">
-    <%= f.submit "Войти", class: "w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
-  </div>
-<% end %>
+    <div class="my-4 flex items-center">
+      <span class="text-white">или</span>
+    </div>
 
-<div class="my-4 flex items-center justify-center">
-  <span class="text-gray-500">или</span>
+    <%= render partial: 'devise/sessions/google_oauth2' %>
+
+    <%= render "devise/shared/links" %>
+  </div>
 </div>
-
-<%= render partial: 'devise/sessions/google_oauth2' %>
-
-<%= render "devise/shared/links" %>

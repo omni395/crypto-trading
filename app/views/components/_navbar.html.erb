@@ -35,9 +35,7 @@
         </li>
       <% else %>
         <li>
-          <button id="auth-modal-btn" type="button" class="py-2 px-3 text-white rounded-sm hover:bg-gray-600">
-            Войти / Регистрация
-          </button>
+          <%= link_to 'Вход', new_user_session_path, class: 'py-2 px-3 text-white rounded-sm hover:bg-gray-600' %>
         </li>
       <% end %>
     </ul>
@@ -45,4 +43,3 @@
 </nav>
 <div id="settings-modal-root"></div>
 <%= render 'components/settings_modal' %>
-<%= render 'components/auth_modal' %>

@@ -1,17 +1,13 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static values = { url: String, interval: { type: Number, default: 10000 } }
+  static values = { url: String }
 
   connect() {
-    this.refresh()
-    this.timer = setInterval(() => this.refresh(), this.intervalValue)
+    // this.refresh() // Удалено автообновление
   }
 
-  disconnect() {
-    clearInterval(this.timer)
-  }
-
+  // Метод ручного обновления списка инструментов
   refresh() {
     fetch(this.urlValue, { headers: { Accept: "text/vnd.turbo-stream.html" } })
       .then(r => r.text())

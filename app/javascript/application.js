@@ -2,7 +2,6 @@ import "@hotwired/turbo-rails";
 import "flowbite";
 import "./controllers";
 import "./toastr_hotwire";
-import "./auth_modal";
 
 document.addEventListener('DOMContentLoaded', () => {
     const refreshBtn = document.getElementById('refresh-coins-btn');
