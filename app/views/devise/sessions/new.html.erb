@@ -28,6 +28,8 @@
 
     <%= render partial: 'devise/sessions/google_oauth2' %>
 
-    <%= render "devise/shared/links" %>
+    <div class="py-4 w-[90%] mx-auto text-right">
+      <%= link_to 'Забыли пароль?', new_user_password_path, class: 'text-white hover:underline text-sm' %>
+    </div>
   </div>
 </div>
