@@ -1,6 +1,6 @@
 <div class="flex items-center justify-center min-h-[80vh] mt-10">
   <div class="w-full max-w-md bg-gray-800 rounded-lg shadow-md p-8">
-    <ul class="flex mb-6 py-4 border-b border-gray-600">
+    <ul class="flex mb-6 border-b border-gray-600">
       <li class="px-4 pb-2 border-b-2 border-blue-500 font-semibold text-white">Вход</li>
       <li class="px-4 pb-2 text-gray-400 cursor-pointer hover:text-white hover:border-b-2 hover:border-blue-400"><a href="<%= new_user_registration_path %>">Регистрация</a></li>
     </ul>
@@ -22,8 +22,8 @@
       </div>
     <% end %>
 
-    <div class="my-4 flex items-center">
-      <span class="text-white">или</span>
+    <div class="my-4 flex items-center justify-center px-2 w-[90%] mx-auto">
+      <span class="text-gray-500">или</span>
     </div>
 
     <%= render partial: 'devise/sessions/google_oauth2' %>
