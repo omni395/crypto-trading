@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
       refreshBtn.addEventListener('click', function (event) {
         event.preventDefault();
         if (confirm('Вы уверены, что хотите обновить монеты? Это может занять время и ресурсы.')) {
+          window.toastr && toastr.info('Запущен процесс обновления монет на сервере...');
           fetch('/main/refresh_cryptocurrencies', {
             method: 'POST',
             headers: {
@@ -17,10 +18,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
           }).then(r => {
             if (r.ok) {
-              alert('Обновление монет запущено!');
+              window.toastr && toastr.success('Обновление монет успешно запущено!');
             } else {
-              alert('Ошибка при запуске обновления монет.');
+              window.toastr && toastr.error('Ошибка при запуске обновления монет!');
             }
+          }).catch(() => {
+            window.toastr && toastr.error('Ошибка сети при запуске обновления монет!');
           });
         }
       });

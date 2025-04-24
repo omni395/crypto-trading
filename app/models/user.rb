@@ -9,16 +9,13 @@ class User < ApplicationRecord
 
   DEFAULT_SETTINGS = {
     "default_sort" => "volume",
-    "default_volume" => "100000",
-    "default_volume_currency" => "coin",
-    "default_deals" => "1000",
+    "default_volume" => "300000",
+    "default_deals" => "100000",
     "default_change" => "0",
-    "default_price_above" => "",
-    "default_price_below" => "",
-    "default_basecoin" => "",
-    "default_exchange" => "binance",
-    "default_futures" => "0",
-    "default_favorites" => "0"
+    "default_price_above" => "0.01",
+    "default_price_below" => "5",
+    "default_basecoin" => "USDT",
+    "default_exchange" => "binance"
   }.freeze
 
   def self.from_omniauth(auth)
@@ -33,7 +30,6 @@ class User < ApplicationRecord
   def settings_with_defaults
     settings_hash = self.settings.is_a?(Hash) ? self.settings : (self.settings.present? ? JSON.parse(self.settings) : {})
     DEFAULT_SETTINGS.merge(settings_hash).transform_values.with_index do |v, idx|
-      # Если значение пустое (nil или ""), берём дефолт
       v.nil? || v == "" ? DEFAULT_SETTINGS.values[idx] : v
     end
   end

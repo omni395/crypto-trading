@@ -67,4 +67,5 @@ gem "active_decorator"
 gem "jsbundling-rails"
 gem "cssbundling-rails"
 gem "sidekiq"
+gem 'sidekiq-cron'
 gem 'ransack'
