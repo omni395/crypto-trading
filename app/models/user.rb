@@ -7,12 +7,33 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable,
          :omniauthable, omniauth_providers: [:google_oauth2]
 
+  DEFAULT_SETTINGS = {
+    "default_sort" => "volume",
+    "default_volume" => "100000",
+    "default_volume_currency" => "coin",
+    "default_deals" => "1000",
+    "default_change" => "0",
+    "default_price_above" => "",
+    "default_price_below" => "",
+    "default_basecoin" => "",
+    "default_exchange" => "binance",
+    "default_futures" => "0",
+    "default_favorites" => "0"
+  }.freeze
+
   def self.from_omniauth(auth)
     where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
       user.email = auth.info.email
       user.password = Devise.friendly_token[0, 20]
       user.provider = auth.provider
       user.uid = auth.uid
+    end
+  end
+
+  def settings_with_defaults
+    DEFAULT_SETTINGS.merge(self.settings || {}).transform_values.with_index do |v, idx|
+      # Если значение пустое (nil или ""), берём дефолт
+      v.nil? || v == "" ? DEFAULT_SETTINGS.values[idx] : v
     end
   end
 end

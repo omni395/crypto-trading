@@ -14,11 +14,104 @@
         </button>
       </div>
       <div class="space-y-4 p-6">
-        <form id="settings-form-unique-1">
+        <%= form_with url: '/api/settings', method: :patch, local: false, html: { id: 'settings-form-rails', 'data-turbo': 'false' } do |f| %>
+          <script type="text/javascript">
+            function fillSettingsForm(settings) {
+              if (!settings) return;
+              for (const [key, value] of Object.entries(settings)) {
+                const input = document.querySelector('#settings-modal [name="' + key + '"]');
+                if (input) {
+                  if (input.type === 'checkbox') {
+                    input.checked = (value === true || value === 1 || value === '1');
+                  } else {
+                    input.value = value;
+                  }
+                }
+              }
+            }
+            function fetchAndFillSettings() {
+              fetch('/api/settings', { headers: { 'Accept': 'application/json' } })
+                .then(r => r.json())
+                .then(settings => fillSettingsForm(settings));
+            }
+            function resetToDefaults() {
+              fetch('/api/settings', { headers: { 'Accept': 'application/json' } })
+                .then(r => r.json())
+                .then(defaults => {
+                  // Если пользователь не залогинен, это уже дефолты. Если залогинен — принудительно сбросить поля к дефолтам
+                  fillSettingsForm(defaults);
+                });
+            }
+            document.addEventListener('turbo:frame-load', function(e) {
+              if (!e.target.closest('#settings-modal')) return;
+              fetchAndFillSettings();
+            });
+            document.addEventListener('show.bs.modal', function(e) {
+              if (e.target && e.target.id === 'settings-modal') fetchAndFillSettings();
+            });
+            document.addEventListener('DOMContentLoaded', function() {
+              const resetBtn = document.getElementById('reset-to-defaults');
+              if (resetBtn) {
+                resetBtn.addEventListener('click', function() {
+                  // Для залогиненного пользователя: получить дефолты с сервера и подставить
+                  fetch('/api/settings', { headers: { 'Accept': 'application/json' } })
+                    .then(r => r.json())
+                    .then(defaults => fillSettingsForm(defaults));
+                });
+              }
+            });
+          </script>
+          <div class="mb-4">
+            <%= f.label :default_sort, 'Сортировка по умолчанию', class: 'block text-xs text-gray-300 mb-1' %>
+            <%= f.select :default_sort, [['По объему торгов', 'volume'], ['По количеству сделок', 'deals'], ['По росту за 24ч', 'growth'], ['По падению за 24ч', 'fall'], ['По цене', 'price']], {}, class: 'px-2 py-1 rounded bg-gray-800 text-white text-xs w-full', data: { settings_filters_sync_target: 'defaultSort' } %>
+          </div>
+          <div class="mb-4">
+            <%= f.label :default_volume, 'Мин. объем торгов по умолчанию', class: 'block text-xs text-gray-300 mb-1' %>
+            <div class="flex gap-2">
+              <%= f.number_field :default_volume, min: 0, placeholder: 300000, class: 'px-2 py-1 rounded bg-gray-800 text-white text-xs w-2/3', data: { settings_filters_sync_target: 'defaultVolume' } %>
+              <%= f.select :default_volume_currency, [['монет', 'coin'], ['USDT', 'usdt'], ['USDC', 'usdc']], {}, class: 'px-2 py-1 rounded bg-gray-800 text-white text-xs w-1/3', data: { settings_filters_sync_target: 'defaultVolumeCurrency' } %>
+            </div>
+          </div>
+          <div class="mb-4">
+            <%= f.label :default_deals, 'Мин. количество сделок по умолчанию', class: 'block text-xs text-gray-300 mb-1' %>
+            <%= f.number_field :default_deals, min: 0, placeholder: 100000, class: 'px-2 py-1 rounded bg-gray-800 text-white text-xs w-full', data: { settings_filters_sync_target: 'defaultDeals' } %>
+          </div>
+          <div class="mb-4">
+            <%= f.label :default_change, 'Изменение за 24ч по умолчанию, %', class: 'block text-xs text-gray-300 mb-1' %>
+            <%= f.number_field :default_change, step: 0.01, placeholder: 'Любое значение', class: 'px-2 py-1 rounded bg-gray-800 text-white text-xs w-full', data: { settings_filters_sync_target: 'defaultChange' } %>
+          </div>
+          <div class="mb-4">
+            <%= f.label :default_price_above, 'Цена выше', class: 'block text-xs text-gray-300 mb-1' %>
+            <%= f.number_field :default_price_above, step: 0.01, class: 'px-2 py-1 rounded bg-gray-800 text-white text-xs w-1/2 inline-block', data: { settings_filters_sync_target: 'defaultPriceAbove' } %>
+            <%= f.label :default_price_below, 'Цена ниже', class: 'block text-xs text-gray-300 mb-1 ml-2' %>
+            <%= f.number_field :default_price_below, step: 0.01, class: 'px-2 py-1 rounded bg-gray-800 text-white text-xs w-1/2 inline-block', data: { settings_filters_sync_target: 'defaultPriceBelow' } %>
+          </div>
+          <div class="mb-4">
+            <%= f.label :default_basecoin, 'Базовая монета', class: 'block text-xs text-gray-300 mb-1' %>
+            <%= f.select :default_basecoin, [['USDT', 'USDT'], ['USDC', 'USDC'], ['BUSD', 'BUSD'], ['TUSD', 'TUSD'], ['FDUSD', 'FDUSD'], ['DAI', 'DAI'], ['EUR', 'EUR'], ['TRY', 'TRY'], ['RUB', 'RUB'], ['UAH', 'UAH'], ['BRL', 'BRL'], ['BTC', 'BTC'], ['ETH', 'ETH'], ['BNB', 'BNB'], ['Любая', '']], {}, class: 'px-2 py-1 rounded bg-gray-800 text-white text-xs w-full', data: { settings_filters_sync_target: 'defaultBasecoin' } %>
+          </div>
+          <div class="mb-4">
+            <%= f.label :default_exchange, 'Биржа по умолчанию', class: 'block text-xs text-gray-300 mb-1' %>
+            <%= f.select :default_exchange, [['Binance', 'binance'], ['Bybit', 'bybit'], ['OKX', 'okx'], ['KuCoin', 'kucoin']], {}, class: 'px-2 py-1 rounded bg-gray-800 text-white text-xs w-full', data: { settings_filters_sync_target: 'defaultExchange' } %>
+          </div>
+          <div class="mb-4 flex items-center">
+            <%= f.hidden_field :default_futures, value: 0, data: { settings_filters_sync_target: 'defaultFutures' } %>
+            <%= f.check_box :default_futures, class: 'mr-1', data: { settings_filters_sync_target: 'defaultFutures' } %>
+            <%= f.label :default_futures, 'Фьючерсы/Маржа по умолчанию', class: 'text-xs text-gray-300' %>
+          </div>
+          <div class="mb-4 flex items-center">
+            <%= f.hidden_field :default_favorites, value: 0, data: { settings_filters_sync_target: 'defaultFavorites' } %>
+            <%= f.check_box :default_favorites, class: 'mr-1', data: { settings_filters_sync_target: 'defaultFavorites' } %>
+            <%= f.label :default_favorites, 'Показывать только избранное по умолчанию', class: 'text-xs text-gray-300' %>
+          </div>
+          <div class="mb-4 flex gap-2">
+            <button type="submit" class="rounded bg-blue-600 px-4 py-2 text-white text-xs hover:bg-blue-700 transition">Сохранить</button>
+            <button type="button" id="reset-to-defaults" class="rounded bg-gray-500 px-4 py-2 text-white text-xs hover:bg-gray-600 transition">Сброс к дефолтам</button>
+          </div>
           <button type="button" id="refresh-coins-btn-unique-1" class="w-full px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded shadow flex items-center justify-center transition-all mt-4">
             <i class='fa-solid fa-rotate mr-2'></i> Обновить монеты
           </button>
-        </form>
+        <% end %>
       </div>
     </div>
   </div>
