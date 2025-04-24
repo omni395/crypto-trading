@@ -1,9 +1,5 @@
-import toastr from "toastr";
-window.toastr = toastr;
-
-// Initialize Toastr (pure JS, no jQuery)
 document.addEventListener('DOMContentLoaded', function() {
-  toastr.options = {
+  window.toastr.options = {
     "closeButton": true,
     "debug": false,
     "newestOnTop": false,
