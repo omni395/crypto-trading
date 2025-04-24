@@ -4,7 +4,7 @@ import { Controller } from "@hotwired/stimulus";
 export default class extends Controller {
   static targets = [
     // Settings modal fields
-    "defaultVolume", "defaultDeals", "defaultChange", "defaultPriceAbove", "defaultPriceBelow", "defaultBasecoin", "defaultExchange",
+    "defaultSort", "defaultVolume", "defaultVolumeCurrency", "defaultDeals", "defaultChange", "defaultPriceAbove", "defaultPriceBelow", "defaultBasecoin", "defaultExchange",
     // Filters fields
     "filterVolume", "filterDeals", "filterChange", "filterPriceAbove", "filterPriceBelow", "filterPair", "filterExchange"
   ];
@@ -46,7 +46,9 @@ export default class extends Controller {
     event.preventDefault();
     const isSignedIn = document.body.dataset.userSignedIn === "true";
     const settings = {
+      defaultSort: this.defaultSortTarget.value,
       defaultVolume: this.defaultVolumeTarget.value,
+      defaultVolumeCurrency: this.defaultVolumeCurrencyTarget.value,
       defaultDeals: this.defaultDealsTarget.value,
       defaultChange: this.defaultChangeTarget.value,
       defaultPriceAbove: this.defaultPriceAboveTarget.value,
@@ -58,12 +60,8 @@ export default class extends Controller {
     if (isSignedIn) {
       fetch('/api/settings', {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
-        },
-        body: JSON.stringify({ settings })
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content },
+        body: JSON.stringify(settings)
       })
         .then(r => r.json())
         .then(data => {
@@ -87,7 +85,9 @@ export default class extends Controller {
   // Применяет значения к фильтрам и в модальное окно настроек
   applySettingsToFilters(settings) {
     // Применяет значения к фильтрам и в модальное окно настроек
+    this.defaultSortTarget.value = settings.default_sort;
     this.defaultVolumeTarget.value = settings.default_volume;
+    this.defaultVolumeCurrencyTarget.value = settings.default_volume_currency;
     this.defaultDealsTarget.value = settings.default_deals;
     this.defaultChangeTarget.value = settings.default_change;
     this.defaultPriceAboveTarget.value = settings.default_price_above;
@@ -99,7 +99,9 @@ export default class extends Controller {
   // Сброс к дефолтам (по кнопке)
   resetToDefaults(event) {
     event.preventDefault();
+    this.defaultSortTarget.value = 'volume';
     this.defaultVolumeTarget.value = 300000;
+    this.defaultVolumeCurrencyTarget.value = 'coin';
     this.defaultDealsTarget.value = 100000;
     this.defaultChangeTarget.value = 0;
     this.defaultPriceAboveTarget.value = 0.01;

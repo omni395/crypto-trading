@@ -6,21 +6,16 @@
       <!-- Дополнительные графики (плейсхолдер) -->
     </div>
   </turbo-frame>
-  <!-- Правая часть: фильтры и инструменты -->
-  <turbo-frame id="filters-frame" class="w-1/6 p-2 border-l border-gray-200">
-    <div class="mb-6">
-      <div class="rounded shadow text-white">
-        <span>Фильтры <i class="fa-solid fa-filter"></i></span>
-        <%= render FiltersComponent.new(q: @q) %>
-      </div>
-    </div>
+  <!-- Правая часть: инструменты -->
+  <div class="w-1/6 p-2 border-l border-gray-200">
     <div>
       <div class="rounded shadow text-white mb-2 flex items-center justify-between">
         <span>Список криптовалют <i class="fa-brands fa-bitcoin"></i></span>
       </div>
+      <%= render "components/search" %>
       <turbo-frame id="instruments-frame">
         <%= render InstrumentsComponent.new(cryptocurrencies: @cryptocurrencies) %>
       </turbo-frame>
     </div>
-  </turbo-frame>
+  </div>
 </div>

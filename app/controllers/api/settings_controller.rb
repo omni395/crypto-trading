@@ -18,10 +18,13 @@ class Api::SettingsController < ApplicationController
     settings = params[:settings].presence || params.to_unsafe_h.except(:controller, :action, :format, :settings, :authenticity_token)
     # Удаляем _method из settings перед сохранением
     settings = settings.except(:_method, '_method') if settings.respond_to?(:except)
-    # Подставить дефолты для пустых значений при первом сохранении
-    if current_user.settings.blank?
-      settings = User::DEFAULT_SETTINGS.merge(settings).transform_values { |v| v.nil? || v == "" ? User::DEFAULT_SETTINGS[v] : v }
+
+    # Всегда подставлять дефолты для пустых значений
+    settings = User::DEFAULT_SETTINGS.merge(current_user.settings || {}).merge(settings)
+    settings = settings.transform_values.with_index do |v, idx|
+      v.nil? || v == "" ? User::DEFAULT_SETTINGS.values[idx] : v
     end
+
     Rails.logger.info("[API] settings#update for user=#{current_user.id}, incoming=#{settings.inspect}")
     current_user.update!(settings: settings)
     Rails.logger.info("[API] settings#update after save user=#{current_user.id}, settings=#{current_user.settings.inspect}")

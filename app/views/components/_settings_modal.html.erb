@@ -16,41 +16,41 @@
       <div class="space-y-4 p-6">
         <%= form_with url: '/api/settings', method: :patch, local: false, html: { id: 'settings-form-rails', 'data-turbo': 'false', 'data-controller': 'settings-filters-sync' } do |f| %>
           <div class="mb-4">
-            <%= f.label :default_sort, 'Сортировка по умолчанию', class: 'block text-xs text-gray-300 mb-1' %>
-            <%= f.select :default_sort, [['По объему торгов', 'volume'], ['По количеству сделок', 'deals'], ['По росту за 24ч', 'growth'], ['По падению за 24ч', 'fall'], ['По цене', 'price']], {}, class: 'px-2 py-1 rounded bg-gray-800 text-white text-xs w-full', data: { settings_filters_sync_target: 'defaultSort' } %>
+            <%= f.label :defaultSort, 'Сортировка по умолчанию', class: 'block text-xs text-gray-300 mb-1' %>
+            <%= f.select :defaultSort, [['По объему торгов', 'volume'], ['По количеству сделок', 'deals'], ['По росту за 24ч', 'growth'], ['По падению за 24ч', 'fall'], ['По цене', 'price']], {}, class: 'px-2 py-1 rounded bg-gray-800 text-white text-xs w-full', data: { settings_filters_sync_target: 'defaultSort' } %>
           </div>
           <div class="mb-4">
-            <%= f.label :default_volume, 'Мин. объем торгов по умолчанию', class: 'block text-xs text-gray-300 mb-1' %>
+            <%= f.label :defaultVolume, 'Мин. объем торгов по умолчанию', class: 'block text-xs text-gray-300 mb-1' %>
             <div class="flex gap-2">
-              <%= f.number_field :default_volume, min: 0, placeholder: 300000, class: 'px-2 py-1 rounded bg-gray-800 text-white text-xs w-2/3', data: { settings_filters_sync_target: 'defaultVolume' } %>
-              <%= f.select :default_volume_currency, [['монет/USD', 'coin']], {}, class: 'px-2 py-1 rounded bg-gray-800 text-white text-xs w-1/3', data: { settings_filters_sync_target: 'defaultVolumeCurrency' } %>
+              <%= f.number_field :defaultVolume, min: 0, placeholder: 300000, class: 'px-2 py-1 rounded bg-gray-800 text-white text-xs w-2/3', data: { settings_filters_sync_target: 'defaultVolume' } %>
+              <%= f.select :defaultVolumeCurrency, [['монет/USD', 'coin']], {}, class: 'px-2 py-1 rounded bg-gray-800 text-white text-xs w-1/3', data: { settings_filters_sync_target: 'defaultVolumeCurrency' } %>
             </div>
           </div>
           <div class="mb-4">
-            <%= f.label :default_deals, 'Мин. количество сделок по умолчанию', class: 'block text-xs text-gray-300 mb-1' %>
-            <%= f.number_field :default_deals, min: 0, placeholder: 100000, class: 'px-2 py-1 rounded bg-gray-800 text-white text-xs w-full', data: { settings_filters_sync_target: 'defaultDeals' } %>
+            <%= f.label :defaultDeals, 'Мин. количество сделок по умолчанию', class: 'block text-xs text-gray-300 mb-1' %>
+            <%= f.number_field :defaultDeals, min: 0, placeholder: 100000, class: 'px-2 py-1 rounded bg-gray-800 text-white text-xs w-full', data: { settings_filters_sync_target: 'defaultDeals' } %>
           </div>
           <div class="mb-4">
-            <%= f.label :default_change, 'Изменение за 24ч по умолчанию, %', class: 'block text-xs text-gray-300 mb-1' %>
-            <%= f.number_field :default_change, step: 0.01, placeholder: 'Любое значение', class: 'px-2 py-1 rounded bg-gray-800 text-white text-xs w-full', data: { settings_filters_sync_target: 'defaultChange' } %>
+            <%= f.label :defaultChange, 'Изменение за 24ч по умолчанию, %', class: 'block text-xs text-gray-300 mb-1' %>
+            <%= f.number_field :defaultChange, step: 0.01, placeholder: 'Любое значение', class: 'px-2 py-1 rounded bg-gray-800 text-white text-xs w-full', data: { settings_filters_sync_target: 'defaultChange' } %>
           </div>
           <div class="mb-4">
-            <%= f.label :default_price_above, 'Цена выше', class: 'block text-xs text-gray-300 mb-1' %>
-            <%= f.number_field :default_price_above, step: 0.01, class: 'px-2 py-1 rounded bg-gray-800 text-white text-xs w-1/2 inline-block', data: { settings_filters_sync_target: 'defaultPriceAbove' } %>
-            <%= f.label :default_price_below, 'Цена ниже', class: 'block text-xs text-gray-300 mb-1 ml-2' %>
-            <%= f.number_field :default_price_below, step: 0.01, class: 'px-2 py-1 rounded bg-gray-800 text-white text-xs w-1/2 inline-block', data: { settings_filters_sync_target: 'defaultPriceBelow' } %>
+            <%= f.label :defaultPriceAbove, 'Цена выше', class: 'block text-xs text-gray-300 mb-1' %>
+            <%= f.number_field :defaultPriceAbove, step: 0.01, class: 'px-2 py-1 rounded bg-gray-800 text-white text-xs w-1/2 inline-block', data: { settings_filters_sync_target: 'defaultPriceAbove' } %>
+            <%= f.label :defaultPriceBelow, 'Цена ниже', class: 'block text-xs text-gray-300 mb-1 ml-2' %>
+            <%= f.number_field :defaultPriceBelow, step: 0.01, class: 'px-2 py-1 rounded bg-gray-800 text-white text-xs w-1/2 inline-block', data: { settings_filters_sync_target: 'defaultPriceBelow' } %>
           </div>
           <div class="mb-4">
-            <%= f.label :default_basecoin, 'Базовая монета', class: 'block text-xs text-gray-300 mb-1' %>
-            <%= f.select :default_basecoin, [['USDT', 'USDT']], {}, class: 'px-2 py-1 rounded bg-gray-800 text-white text-xs w-full', data: { settings_filters_sync_target: 'defaultBasecoin' } %>
+            <%= f.label :defaultBasecoin, 'Базовая монета', class: 'block text-xs text-gray-300 mb-1' %>
+            <%= f.select :defaultBasecoin, [['USDT', 'USDT']], {}, class: 'px-2 py-1 rounded bg-gray-800 text-white text-xs w-full', data: { settings_filters_sync_target: 'defaultBasecoin' } %>
           </div>
           <div class="mb-4">
-            <%= f.label :default_exchange, 'Биржа по умолчанию', class: 'block text-xs text-gray-300 mb-1' %>
-            <%= f.select :default_exchange, [['Binance', 'binance'], ['Bybit', 'bybit'], ['OKX', 'okx'], ['KuCoin', 'kucoin']], {}, class: 'px-2 py-1 rounded bg-gray-800 text-white text-xs w-full', data: { settings_filters_sync_target: 'defaultExchange' } %>
+            <%= f.label :defaultExchange, 'Биржа по умолчанию', class: 'block text-xs text-gray-300 mb-1' %>
+            <%= f.select :defaultExchange, [['Binance', 'binance'], ['Bybit', 'bybit'], ['OKX', 'okx'], ['KuCoin', 'kucoin']], {}, class: 'px-2 py-1 rounded bg-gray-800 text-white text-xs w-full', data: { settings_filters_sync_target: 'defaultExchange' } %>
           </div>
           <div class="mb-4 flex gap-2">
             <button type="submit" class="rounded bg-blue-600 px-4 py-2 text-white text-xs hover:bg-blue-700 transition w-2/3">Сохранить</button>
-            <button type="button" id="reset-to-defaults" class="rounded bg-gray-500 px-4 py-2 text-white text-xs hover:bg-gray-600 transition w-1/3" data-action="settings-filters-sync#resetToDefaults">Сброс к дефолтам</button>
+            <button type="button" id="reset-to-defaults" class="rounded bg-gray-500 px-4 py-2 text-white text-xs hover:bg-gray-600 transition w-1/3" data-action="settings-filters-sync#resetToDefaults">По дефолту</button>
           </div>
           <button type="button" id="refresh-coins-btn-unique-1" class="w-full px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded shadow flex items-center justify-center transition-all mt-4" data-action="settings-filters-sync#refreshCoins">
             <i class='fa-solid fa-rotate mr-2'></i> Обновить монеты
