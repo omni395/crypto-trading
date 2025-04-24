@@ -31,7 +31,8 @@ class User < ApplicationRecord
   end
 
   def settings_with_defaults
-    DEFAULT_SETTINGS.merge(self.settings || {}).transform_values.with_index do |v, idx|
+    settings_hash = self.settings.is_a?(Hash) ? self.settings : (self.settings.present? ? JSON.parse(self.settings) : {})
+    DEFAULT_SETTINGS.merge(settings_hash).transform_values.with_index do |v, idx|
       # Если значение пустое (nil или ""), берём дефолт
       v.nil? || v == "" ? DEFAULT_SETTINGS.values[idx] : v
     end

@@ -17,6 +17,6 @@ Rails.application.routes.draw do
 
   # API: settings
   namespace :api do
-    resource :settings, only: [:show, :update], controller: 'api/settings'
+    resource :settings, only: [:show, :update], controller: 'settings'
   end
 end

@@ -1,10 +1,10 @@
 class Api::SettingsController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, except: [:show]
 
   # GET /api/settings
   def show
     # Для незалогиненных отдаём дефолты
-    if user_signed_in?
+    if user_signed_in? && current_user
       Rails.logger.info("[API] settings#show for user=#{current_user.id}, settings=#{current_user.settings.inspect}")
       render json: current_user.settings_with_defaults
     else
