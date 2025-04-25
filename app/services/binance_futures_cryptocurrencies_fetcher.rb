@@ -1,12 +1,12 @@
-# app/services/binance_cryptocurrencies_fetcher.rb
+# app/services/binance_futures_cryptocurrencies_fetcher.rb
 require 'net/http'
 require 'json'
 
-class BinanceCryptocurrenciesFetcher
-  API_URL = 'https://api.binance.com/api/v3/ticker/24hr'
+class BinanceFuturesCryptocurrenciesFetcher
+  API_URL = 'https://fapi.binance.com/fapi/v1/ticker/24hr'
 
   def self.fetch_and_update!
-    Rails.logger.info "[CryptoListing] Start update at #{Time.current}"
+    Rails.logger.info "[CryptoListing:Futures] Start update at #{Time.current}"
     uri = URI(API_URL)
     response = Net::HTTP.get(uri)
     data = JSON.parse(response)
@@ -14,14 +14,14 @@ class BinanceCryptocurrenciesFetcher
       symbol = item['symbol']
       base_asset = item['symbol'].sub(/#{item['quoteAsset']}\z/, '')
       quote_asset = item['quoteAsset']
-      Cryptocurrency.find_or_initialize_by(symbol: symbol, market_type: 'spot').tap do |crypto|
+      Cryptocurrency.find_or_initialize_by(symbol: symbol, market_type: 'futures').tap do |crypto|
         crypto.base_asset = base_asset
         crypto.quote_asset = quote_asset
         crypto.status = 'active' # Можно доработать по API
-        crypto.market_type = 'spot'
+        crypto.market_type = 'futures'
         crypto.save!
       end
     end
-    Rails.logger.info "[CryptoListing] Finish update at #{Time.current}"
+    Rails.logger.info "[CryptoListing:Futures] Finish update at #{Time.current}"
   end
 end

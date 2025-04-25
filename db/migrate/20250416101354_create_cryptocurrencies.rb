@@ -1,17 +1,21 @@
 class CreateCryptocurrencies < ActiveRecord::Migration[7.1]
   def change
     create_table :cryptocurrencies do |t|
-      t.string :symbol
+      t.string :symbol, null: false
       t.string :name
       t.string :base_asset
       t.string :quote_asset
-      t.float :volume
-      t.integer :trades
-      t.float :price_change_percent
-      t.float :last_price
-      t.datetime :data_updated_at
-
+      t.string :status, default: 'active', null: false # active, delisted, etc.
+      t.decimal :min_price_step, precision: 18, scale: 10
+      t.decimal :min_qty_step, precision: 18, scale: 10
+      t.decimal :commission, precision: 8, scale: 6
+      t.string :exchange_url
+      t.string :icon_url
+      t.text :description
+      t.string :market_type, null: false, default: 'spot' # spot, futures
       t.timestamps
     end
+    remove_index :cryptocurrencies, :symbol if index_exists?(:cryptocurrencies, :symbol)
+    add_index :cryptocurrencies, [:symbol, :market_type], unique: true
   end
 end

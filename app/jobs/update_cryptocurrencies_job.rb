@@ -4,5 +4,6 @@ class UpdateCryptocurrenciesJob < ApplicationJob
 
   def perform
     BinanceCryptocurrenciesFetcher.fetch_and_update!
+    BinanceFuturesCryptocurrenciesFetcher.fetch_and_update!
   end
 end

@@ -121,7 +121,9 @@ export default class extends Controller {
     loadingOption.textContent = 'Загрузка...';
     loadingOption.value = '';
     select.appendChild(loadingOption);
-    fetch('/api/pairs?quote_asset=USDT')
+    // Теперь quote_asset определяется из выбранного значения фильтра quote_asset, а не захардкожено как USDT
+    const quoteAsset = this.filterExchangeTarget && this.filterExchangeTarget.value ? this.filterExchangeTarget.value : 'USDT';
+    fetch(`/api/pairs?quote_asset=${encodeURIComponent(quoteAsset)}`)
       .then(r => r.json())
       .then(data => {
         select.innerHTML = '';
