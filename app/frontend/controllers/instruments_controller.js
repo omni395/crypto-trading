@@ -1,5 +1,16 @@
-// This file was previously empty or contained an invalid placeholder.
-// If you want to implement InstrumentsController, add your code here.
-// For now, we export an empty module to prevent build errors.
+import { Controller } from "@hotwired/stimulus"
 
-export {};
+export default class extends Controller {
+  static values = { url: String }
+
+  connect() {
+    // this.refresh() // Удалено автообновление
+  }
+
+  // Метод ручного обновления списка инструментов
+  refresh() {
+    fetch(this.urlValue, { headers: { Accept: "text/vnd.turbo-stream.html" } })
+      .then(r => r.text())
+      .then(html => Turbo.renderStreamMessage(html))
+  }
+}

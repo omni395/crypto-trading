@@ -1,5 +1,19 @@
-// This file was previously empty or contained an invalid placeholder.
-// If you want to integrate toastr, add your integration code here.
-// For now, we export an empty module to prevent build errors.
-
-export {};
+document.addEventListener('DOMContentLoaded', function() {
+    window.toastr.options = {
+      "closeButton": true,
+      "debug": false,
+      "newestOnTop": false,
+      "progressBar": true,
+      "positionClass": "toast-top-right",
+      "preventDuplicates": false,
+      "onclick": null,
+      "showDuration": "300",
+      "hideDuration": "1000",
+      "timeOut": "2000",
+      "extendedTimeOut": "1000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+    }
+  });

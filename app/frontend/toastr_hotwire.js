@@ -1,5 +1,11 @@
-// This file was previously empty or contained an invalid placeholder.
-// If you want to integrate toastr with Hotwire, add your integration code here.
-// For now, we export an empty module to prevent build errors.
+// Автоматический вызов toastr для Hotwire Turbo Stream
+import { Turbo } from "@hotwired/turbo-rails";
 
-export {};
+window.addEventListener("turbo:before-stream-render", function(event) {
+  const template = event.target.firstElementChild;
+  if (template && template.dataset.toastrMessage) {
+    const type = template.dataset.toastrType || 'info';
+    toastr[type](template.dataset.toastrMessage);
+    event.preventDefault();
+  }
+});

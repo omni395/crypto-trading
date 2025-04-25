@@ -17,9 +17,6 @@
     "flowbite-datepicker": "^1.3.0",
     "js-cookie": "^3.0.5",
     "postcss": "^8.4.39",
-    "postcss-flexbugs-fixes": "^5.0.2",
-    "postcss-import": "^16.1.0",
-    "postcss-preset-env": "^10.0.7",
     "tailwindcss": "^3.4.4",
     "trix": "^2.0.0"
   },
@@ -29,8 +26,6 @@
   },
   "scripts": {
     "dev": "vite dev",
-    "build": "vite build",
-    "build:css": "tailwindcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --minify",
-    "watch:css": "tailwindcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --watch --poll"
+    "build": "vite build"
   }
 }

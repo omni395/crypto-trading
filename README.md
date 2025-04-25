@@ -4,12 +4,12 @@
 
 - **Ruby on Rails** — основной backend и API.
 - **Hotwire (Turbo/Stimulus)** — динамика и realtime UI.
-- **TailwindCSS** — стилизация интерфейса.
+- **TailwindCSS\Flowbite** — стилизация интерфейса.
 - **PostgreSQL** — база данных.
 - **Redis** — кеш и pub/sub.
 - **Sidekiq** — фоновые задачи.
 - **Docker Compose** — контейнеризация и масштабирование.
-- **Vite** — современный сборщик фронтенда (JS, CSS, HMR).
+- **Vite** — современный сборщик фронтенда (JS, CSS, HMR), интеграция с TailwindCSS.
 - **HAML** — шаблоны.
 
 ## Основные возможности
@@ -60,13 +60,20 @@
 ## Особенности разработки
 
 - **Vite** автоматически пересобирает JS и CSS при изменениях (hot reload).
-- **TailwindCSS** пересобирается отдельным watcher-ом.
+- **TailwindCSS** интегрирован через Vite ([официальная инструкция](https://tailwindcss.com/docs/installation/using-vite))
 - Все ассеты подключаются через Vite-теги в layout:
   ```erb
   <%= vite_client_tag %>
   <%= vite_javascript_tag 'application' %>
   ```
 - Не требуется вручную собирать JS/CSS в dev-режиме!
+- Не требуется отдельный watcher или сервис для CSS — всё собирается через Vite.
+
+## Интеграция TailwindCSS + Vite
+
+1. Основной файл стилей: `app/frontend/entrypoints/application.css` (импортирует Tailwind и Flowbite)
+2. Основной JS-энтрипойнт: `app/frontend/entrypoints/application.js` (импортирует application.css)
+3. Не используйте файлы из `app/assets/stylesheets` — все кастомные стили добавляйте в `app/frontend/entrypoints/application.css` или импортируйте их оттуда.
 
 ## TODO
 
