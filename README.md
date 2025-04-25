@@ -29,51 +29,12 @@
 - Фоновые задачи и обработка данных через Sidekiq
 - Docker-окружение для быстрой разработки и деплоя
 
-## Быстрый старт (Docker + Vite)
-
-1. **Склонируйте репозиторий:**
-   ```sh
-   git clone ...
-   cd crypto-trading
-   ```
-2. **Соберите контейнеры:**
-   ```sh
-   docker-compose build
-   ```
-3. **Запустите приложение:**
-   ```sh
-   docker-compose up
-   ```
-   - Rails будет доступен на [http://localhost:3000](http://localhost:3000)
-   - Vite dev server — на [http://localhost:5173](http://localhost:5173) (для HMR и ассетов)
-
-4. **Для production:**
-   - Соберите ассеты: `yarn build` (или `docker-compose run vite yarn build`)
-   - Используйте только основной порт Rails
-
 ## Структура проекта
 
 - `app/frontend` — весь фронтенд-код (Stimulus, JS, CSS, entrypoints для Vite)
 - `app/assets/builds` — production-ассеты (игнорируются в git)
 - `pg-data`, `redis-data`, `bundle`, `node_modules` — временные данные и зависимости (игнорируются в git)
 
-## Особенности разработки
-
-- **Vite** автоматически пересобирает JS и CSS при изменениях (hot reload).
-- **TailwindCSS** интегрирован через Vite ([официальная инструкция](https://tailwindcss.com/docs/installation/using-vite))
-- Все ассеты подключаются через Vite-теги в layout:
-  ```erb
-  <%= vite_client_tag %>
-  <%= vite_javascript_tag 'application' %>
-  ```
-- Не требуется вручную собирать JS/CSS в dev-режиме!
-- Не требуется отдельный watcher или сервис для CSS — всё собирается через Vite.
-
-## Интеграция TailwindCSS + Vite
-
-1. Основной файл стилей: `app/frontend/entrypoints/application.css` (импортирует Tailwind и Flowbite)
-2. Основной JS-энтрипойнт: `app/frontend/entrypoints/application.js` (импортирует application.css)
-3. Не используйте файлы из `app/assets/stylesheets` — все кастомные стили добавляйте в `app/frontend/entrypoints/application.css` или импортируйте их оттуда.
 
 ## TODO
 
@@ -91,8 +52,3 @@
 - Добавить drag-and-drop для сортировки монет
 - Внедрить быстрые пресеты фильтров
 - Добавить историю поиска и быстрый возврат к последним запросам
-
----
-
-**Контакты и поддержка:**
-- Для вопросов и предложений — создавайте issue или pull request.

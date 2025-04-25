@@ -1,8 +1,8 @@
 namespace :cryptocurrencies do
-  desc "Обновить монеты с Binance (через сервис BinanceCryptocurrenciesFetcher)"
+  desc "Обновить монеты с Binance (через сервис BinanceSpotCryptocurrenciesFetcher)"
   task refresh: :environment do
     puts "[CRON] Запуск обновления монет с Binance..."
-    BinanceCryptocurrenciesFetcher.fetch_and_update!
+    BinanceSpotCryptocurrenciesFetcher.fetch_and_update!
     BinanceFuturesCryptocurrenciesFetcher.fetch_and_update!
     puts "[CRON] Обновление монет завершено."
   end

@@ -3,7 +3,7 @@ require 'net/http'
 require 'json'
 
 class BinanceFuturesCryptocurrenciesFetcher
-  API_URL = 'https://fapi.binance.com/fapi/v1/ticker/24hr'
+  API_URL = 'https://fapi.binance.com/fapi/v1/exchangeInfo'
 
   def self.fetch_and_update!
     Rails.logger.info "[CryptoListing:Futures] Start update at #{Time.current}"
@@ -14,11 +14,11 @@ class BinanceFuturesCryptocurrenciesFetcher
     db_cryptos = Cryptocurrency.where(market_type: 'futures').pluck(:symbol, :base_asset, :quote_asset, :status).index_by { |s, _, _, _| s }
     api_symbols = []
 
-    data.each do |item|
+    data['symbols'].each do |item|
       symbol = item['symbol']
-      base_asset = item['symbol'].sub(/#{item['quoteAsset']}\z/, '')
+      base_asset = item['baseAsset']
       quote_asset = item['quoteAsset']
-      status = 'active' # Можно доработать по API
+      status = item['status'].downcase
       api_symbols << symbol
 
       db_crypto = db_cryptos[symbol]

@@ -1,13 +1,15 @@
-<div class="flex flex-row min-h-[calc(100vh-4rem)] bg-gray-700">
+<div class="flex flex-row min-h-[calc(100vh-4rem)] bg-gray-700 min-w-0">
   <!-- Левая часть: график -->
-  <turbo-frame id="main-chart-frame" class="w-5/6 p-2">
-    <%= render 'components/chart' %>
-    <div class="mt-6">
-      <!-- Дополнительные графики (плейсхолдер) -->
-    </div>
-  </turbo-frame>
+  <div class="flex-auto min-w-0 p-2">
+    <turbo-frame id="main-chart-frame">
+      <%= render 'components/chart' %>
+      <div class="mt-6">
+        <!-- Дополнительные графики (плейсхолдер) -->
+      </div>
+    </turbo-frame>
+  </div>
   <!-- Правая часть: инструменты -->
-  <div class="w-1/6 p-2 border-l border-gray-200">
+  <div class="flex-shrink-0 w-1/5 max-w-[20vw] min-w-[180px] p-2 border-l border-gray-200">
     <div>
       <div class="rounded shadow text-white mb-2 flex items-center justify-between">
         <span>Список криптовалют <i class="fa-brands fa-bitcoin"></i></span>

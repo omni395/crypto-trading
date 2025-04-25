@@ -3,10 +3,10 @@ import { Controller } from "@hotwired/stimulus";
 // Связка модалки настроек и фильтров через localStorage
 export default class extends Controller {
   static targets = [
-    // Settings modal fields
-    "defaultSort", "defaultVolume", "defaultVolumeCurrency", "defaultDeals", "defaultChange", "defaultPriceAbove", "defaultPriceBelow", "defaultBasecoin", "defaultExchange",
-    // Filters fields
-    "filterVolume", "filterDeals", "filterChange", "filterPriceAbove", "filterPriceBelow", "filterPair", "filterExchange"
+    // Только реально используемые для фильтрации поля
+    "default_market_type", "default_quote_asset", "default_status", "default_exchange",
+    // Остальные — как заглушки, чтобы не было ошибок (существуют в форме)
+    "default_volume", "default_volume_currency", "default_deals", "default_change", "default_price_above", "default_price_below"
   ];
 
   connect() {
@@ -46,111 +46,78 @@ export default class extends Controller {
     event.preventDefault();
     const isSignedIn = document.body.dataset.userSignedIn === "true";
     const settings = {
-      defaultSort: this.defaultSortTarget.value,
-      defaultVolume: this.defaultVolumeTarget.value,
-      defaultVolumeCurrency: this.defaultVolumeCurrencyTarget.value,
-      defaultDeals: this.defaultDealsTarget.value,
-      defaultChange: this.defaultChangeTarget.value,
-      defaultPriceAbove: this.defaultPriceAboveTarget.value,
-      defaultPriceBelow: this.defaultPriceBelowTarget.value,
-      defaultBasecoin: this.defaultBasecoinTarget.value,
-      defaultExchange: this.defaultExchangeTarget.value
+      default_market_type: this.default_market_typeTarget ? this.default_market_typeTarget.value : undefined,
+      default_quote_asset: this.default_quote_assetTarget ? this.default_quote_assetTarget.value : undefined,
+      default_status: this.default_statusTarget ? this.default_statusTarget.value : undefined,
+      default_exchange: this.default_exchangeTarget ? this.default_exchangeTarget.value : undefined
+      // Остальные параметры не используются для фильтрации
     };
     Object.entries(settings).forEach(([k, v]) => localStorage.setItem(k, v));
     if (isSignedIn) {
       fetch('/api/settings', {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content },
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-Token': document.querySelector('meta[name=\'csrf-token\']').content },
         body: JSON.stringify(settings)
       })
         .then(r => r.json())
         .then(data => {
-          // Можно добавить уведомление об успехе
+          this.reloadInstrumentsFrame(settings);
         });
+    } else {
+      this.reloadInstrumentsFrame(settings);
     }
   }
 
-  // Загружает значения по умолчанию в фильтры
+  // Загружает значения по умолчанию в модалку (заглушки)
   loadDefaultsToFilters() {
-    // Загружает значения по умолчанию в фильтры
-    this.filterVolumeTarget.value = 300000;
-    this.filterDealsTarget.value = 100000;
-    this.filterChangeTarget.value = 0;
-    this.filterPriceAboveTarget.value = 0.01;
-    this.filterPriceBelowTarget.value = 5;
-    this.filterPairTarget.value = '';
-    this.filterExchangeTarget.value = 'binance';
+    // Только для существующих полей-заглушек
+    if (this.hasDefaultVolumeTarget) this.default_volumeTarget.value = 300000;
+    if (this.hasDefaultDealsTarget) this.default_dealsTarget.value = 100000;
+    if (this.hasDefaultChangeTarget) this.default_changeTarget.value = 0;
+    if (this.hasDefaultPriceAboveTarget) this.default_price_aboveTarget.value = 0.01;
+    if (this.hasDefaultPriceBelowTarget) this.default_price_belowTarget.value = 5;
+    if (this.hasDefaultVolumeCurrencyTarget) this.default_volume_currencyTarget.value = 'coin';
   }
 
   // Применяет значения к фильтрам и в модальное окно настроек
   applySettingsToFilters(settings) {
-    // Применяет значения к фильтрам и в модальное окно настроек
-    this.defaultSortTarget.value = settings.default_sort;
-    this.defaultVolumeTarget.value = settings.default_volume;
-    this.defaultVolumeCurrencyTarget.value = settings.default_volume_currency;
-    this.defaultDealsTarget.value = settings.default_deals;
-    this.defaultChangeTarget.value = settings.default_change;
-    this.defaultPriceAboveTarget.value = settings.default_price_above;
-    this.defaultPriceBelowTarget.value = settings.default_price_below;
-    this.defaultBasecoinTarget.value = settings.default_basecoin;
-    this.defaultExchangeTarget.value = settings.default_exchange;
+    if (this.hasDefaultMarketTypeTarget && settings.default_market_type)
+      this.default_market_typeTarget.value = settings.default_market_type;
+    if (this.hasDefaultQuoteAssetTarget && settings.default_quote_asset)
+      this.default_quote_assetTarget.value = settings.default_quote_asset;
+    if (this.hasDefaultStatusTarget && settings.default_status)
+      this.default_statusTarget.value = settings.default_status;
+    if (this.hasDefaultExchangeTarget && settings.default_exchange)
+      this.default_exchangeTarget.value = settings.default_exchange;
   }
 
-  // Сброс к дефолтам (по кнопке)
   resetToDefaults(event) {
     event.preventDefault();
-    this.defaultSortTarget.value = 'volume';
-    this.defaultVolumeTarget.value = 300000;
-    this.defaultVolumeCurrencyTarget.value = 'coin';
-    this.defaultDealsTarget.value = 100000;
-    this.defaultChangeTarget.value = 0;
-    this.defaultPriceAboveTarget.value = 0.01;
-    this.defaultPriceBelowTarget.value = 5;
-    this.defaultBasecoinTarget.value = 'USDT';
-    this.defaultExchangeTarget.value = 'binance';
-    // Можно добавить уведомление об успехе
+    if (this.hasDefaultMarketTypeTarget) this.default_market_typeTarget.value = '';
+    if (this.hasDefaultQuoteAssetTarget) this.default_quote_assetTarget.value = '';
+    if (this.hasDefaultStatusTarget) this.default_statusTarget.value = '';
+    if (this.hasDefaultExchangeTarget) this.default_exchangeTarget.value = '';
+    // Заглушки
+    if (this.hasDefaultVolumeTarget) this.default_volumeTarget.value = 300000;
+    if (this.hasDefaultDealsTarget) this.default_dealsTarget.value = 100000;
+    if (this.hasDefaultChangeTarget) this.default_changeTarget.value = 0;
+    if (this.hasDefaultPriceAboveTarget) this.default_price_aboveTarget.value = 0.01;
+    if (this.hasDefaultPriceBelowTarget) this.default_price_belowTarget.value = 5;
+    if (this.hasDefaultVolumeCurrencyTarget) this.default_volume_currencyTarget.value = 'coin';
   }
 
-  // Загружает список монет с сервера и обновляет select
-  refreshCoins(event) {
-    event.preventDefault();
-    const select = this.defaultBasecoinTarget;
-    select.disabled = true;
-    select.innerHTML = '';
-    const loadingOption = document.createElement('option');
-    loadingOption.textContent = 'Загрузка...';
-    loadingOption.value = '';
-    select.appendChild(loadingOption);
-    // Теперь quote_asset определяется из выбранного значения фильтра quote_asset, а не захардкожено как USDT
-    const quoteAsset = this.filterExchangeTarget && this.filterExchangeTarget.value ? this.filterExchangeTarget.value : 'USDT';
-    fetch(`/api/pairs?quote_asset=${encodeURIComponent(quoteAsset)}`)
-      .then(r => r.json())
-      .then(data => {
-        select.innerHTML = '';
-        if (data.pairs && data.pairs.length > 0) {
-          data.pairs.forEach(pair => {
-            const option = document.createElement('option');
-            option.value = pair;
-            option.textContent = pair;
-            select.appendChild(option);
-          });
-        } else {
-          const option = document.createElement('option');
-          option.value = '';
-          option.textContent = 'Нет монет';
-          select.appendChild(option);
-        }
-        select.disabled = false;
-      })
-      .catch(e => {
-        select.innerHTML = '';
-        const option = document.createElement('option');
-        option.value = '';
-        option.textContent = 'Ошибка загрузки';
-        select.appendChild(option);
-        select.disabled = false;
-        alert('Ошибка при загрузке монет');
-        console.error(e);
-      });
+  reloadInstrumentsFrame(settings) {
+    const params = new URLSearchParams({
+      market_type: settings.default_market_type,
+      quote_asset: settings.default_quote_asset,
+      status: settings.default_status,
+      exchange: settings.default_exchange
+    });
+    const frame = document.getElementById('instruments-frame');
+    if (frame) {
+      frame.src = `/main/index?${params.toString()}`;
+    } else {
+      window.location.reload();
+    }
   }
 }

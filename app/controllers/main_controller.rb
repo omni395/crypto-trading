@@ -5,18 +5,20 @@ class MainController < ApplicationController
     @quote_assets = Cryptocurrency.distinct.pluck(:quote_asset)
     @statuses = Cryptocurrency.distinct.pluck(:status)
 
-    # Удаляем передачу @all_coins_json, она больше не нужна
-
-    # Заглушка: не фильтруем по динамическим данным, чтобы не было ошибок
-    @cryptocurrencies = []
+    # Фильтрация только по нужным полям (без базовой монеты и лишних)
+    filters = {}
+    filters[:market_type] = params[:market_type] if params[:market_type].present?
+    filters[:quote_asset] = params[:quote_asset] if params[:quote_asset].present?
+    filters[:status] = params[:status] if params[:status].present?
+    filters[:exchange] = params[:exchange] if params[:exchange].present?
 
     # Если фильтр поиска не задан или пустой, показываем все монеты без фильтрации
     if params[:q].present? && params[:q][:symbol_or_base_asset_or_quote_asset_or_name_cont].present?
       @q = Cryptocurrency.ransack(params[:q])
-      @cryptocurrencies = @q.result
+      @cryptocurrencies = @q.result.where(filters)
     else
       @q = Cryptocurrency.ransack({})
-      @cryptocurrencies = Cryptocurrency.all
+      @cryptocurrencies = filters.any? ? Cryptocurrency.where(filters) : Cryptocurrency.all
     end
     @cryptocurrencies_count = @cryptocurrencies.size
     Rails.logger.info("[CRYPTO] Всего монет в списке: #{@cryptocurrencies_count}")

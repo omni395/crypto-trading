@@ -2,8 +2,8 @@
 class UpdateCryptocurrenciesJob < ApplicationJob
   queue_as :default
 
-  def perform
-    BinanceCryptocurrenciesFetcher.fetch_and_update!
+  def perform(*args)
+    BinanceSpotCryptocurrenciesFetcher.fetch_and_update!
     BinanceFuturesCryptocurrenciesFetcher.fetch_and_update!
   end
 end

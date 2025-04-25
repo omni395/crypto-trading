@@ -1,9 +1,9 @@
-# app/services/binance_cryptocurrencies_fetcher.rb
+# app/services/binance_spot_cryptocurrencies_fetcher.rb
 require 'net/http'
 require 'json'
 
-class BinanceCryptocurrenciesFetcher
-  API_URL = 'https://api.binance.com/api/v3/ticker/24hr'
+class BinanceSpotCryptocurrenciesFetcher
+  API_URL = 'https://api.binance.com/api/v3/exchangeInfo'
 
   def self.fetch_and_update!
     Rails.logger.info "[CryptoListing] Start update at #{Time.current}"
@@ -15,11 +15,11 @@ class BinanceCryptocurrenciesFetcher
     db_cryptos = Cryptocurrency.where(market_type: 'spot').pluck(:symbol, :base_asset, :quote_asset, :status).index_by { |s, _, _, _| s }
     api_symbols = []
 
-    data.each do |item|
+    data['symbols'].each do |item|
       symbol = item['symbol']
-      base_asset = item['symbol'].sub(/#{item['quoteAsset']}\z/, '')
+      base_asset = item['baseAsset']
       quote_asset = item['quoteAsset']
-      status = 'active' # Можно доработать по API
+      status = item['status'].downcase
       api_symbols << symbol
 
       db_crypto = db_cryptos[symbol]

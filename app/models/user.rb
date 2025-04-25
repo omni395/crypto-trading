@@ -17,7 +17,7 @@ class User < ApplicationRecord
     "default_exchange" => "binance",
     "default_market_type" => "spot",
     "default_quote_asset" => "USDT",
-    "default_status" => "active"
+    "default_status" => "trading"
   }.freeze
 
   def self.from_omniauth(auth)
