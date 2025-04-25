@@ -1,7 +1,13 @@
 class MainController < ApplicationController
   def index
-    @q = Cryptocurrency.ransack(params[:q])
-    @cryptocurrencies = @q.result.order(volume: :desc)
+    # Если фильтр поиска не задан или пустой, показываем все монеты без фильтрации
+    if params[:q].present? && params[:q][:symbol_or_base_asset_or_quote_asset_or_name_cont].present?
+      @q = Cryptocurrency.ransack(params[:q])
+      @cryptocurrencies = @q.result.order(volume: :desc)
+    else
+      @q = Cryptocurrency.ransack({})
+      @cryptocurrencies = Cryptocurrency.order(volume: :desc)
+    end
     @cryptocurrencies_count = @cryptocurrencies.size
     Rails.logger.info("[CRYPTO] Всего монет в списке: #{@cryptocurrencies_count}")
     respond_to do |format|
