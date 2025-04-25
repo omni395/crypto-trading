@@ -8,7 +8,8 @@ class FilteredCryptocurrencyDataService
 
   def call
     scope = Cryptocurrency.where(symbol: @pairs)
-    scope = scope.where('volume >= ?', @filters[:min_volume]) if @filters[:min_volume].present?
+    # Заглушка: фильтрация по динамическим данным временно отключена
+    # scope = scope.where('volume >= ?', @filters[:min_volume]) if @filters[:min_volume].present?
     scope = scope.where('trades >= ?', @filters[:min_deals]) if @filters[:min_deals].present?
     scope = scope.where('price_change_percent >= ?', @filters[:change]) if @filters[:change].present?
     scope = scope.where('last_price >= ?', @filters[:price_above]) if @filters[:price_above].present?

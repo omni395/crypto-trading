@@ -1,12 +1,22 @@
 class MainController < ApplicationController
   def index
+    # Получить уникальные значения для селектов из базы
+    @market_types = Cryptocurrency.distinct.pluck(:market_type)
+    @quote_assets = Cryptocurrency.distinct.pluck(:quote_asset)
+    @statuses = Cryptocurrency.distinct.pluck(:status)
+
+    # Удаляем передачу @all_coins_json, она больше не нужна
+
+    # Заглушка: не фильтруем по динамическим данным, чтобы не было ошибок
+    @cryptocurrencies = []
+
     # Если фильтр поиска не задан или пустой, показываем все монеты без фильтрации
     if params[:q].present? && params[:q][:symbol_or_base_asset_or_quote_asset_or_name_cont].present?
       @q = Cryptocurrency.ransack(params[:q])
-      @cryptocurrencies = @q.result.order(volume: :desc)
+      @cryptocurrencies = @q.result
     else
       @q = Cryptocurrency.ransack({})
-      @cryptocurrencies = Cryptocurrency.order(volume: :desc)
+      @cryptocurrencies = Cryptocurrency.all
     end
     @cryptocurrencies_count = @cryptocurrencies.size
     Rails.logger.info("[CRYPTO] Всего монет в списке: #{@cryptocurrencies_count}")
@@ -24,7 +34,7 @@ class MainController < ApplicationController
       format.turbo_stream {
         render turbo_stream: [
           turbo_stream.replace('refresh-btn', partial: 'components/refreshing'),
-          turbo_stream.replace('instruments-frame', partial: 'components/instruments', locals: { cryptocurrencies: Cryptocurrency.order(volume: :desc) })
+          turbo_stream.replace('instruments-frame', partial: 'components/instruments', locals: { cryptocurrencies: Cryptocurrency.all })
         ]
       }
       format.html { redirect_to root_path, notice: 'Обновление запущено!' }

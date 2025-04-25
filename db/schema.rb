@@ -15,17 +15,21 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_18_121025) do
   enable_extension "plpgsql"
 
   create_table "cryptocurrencies", force: :cascade do |t|
-    t.string "symbol"
+    t.string "symbol", null: false
     t.string "name"
     t.string "base_asset"
     t.string "quote_asset"
-    t.float "volume"
-    t.integer "trades"
-    t.float "price_change_percent"
-    t.float "last_price"
-    t.datetime "data_updated_at"
+    t.string "status", default: "active", null: false
+    t.decimal "min_price_step", precision: 18, scale: 10
+    t.decimal "min_qty_step", precision: 18, scale: 10
+    t.decimal "commission", precision: 8, scale: 6
+    t.string "exchange_url"
+    t.string "icon_url"
+    t.text "description"
+    t.string "market_type", default: "spot", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["symbol", "market_type"], name: "index_cryptocurrencies_on_symbol_and_market_type", unique: true
   end
 
   create_table "users", force: :cascade do |t|

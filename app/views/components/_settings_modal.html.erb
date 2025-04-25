@@ -16,8 +16,6 @@
       <div class="space-y-4 p-6">
         <%= form_with url: '/api/settings', method: :patch, local: false, html: { id: 'settings-form-rails', 'data-turbo': 'false', 'data-controller': 'settings-filters-sync' } do |f| %>
           <div class="mb-4">
-            <%= f.label :defaultSort, 'Сортировка по умолчанию', class: 'block text-xs text-gray-300 mb-1' %>
-            <%= f.select :defaultSort, [['По объему торгов', 'volume'], ['По количеству сделок', 'deals'], ['По росту за 24ч', 'growth'], ['По падению за 24ч', 'fall'], ['По цене', 'price']], {}, class: 'px-2 py-1 rounded bg-gray-800 text-white text-xs w-full', data: { settings_filters_sync_target: 'defaultSort' } %>
           </div>
           <div class="mb-4">
             <%= f.label :defaultVolume, 'Мин. объем торгов по умолчанию', class: 'block text-xs text-gray-300 mb-1' %>
@@ -39,6 +37,18 @@
             <%= f.number_field :defaultPriceAbove, step: 0.01, class: 'px-2 py-1 rounded bg-gray-800 text-white text-xs w-1/2 inline-block', data: { settings_filters_sync_target: 'defaultPriceAbove' } %>
             <%= f.label :defaultPriceBelow, 'Цена ниже', class: 'block text-xs text-gray-300 mb-1 ml-2' %>
             <%= f.number_field :defaultPriceBelow, step: 0.01, class: 'px-2 py-1 rounded bg-gray-800 text-white text-xs w-1/2 inline-block', data: { settings_filters_sync_target: 'defaultPriceBelow' } %>
+          </div>
+          <div class="mb-4">
+            <%= f.label :defaultMarketType, 'Тип рынка', class: 'block text-xs text-gray-300 mb-1' %>
+            <%= f.select :defaultMarketType, (@market_types || []).map { |mt| [mt.titleize, mt] }, { selected: (current_user&.settings_with_defaults&.dig("default_market_type") || "spot") }, class: 'px-2 py-1 rounded bg-gray-800 text-white text-xs w-full', data: { settings_filters_sync_target: 'defaultMarketType' } %>
+          </div>
+          <div class="mb-4">
+            <%= f.label :defaultQuoteAsset, 'Quote Asset', class: 'block text-xs text-gray-300 mb-1' %>
+            <%= f.select :defaultQuoteAsset, (@quote_assets || []).compact.map { |qa| [qa.to_s.upcase, qa] }, { selected: (current_user&.settings_with_defaults&.dig("default_quote_asset") || "USDT") }, class: 'px-2 py-1 rounded bg-gray-800 text-white text-xs w-full', data: { settings_filters_sync_target: 'defaultQuoteAsset' } %>
+          </div>
+          <div class="mb-4">
+            <%= f.label :defaultStatus, 'Статус', class: 'block text-xs text-gray-300 mb-1' %>
+            <%= f.select :defaultStatus, (@statuses || []).map { |st| [st.titleize, st] }, { selected: (current_user&.settings_with_defaults&.dig("default_status") || "active") }, class: 'px-2 py-1 rounded bg-gray-800 text-white text-xs w-full', data: { settings_filters_sync_target: 'defaultStatus' } %>
           </div>
           <div class="mb-4">
             <%= f.label :defaultBasecoin, 'Базовая монета', class: 'block text-xs text-gray-300 mb-1' %>

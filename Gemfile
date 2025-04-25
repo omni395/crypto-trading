@@ -53,7 +53,8 @@ group :development do
 end
 
 gem "sassc-rails"
-gem "esbuild-rails"
+# gem "esbuild-rails"
+# gem "jsbundling-rails"
 gem "tailwindcss-rails"
 gem "sprockets-rails"
 gem "haml-rails"
@@ -64,8 +65,8 @@ gem "pundit"
 gem "kaminari"
 gem "view_component"
 gem "active_decorator"
-gem "jsbundling-rails"
 gem "cssbundling-rails"
 gem "sidekiq"
 gem 'sidekiq-cron'
 gem 'ransack'
+gem "vite_rails"
