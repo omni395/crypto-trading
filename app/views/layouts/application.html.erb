@@ -19,7 +19,7 @@
     <%= vite_javascript_tag 'application' %>
   </head>
 
-  <body class="bg-gray-700 min-h-screen">
+  <body class="bg-gray-700 min-h-screen" data-user-signed-in="<%= user_signed_in? %>">
     <%= render "components/navbar" %>
     <% flash.each do |type, message| %>
       <%= render 'components/toastr', type: type, message: message %>

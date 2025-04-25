@@ -34,6 +34,6 @@ export default class extends Controller {
         }
         form.requestSubmit()
       }
-    }, 250)
+    }, 200)
   }
 }

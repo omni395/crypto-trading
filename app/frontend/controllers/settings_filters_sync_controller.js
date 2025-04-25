@@ -12,7 +12,7 @@ export default class extends Controller {
   connect() {
     // Проверяем авторизацию через data-user-signed-in на <body>
     const isSignedIn = document.body.dataset.userSignedIn === "true";
-    console.log('[settings] connect: isSignedIn', isSignedIn);
+    console.log('[settings] connect: controller initialized, isSignedIn:', isSignedIn);
     if (isSignedIn) {
       // Если авторизован — грузим настройки с сервера
       fetch('/api/settings', {
@@ -39,6 +39,13 @@ export default class extends Controller {
       // Если не авторизован — localStorage
       this.loadDefaultsToFilters();
     }
+    // Логируем событие загрузки turbo-frame инструментов
+    document.addEventListener('turbo:frame-load', (event) => {
+      if (event.target.id === 'instruments-frame') {
+        const count = event.target.querySelectorAll('.instrument-row').length;
+        console.log(`[settings] instruments-frame обновлён, монет в DOM: ${count}`);
+      }
+    });
   }
 
   // Сохраняет значения из модалки настроек в localStorage и/или на сервере
@@ -52,6 +59,7 @@ export default class extends Controller {
       default_exchange: this.default_exchangeTarget ? this.default_exchangeTarget.value : undefined
       // Остальные параметры не используются для фильтрации
     };
+    console.log('[settings] saveDefaults: сохраняем настройки', settings);
     Object.entries(settings).forEach(([k, v]) => localStorage.setItem(k, v));
     if (isSignedIn) {
       fetch('/api/settings', {
@@ -61,7 +69,11 @@ export default class extends Controller {
       })
         .then(r => r.json())
         .then(data => {
+          console.log('[settings] saveDefaults: PATCH success', data);
           this.reloadInstrumentsFrame(settings);
+        })
+        .catch(e => {
+          console.log('[settings] saveDefaults: PATCH error', e);
         });
     } else {
       this.reloadInstrumentsFrame(settings);
@@ -70,6 +82,7 @@ export default class extends Controller {
 
   // Загружает значения по умолчанию в модалку (заглушки)
   loadDefaultsToFilters() {
+    console.log('[settings] loadDefaultsToFilters: загружаем значения по умолчанию в фильтры');
     // Только для существующих полей-заглушек
     if (this.hasDefaultVolumeTarget) this.default_volumeTarget.value = 300000;
     if (this.hasDefaultDealsTarget) this.default_dealsTarget.value = 100000;
@@ -81,6 +94,7 @@ export default class extends Controller {
 
   // Применяет значения к фильтрам и в модальное окно настроек
   applySettingsToFilters(settings) {
+    console.log('[settings] applySettingsToFilters: применяем настройки к фильтрам', settings);
     if (this.hasDefaultMarketTypeTarget && settings.default_market_type)
       this.default_market_typeTarget.value = settings.default_market_type;
     if (this.hasDefaultQuoteAssetTarget && settings.default_quote_asset)
@@ -107,6 +121,7 @@ export default class extends Controller {
   }
 
   reloadInstrumentsFrame(settings) {
+    console.log('[settings] reloadInstrumentsFrame: отправка запроса на обновление инструментов с фильтрами', settings);
     const params = new URLSearchParams({
       market_type: settings.default_market_type,
       quote_asset: settings.default_quote_asset,

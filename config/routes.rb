@@ -15,8 +15,8 @@ Rails.application.routes.draw do
   # Add health check route
   get "up" => "rails/health#show", as: :rails_health_check
 
-  # API: settings
+  # API
   namespace :api do
-    resource :settings, only: [:show, :update], controller: 'settings'
+    resource :user_settings, only: [:show, :update], controller: 'user_settings'
   end
 end
