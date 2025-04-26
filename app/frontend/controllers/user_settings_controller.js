@@ -19,7 +19,7 @@ export default class extends Controller {
       defaultExchange: "binance",
       defaultVolume: "300000",
       defaultDeals: "100000",
-      defaultChange: "0",
+      defaultChange: "2",
       defaultPriceAbove: "0.01",
       defaultPriceBelow: "5"
     };
@@ -67,5 +67,20 @@ export default class extends Controller {
       .catch(e => {
         alert('Ошибка при обновлении монет: ' + e.message);
       });
+  }
+
+  connect() {
+    const form = this.element.querySelector('form');
+    if (form) {
+      form.addEventListener('ajax:success', () => {
+        window.dispatchEvent(new CustomEvent('settings:updated'));
+        console.log('[UserSettings] Событие settings:updated отправлено');
+      });
+    }
+  }
+
+  dispatchSettingsUpdated() {
+    window.dispatchEvent(new CustomEvent('settings:updated'));
+    console.log('[UserSettings] Событие settings:updated отправлено');
   }
 }

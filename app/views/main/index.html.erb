@@ -15,7 +15,7 @@
         <span>Список криптовалют <i class="fa-brands fa-bitcoin"></i></span>
       </div>
       <%= render "components/search" %>
-      <turbo-frame id="instruments-frame">
+      <turbo-frame id="instruments-frame" data-controller="instruments" data-instruments-url-value="/main/index">
         <%= render InstrumentsComponent.new(cryptocurrencies: @cryptocurrencies) %>
       </turbo-frame>
     </div>

@@ -17,7 +17,7 @@ class User < ApplicationRecord
   DEFAULT_SETTINGS = {
     "default_volume" => "300000",
     "default_deals" => "100000",
-    "default_change" => "0",
+    "default_change" => "2",
     "default_price_above" => "0.01",
     "default_price_below" => "5",
     "default_basecoin" => "USDT",
@@ -38,8 +38,6 @@ class User < ApplicationRecord
 
   def settings_with_defaults
     settings_hash = self.settings.is_a?(Hash) ? self.settings : (self.settings.present? ? JSON.parse(self.settings) : {})
-    DEFAULT_SETTINGS.merge(settings_hash).transform_values.with_index do |v, idx|
-      v.nil? || v == "" ? DEFAULT_SETTINGS.values[idx] : v
-    end
+    DEFAULT_SETTINGS.merge(settings_hash)
   end
 end

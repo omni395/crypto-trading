@@ -6,7 +6,7 @@
   </div>
   <ul id="instruments-list" class="divide-y rounded shadow overflow-y-auto max-h-[60vh]">
     <% @cryptocurrencies.each do |crypto| %>
-      <li class="flex flex-col py-2 px-3 hover:bg-gray-800 transition">
+      <li class="flex flex-col py-2 px-3 hover:bg-gray-800 transition" data-crypto-row>
         <%= render InstrumentComponent.new(coin: crypto) %>
       </li>
     <% end %>
