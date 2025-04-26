@@ -26,10 +26,45 @@ export default class extends Controller {
           frame.innerHTML = newFrame.innerHTML;
           const count = frame.querySelectorAll('[data-crypto-row]').length;
           console.log(`[Instruments] turbo-frame обновлён, монет: ${count}`);
+          this.fetchDynamicData();
         } else {
           console.warn('[Instruments] Не удалось найти новый turbo-frame в ответе');
         }
       });
+  }
+
+  async fetchDynamicData() {
+    const rows = Array.from(document.querySelectorAll('[data-crypto-row]'));
+    // Предполагается, что у каждой строки есть data-symbol="BTCUSDT"
+    const symbols = rows.map(row => row.dataset.symbol).filter(Boolean);
+    if (symbols.length === 0) return;
+
+    // Binance REST API не поддерживает batch для /ticker/24hr, делаем параллельные запросы
+    const requests = symbols.map(symbol =>
+      fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${symbol}`)
+        .then(r => r.ok ? r.json().then(data => ({ symbol, ...data })) : null)
+        .catch(() => null)
+    );
+    const tickers = await Promise.all(requests);
+
+    rows.forEach(row => {
+      const ticker = tickers.find(t => t && t.symbol === row.dataset.symbol);
+      if (ticker) {
+        // Пример динамического фильтра: volume > 1000 и изменение > 2%
+        if (Number(ticker.volume) > 1000 && Math.abs(Number(ticker.priceChangePercent)) > 2) {
+          row.style.display = '';
+          // Можно обновить цену/объем/изменение прямо в DOM
+          const priceCell = row.querySelector('[data-crypto-price]');
+          if (priceCell) priceCell.textContent = ticker.lastPrice;
+          const changeCell = row.querySelector('[data-crypto-change]');
+          if (changeCell) changeCell.textContent = `${ticker.priceChangePercent}%`;
+        } else {
+          row.style.display = 'none';
+        }
+      } else {
+        row.style.display = 'none';
+      }
+    });
   }
 
   // Метод ручного обновления списка инструментов
