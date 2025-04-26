@@ -12,7 +12,7 @@ class BinanceSpotCryptocurrenciesFetcher
     data = JSON.parse(response)
 
     # Получаем текущие монеты из базы
-    db_cryptos = Cryptocurrency.where(market_type: 'spot').pluck(:symbol, :base_asset, :quote_asset, :status).index_by { |s, _, _, _| s }
+    db_cryptos = Cryptocurrency.pluck(:symbol, :base_asset, :quote_asset, :status).index_by { |s, _, _, _| s }
     api_symbols = []
 
     data['symbols'].each do |item|
@@ -25,18 +25,17 @@ class BinanceSpotCryptocurrenciesFetcher
       db_crypto = db_cryptos[symbol]
       if db_crypto.nil?
         # Новая монета
-        Cryptocurrency.create!(symbol: symbol, base_asset: base_asset, quote_asset: quote_asset, status: status, market_type: 'spot')
+        Cryptocurrency.create!(symbol: symbol, base_asset: base_asset, quote_asset: quote_asset, status: status)
       else
-        # Обновляем только если что-то изменилось
         db_base, db_quote, db_status = db_crypto[1], db_crypto[2], db_crypto[3]
         if db_base != base_asset || db_quote != quote_asset || db_status != status
-          Cryptocurrency.where(symbol: symbol, market_type: 'spot').update_all(base_asset: base_asset, quote_asset: quote_asset, status: status)
+          Cryptocurrency.where(symbol: symbol).update_all(base_asset: base_asset, quote_asset: quote_asset, status: status)
         end
       end
     end
 
     # Деактивируем монеты, которых больше нет в API
-    Cryptocurrency.where(market_type: 'spot').where.not(symbol: api_symbols).update_all(status: 'inactive')
+    Cryptocurrency.where.not(symbol: api_symbols).update_all(status: 'inactive')
     Rails.logger.info "[CryptoListing] Finish update at #{Time.current}"
   end
 end

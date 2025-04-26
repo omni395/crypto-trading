@@ -29,5 +29,6 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :roles
     resources :user_roles, only: [:index, :new, :create, :destroy]
+    resources :exchanges
   end
 end

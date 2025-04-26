@@ -22,7 +22,6 @@ class User < ApplicationRecord
     "default_price_below" => "5",
     "default_basecoin" => "USDT",
     "default_exchange" => "binance",
-    "default_market_type" => "spot",
     "default_quote_asset" => "USDT",
     "default_status" => "trading"
   }.freeze

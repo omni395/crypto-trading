@@ -1,0 +1,45 @@
+<div class="max-w-4xl w-full sm:w-4/5 md:w-2/3 mx-auto p-10 bg-gray-700 rounded-xl shadow-lg mt-[18vh]">
+  <h1 class="text-2xl font-bold m-4 text-white flex items-center gap-2">
+    <i class="fa-solid fa-building-columns text-gray-300 text-2xl"></i>
+    <%= @exchange&.persisted? ? 'Редактировать биржу' : 'Добавить биржу' %>
+  </h1>
+  <%= form_with(model: [:admin, @exchange], url: @exchange&.persisted? ? admin_exchange_path(@exchange) : admin_exchanges_path, local: true, class: "space-y-6") do |form| %>
+    <% if @exchange.errors.any? %>
+      <div class="bg-red-100 text-red-700 rounded p-2 mb-4">
+        <ul>
+          <% @exchange.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+    <div class="mx-4">
+      <%= form.label :name, 'Название биржи', class: 'block mb-2 text-sm text-gray-300' %>
+      <%= form.text_field :name, class: 'px-3 py-2 rounded bg-gray-800 text-white w-full text-sm focus:ring-2 focus:ring-blue-500' %>
+    </div>
+    <div class="mx-4">
+      <%= form.label :slug, 'Slug (уникальный идентификатор)', class: 'block mb-2 text-sm text-gray-300' %>
+      <%= form.text_field :slug, class: 'px-3 py-2 rounded bg-gray-800 text-white w-full text-sm focus:ring-2 focus:ring-blue-500' %>
+    </div>
+    <div class="mx-4">
+      <%= form.label :api_url, 'API URL', class: 'block mb-2 text-sm text-gray-300' %>
+      <%= form.text_field :api_url, class: 'px-3 py-2 rounded bg-gray-800 text-white w-full text-sm focus:ring-2 focus:ring-blue-500' %>
+    </div>
+    <div class="mx-4">
+      <%= form.label :market_type, 'Тип рынка', class: 'block mb-2 text-sm text-gray-300' %>
+      <%= form.select :market_type, [['Spot', 'spot'], ['Futures', 'futures']], {}, class: 'px-3 py-2 rounded bg-gray-800 text-white w-full text-sm' %>
+    </div>
+    <div class="mx-4">
+      <%= form.label :status, 'Статус', class: 'block mb-2 text-sm text-gray-300' %>
+      <%= form.select :status, [['Активна', 'active'], ['Отключена', 'disabled']], {}, class: 'px-3 py-2 rounded bg-gray-800 text-white w-full text-sm' %>
+    </div>
+    <div class="mx-4">
+      <%= form.label :description, 'Описание', class: 'block mb-2 text-sm text-gray-300' %>
+      <%= form.text_area :description, class: 'px-3 py-2 rounded bg-gray-800 text-white w-full text-sm' %>
+    </div>
+    <div class="mx-4 flex items-center justify-between">
+      <%= form.submit(@exchange&.persisted? ? 'Сохранить' : 'Создать', class: 'm-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-2 py-1 rounded shadow transition') %>
+      <%= link_to 'Назад', admin_exchanges_path, class: 'text-gray-300 underline hover:text-white text-sm' %>
+    </div>
+  <% end %>
+</div>

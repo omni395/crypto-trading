@@ -1,18 +1,19 @@
-<div class="flex flex-row items-center justify-between" data-symbol="<%= @coin.symbol %>">
-  <span class="font-semibold text-gray-100"><%= @coin.name || @coin.symbol %></span>
-  <span class="ml-2 text-xs <%= @coin.respond_to?(:price_change_percent) && @coin.price_change_percent.to_f >= 0 ? 'text-green-400' : 'text-red-400' %>" data-crypto-change>
-    <% if @coin.respond_to?(:price_change_percent) && !@coin.price_change_percent.nil? %>
-      <%= number_to_percentage(@coin.price_change_percent, precision: 2) %>
-    <% else %>
-      <span class="text-gray-400">нет данных</span>
-    <% end %>
-  </span>
-  <span class="ml-2 text-xs text-gray-300" data-crypto-price>
+<tr class="border-b border-gray-600 hover:bg-green-900 transition" data-crypto-row data-symbol="<%= @coin.symbol %>" data-exchange="<%= @coin.exchange %>">
+  <td class="p-3 font-semibold text-gray-100"><%= @coin.name || @coin.symbol %></td>
+  <td class="p-3 font-mono text-gray-400"><%= @coin.symbol %></td>
+  <td class="p-3 text-xs text-gray-300"><%= @coin.exchange %></td>
+  <td class="p-3 text-xs text-gray-300" data-crypto-price>
     <% if @coin.respond_to?(:price) && !@coin.price.nil? %>
       <%= number_with_precision(@coin.price, precision: 8) %>
     <% else %>
       <span class="text-gray-400">нет цены</span>
     <% end %>
-  </span>
-</div>
-{{ ... }}
+  </td>
+  <td class="p-3 text-xs <%= @coin.respond_to?(:price_change_percent) && @coin.price_change_percent.to_f >= 0 ? 'text-green-400' : 'text-red-400' %>" data-crypto-change>
+    <% if @coin.respond_to?(:price_change_percent) && !@coin.price_change_percent.nil? %>
+      <%= number_to_percentage(@coin.price_change_percent, precision: 2) %>
+    <% else %>
+      <span class="text-gray-400">нет данных</span>
+    <% end %>
+  </td>
+</tr>

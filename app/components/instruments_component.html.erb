@@ -1,14 +1,28 @@
 <div data-controller="instruments"
      data-instruments-url-value="<%= url_for(controller: 'main', action: 'index', format: :turbo_stream, q: (params[:q]&.to_unsafe_h || {})) %>"
      data-instruments-interval-value="10000">
-  <div class="flex items-center justify-between mb-2">
-    <span class="text-xs text-gray-300">Монет: <%= @cryptocurrencies&.size || 0 %></span>
+  <div class="max-w-4xl w-full sm:w-4/5 md:w-2/3 mx-auto p-6 bg-gray-700 rounded-xl shadow-lg mt-6">
+    <h2 class="text-xl font-bold mb-4 text-white flex items-center gap-2">
+      <i class="fa-brands fa-bitcoin text-gray-300 text-2xl"></i>
+      Список монет
+    </h2>
+    <div class="overflow-x-auto rounded-lg shadow border border-gray-600 bg-gray-800 mt-4">
+      <table class="w-full text-sm text-gray-200">
+        <thead>
+          <tr class="bg-gray-700 text-gray-300 uppercase text-xs tracking-wider">
+            <th class="p-3 text-left">Название</th>
+            <th class="p-3 text-left">Символ</th>
+            <th class="p-3 text-left">Биржа</th>
+            <th class="p-3 text-left">Цена</th>
+            <th class="p-3 text-left">Изменение</th>
+          </tr>
+        </thead>
+        <tbody id="instruments-list">
+          <% @cryptocurrencies.each do |crypto| %>
+            <%= render InstrumentComponent.new(coin: crypto) %>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
   </div>
-  <ul id="instruments-list" class="divide-y rounded shadow overflow-y-auto max-h-[60vh]">
-    <% @cryptocurrencies.each do |crypto| %>
-      <li class="flex flex-col py-2 px-3 hover:bg-gray-800 transition" data-crypto-row>
-        <%= render InstrumentComponent.new(coin: crypto) %>
-      </li>
-    <% end %>
-  </ul>
 </div>

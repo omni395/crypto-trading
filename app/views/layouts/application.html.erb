@@ -20,9 +20,11 @@
   </head>
 
   <body class="bg-gray-700 min-h-screen" data-user-signed-in="<%= user_signed_in? %>">
-    <%= render "components/navbar" %>
+    <div class="mb-4">
+      <%= render "components/navbar" %>
+    </div>
     <%= render 'components/toastr' %>
-    <main>
+    <main class="p-4">
       <%= yield %>
     </main>
   </body>

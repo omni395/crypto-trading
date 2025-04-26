@@ -7,7 +7,6 @@ class Api::InstrumentsController < ApplicationController
     settings = current_user&.settings_with_defaults || User::DEFAULT_SETTINGS
 
     filters = {}
-    filters[:market_type] = settings["default_market_type"]
     filters[:quote_asset] = settings["default_quote_asset"]
     filters[:status] = settings["default_status"]
     filters[:exchange] = settings["default_exchange"]

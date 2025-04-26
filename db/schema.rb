@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_04_26_211620) do
+ActiveRecord::Schema[7.1].define(version: 2025_04_26_222000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -26,12 +26,23 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_26_211620) do
     t.string "exchange_url"
     t.string "icon_url"
     t.text "description"
-    t.string "market_type", default: "spot", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "exchange", default: "binance", null: false
     t.index ["exchange"], name: "index_cryptocurrencies_on_exchange"
-    t.index ["symbol", "market_type"], name: "index_cryptocurrencies_on_symbol_and_market_type", unique: true
+    t.index ["symbol"], name: "index_cryptocurrencies_on_symbol", unique: true
+  end
+
+  create_table "exchanges", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.string "api_url", null: false
+    t.string "market_type", null: false
+    t.string "status", default: "active", null: false
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_exchanges_on_slug", unique: true
   end
 
   create_table "roles", force: :cascade do |t|

@@ -3,7 +3,6 @@ import { Controller } from "@hotwired/stimulus"
 // Контроллер для кнопок "По дефолту" и "Обновить монеты"
 export default class extends Controller {
   static targets = [
-    "defaultMarketType",
     "defaultQuoteAsset",
     "defaultStatus",
     "defaultExchange"
@@ -13,7 +12,6 @@ export default class extends Controller {
     event.preventDefault();
     // Значения по умолчанию (должны совпадать с DEFAULT_SETTINGS в user.rb)
     const defaults = {
-      defaultMarketType: "spot",
       defaultQuoteAsset: "USDT",
       defaultStatus: "trading",
       defaultExchange: "binance",
@@ -24,13 +22,14 @@ export default class extends Controller {
       defaultPriceBelow: "5"
     };
     // Сбросить select'ы и input'ы к дефолтным значениям
-    if (this.hasDefaultMarketTypeTarget) this.defaultMarketTypeTarget.value = defaults.defaultMarketType;
-    if (this.hasDefaultQuoteAssetTarget) this.defaultQuoteAssetTarget.value = defaults.defaultQuoteAsset;
-    if (this.hasDefaultStatusTarget) this.defaultStatusTarget.value = defaults.defaultStatus;
-    if (this.hasDefaultExchangeTarget) this.defaultExchangeTarget.value = defaults.defaultExchange;
-    // Неактивные поля (если будут активны)
-    const vol = this.element.querySelector('[data-user-settings-target="defaultVolume"]');
-    if (vol) vol.value = defaults.defaultVolume;
+    const quote = this.element.querySelector('[data-user-settings-target="defaultQuoteAsset"]');
+    if (quote) quote.value = defaults.defaultQuoteAsset;
+    const status = this.element.querySelector('[data-user-settings-target="defaultStatus"]');
+    if (status) status.value = defaults.defaultStatus;
+    const exchange = this.element.querySelector('[data-user-settings-target="defaultExchange"]');
+    if (exchange) exchange.value = defaults.defaultExchange;
+    const volume = this.element.querySelector('[data-user-settings-target="defaultVolume"]');
+    if (volume) volume.value = defaults.defaultVolume;
     const deals = this.element.querySelector('[data-user-settings-target="defaultDeals"]');
     if (deals) deals.value = defaults.defaultDeals;
     const change = this.element.querySelector('[data-user-settings-target="defaultChange"]');
