@@ -1,3 +1,0 @@
-<%= search_form_for @q, url: main_index_path, method: :get, html: { data: { turbo_frame: "instruments-frame", controller: "instruments-search", instruments_search_min_length_value: 2 } } do |f| %>
-  <%= f.search_field :symbol_or_base_asset_or_quote_asset_or_name_cont, placeholder: "Быстрый поиск...", class: "w-full px-2 py-1 rounded bg-gray-800 text-white text-xs placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500", data: { action: "input->instruments-search#search", instruments_search_target: "input" } %>
-<% end %>
