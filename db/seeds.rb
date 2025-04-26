@@ -7,3 +7,15 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+
+# --- Admin user and role seed ---
+admin_email = 'admin@example.com'
+admin_password = '12345678'
+admin_user = User.find_or_create_by!(email: admin_email) do |u|
+  u.password = admin_password
+  u.password_confirmation = admin_password
+end
+
+admin_role = Role.find_or_create_by!(name: 'admin')
+UserRole.find_or_create_by!(user: admin_user, role: admin_role)
+puts "[SEED] Админ-пользователь: #{admin_email} / #{admin_password} (роль admin)"

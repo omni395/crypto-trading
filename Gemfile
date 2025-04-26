@@ -53,8 +53,6 @@ group :development do
 end
 
 gem "sassc-rails"
-# gem "esbuild-rails"
-# gem "jsbundling-rails"
 gem "tailwindcss-rails"
 gem "sprockets-rails"
 gem "haml-rails"

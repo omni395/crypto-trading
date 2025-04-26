@@ -14,15 +14,15 @@
       <li>
         <%= link_to 'Пусто', root_path, class: 'block py-2 px-3 text-white rounded-sm hover:bg-gray-600' %>
       </li>
-      <li>
-        <button id="settings-btn" type="button"
-          data-modal-target="settings-modal"
-          data-modal-toggle="settings-modal"
-          class="flex items-center justify-center p-2 rounded hover:bg-gray-600 focus:outline-none">
-          <i class="fa-solid fa-gear text-xl text-gray-200"></i>
-        </button>
-      </li>
       <% if user_signed_in? %>
+        <li>
+          <button id="settings-btn" type="button"
+            data-modal-target="settings-modal"
+            data-modal-toggle="settings-modal"
+            class="flex items-center justify-center p-2 rounded hover:bg-gray-600 focus:outline-none hover:cursor-pointer">
+            <i class="fa-solid fa-gear text-xl text-gray-200"></i>
+          </button>
+        </li>
         <li class="relative max-w-[180px]">
           <button id="dropdownUserButton" data-dropdown-toggle="dropdownUserMenu" class="flex items-center gap-2 py-2 px-3 text-white rounded-sm hover:bg-gray-600 focus:outline-none" type="button">
             <i class="fa-solid fa-user text-lg"></i>
@@ -34,6 +34,14 @@
               <li>
                 <%= link_to 'Профиль', edit_user_registration_path, class: 'block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white' %>
               </li>
+              <% if policy(:admin).admin? %>
+                <li>
+                  <%= link_to 'Роли', admin_roles_path, class: 'block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white' %>
+                </li>
+                <li>
+                  <%= link_to 'Назначения ролей', admin_user_roles_path, class: 'block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white' %>
+                </li>
+              <% end %>
               <li>
                 <%= link_to 'Выйти', destroy_user_session_path, method: :delete, class: 'block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white' %>
               </li>

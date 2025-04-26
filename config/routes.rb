@@ -17,6 +17,17 @@ Rails.application.routes.draw do
 
   # API
   namespace :api do
+    resources :instruments, only: [:index] do
+      collection do
+        get :favorites
+      end
+    end
     resource :user_settings, only: [:show, :update], controller: 'user_settings'
+    post 'admin/refresh_binance', to: 'admin#refresh_binance'
+  end
+
+  namespace :admin do
+    resources :roles
+    resources :user_roles, only: [:index, :new, :create, :destroy]
   end
 end

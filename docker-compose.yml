@@ -19,7 +19,7 @@ services:
 
   web:
     build: .
-    command: bin/rails server -b 0.0.0.0
+    command: bash -c "rails db:migrate && rails db:seed && rails s -b 0.0.0.0"
     volumes:
       - .:/app
       - bundle:/usr/local/bundle

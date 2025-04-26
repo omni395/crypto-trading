@@ -6,7 +6,7 @@
           <i class="fa-solid fa-gear text-gray-300 text-2xl"></i>
           Настройки
         </h3>
-        <button type="button" class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-600 hover:text-white" data-modal-hide="settings-modal">
+        <button type="button" class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-600 hover:text-white hover:cursor-pointer" data-modal-hide="settings-modal">
           <span class="sr-only">Закрыть</span>
           <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
@@ -58,9 +58,11 @@
             <button type="submit" class="rounded bg-blue-600 px-4 py-2 text-white text-xs hover:bg-blue-700 transition w-2/3">Сохранить</button>
             <button type="button" id="reset-to-defaults" class="rounded bg-gray-500 px-4 py-2 text-white text-xs hover:bg-gray-600 transition w-1/3" data-action="user-settings#resetToDefaults">По дефолту</button>
           </div>
-          <button type="button" id="refresh-coins-btn-unique-1" class="w-full px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded shadow flex items-center justify-center transition-all mt-4" data-action="user-settings#refreshCoins">
-            <i class='fa-solid fa-rotate mr-2'></i> Обновить монеты
-          </button>
+          <% if policy(:admin).admin? %>
+            <button type="button" id="refresh-coins-btn-unique-1" class="w-full px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded shadow flex items-center justify-center transition-all mt-4" data-action="user-settings#refreshCoins">
+              <i class='fa-solid fa-rotate mr-2'></i> Обновить монеты
+            </button>
+          <% end %>
         <% end %>
       </div>
     </div>

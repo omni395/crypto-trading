@@ -7,6 +7,13 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable,
          :omniauthable, omniauth_providers: [:google_oauth2]
 
+  has_many :user_roles
+  has_many :roles, through: :user_roles
+
+  def has_role?(role_name)
+    roles.exists?(name: role_name)
+  end
+
   DEFAULT_SETTINGS = {
     "default_volume" => "300000",
     "default_deals" => "100000",
