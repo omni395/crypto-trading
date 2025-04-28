@@ -1,5 +1,5 @@
 <template>
-  <div class="container max-w-2xl min-w-2xl">
+  <div class="container">
     <!-- Добавляем индикатор загрузки -->
     <div v-if="loading" class="text-center text-gray-400 py-8">
       <i class="fas fa-spinner fa-spin"></i> Загрузка...
