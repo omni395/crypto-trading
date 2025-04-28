@@ -42,6 +42,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_27_132000) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "batch_api_url"
     t.string "price_key", default: "lastPrice", null: false
     t.string "volume_key", default: "volume", null: false
     t.string "change_key", default: "priceChangePercent", null: false
