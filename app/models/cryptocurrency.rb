@@ -20,4 +20,6 @@ class Cryptocurrency < ApplicationRecord
       all.distinct.pluck(:status)
     end
   end
+  
+  belongs_to :exchange, foreign_key: 'exchange', primary_key: 'slug', optional: true
 end

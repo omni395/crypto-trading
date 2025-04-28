@@ -1,17 +1,35 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
+// Дефолтные значения фильтров
+const DEFAULT_FILTERS = {
+  default_volume: "300000",
+  default_deals: "100000",
+  default_change: "2",
+  default_price_above: "0.01",
+  default_price_below: "5",
+  default_basecoin: "USDT",
+  default_exchange: "binance_spot",
+  default_quote_asset: "USDT",
+  default_status: "trading"
+}
+
 export const useFiltersStore = defineStore('filters', () => {
   // Все возможные фильтры пользователя
-  const filters = ref({})
+  const filters = ref({ ...DEFAULT_FILTERS }) // Инициализируем сразу дефолтными значениями
 
   function setFilters(newFilters) {
-    filters.value = { ...filters.value, ...newFilters }
+    filters.value = { ...DEFAULT_FILTERS, ...filters.value, ...newFilters }
   }
 
-  function resetFilters(defaults) {
-    filters.value = { ...defaults }
+  function resetFilters() {
+    filters.value = { ...DEFAULT_FILTERS }
   }
 
-  return { filters, setFilters, resetFilters }
+  // Добавляем геттер для получения текущих фильтров
+  function getCurrentFilters() {
+    return filters.value
+  }
+
+  return { filters, setFilters, resetFilters, getCurrentFilters, DEFAULT_FILTERS }
 })

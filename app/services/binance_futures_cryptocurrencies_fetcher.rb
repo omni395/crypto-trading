@@ -23,6 +23,9 @@ class BinanceFuturesCryptocurrenciesFetcher
     "
     api_symbols = []
 
+    # Находим биржу один раз перед циклом
+    exchange = Exchange.find_by!(slug: 'binance_futures')
+
     data['symbols'].each do |item|
       symbol = item['symbol']
       base_asset = item['baseAsset']
@@ -32,7 +35,14 @@ class BinanceFuturesCryptocurrenciesFetcher
 
       db_crypto = db_cryptos[symbol]
       if db_crypto.nil?
-        Cryptocurrency.create!(symbol: symbol, base_asset: base_asset, quote_asset: quote_asset, status: status, exchange: 'binance_futures')
+        # Новая монета - используем объект exchange вместо строки
+        Cryptocurrency.create!(
+          symbol: symbol,
+          base_asset: base_asset,
+          quote_asset: quote_asset,
+          status: status,
+          exchange: exchange
+        )
       else
         db_base, db_quote, db_status = db_crypto[1], db_crypto[2], db_crypto[3]
         if db_base != base_asset || db_quote != quote_asset || db_status != status
