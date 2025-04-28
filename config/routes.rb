@@ -12,9 +12,6 @@ Rails.application.routes.draw do
     end
   end
 
-  # Add health check route
-  get "up" => "rails/health#show", as: :rails_health_check
-
   # API
   namespace :api do
     resources :instruments, only: [:index] do
@@ -22,8 +19,15 @@ Rails.application.routes.draw do
         get :favorites
       end
     end
+    resources :dictionaries, only: [:index]
+    resources :dynamics, only: [:index] do
+      # collection do
+      #   post :refresh
+      # end
+    end
+    resources :favorites, only: [:index, :create, :destroy]
+    get 'exchange', to: 'exchange#index'
     resource :user_settings, only: [:show, :update], controller: 'user_settings'
-    post 'admin/refresh_binance', to: 'admin#refresh_binance'
   end
 
   namespace :admin do
@@ -31,4 +35,7 @@ Rails.application.routes.draw do
     resources :user_roles, only: [:index, :new, :create, :destroy]
     resources :exchanges
   end
+  
+  # Add health check route
+  get "up" => "rails/health#show", as: :rails_health_check
 end

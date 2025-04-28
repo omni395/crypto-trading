@@ -1,5 +1,15 @@
 <tr class="border-b border-gray-600 hover:bg-green-900 transition" data-crypto-row data-symbol="<%= @coin.symbol %>" data-exchange="<%= @coin.exchange %>">
-  <td class="p-3 font-semibold text-gray-100"><%= @coin.name || @coin.symbol %></td>
+  <td class="p-3 font-semibold text-gray-100 flex items-center gap-2">
+    <% asset = @coin.base_asset.to_s.downcase %>
+    <span class="relative w-[20px] h-[20px] inline-block align-middle">
+      <img src="https://cdn.jsdelivr.net/gh/vadimmalykhin/binance-icons/crypto/<%= asset %>.svg"
+           onerror="this.onerror=null;this.src='https://cryptoicons.org/api/icon/<%= asset %>/32';this.onerror=function(){this.style.display='none';this.nextElementSibling.style.display='inline-block';}"
+           alt="icon" width="20" height="20" loading="lazy"
+           class="inline-block align-middle rounded-full bg-gray-800 border border-gray-600" id="icon-<%= asset %>" />
+      <span style="display:none;position:absolute;left:0;top:0;" class="w-[20px] h-[20px] text-gray-500 fa-solid fa-circle-question align-middle"></span>
+    </span>
+    <span><%= @coin.base_asset || @coin.symbol %></span>
+  </td>
   <td class="p-3 font-mono text-gray-400"><%= @coin.symbol %></td>
   <td class="p-3 text-xs text-gray-300"><%= @coin.exchange %></td>
   <td class="p-3 text-xs text-gray-300" data-crypto-price>

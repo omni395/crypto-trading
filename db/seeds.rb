@@ -21,26 +21,31 @@ UserRole.find_or_create_by!(user: admin_user, role: admin_role)
 puts "[SEED] Админ-пользователь: #{admin_email} / #{admin_password} (роль admin)"
 
 
-
 # Seed exchanges for initial setup
-Exchange.create!(
-  [
-    {
-      name: 'Binance Spot',
-      slug: 'binance_spot',
-      api_url: 'https://api.binance.com/api/v3/ticker/24hr?symbol=',
-      market_type: 'spot',
-      status: 'active',
-      description: 'Binance main spot market'
-    },
-    {
-      name: 'Binance Futures',
-      slug: 'binance_futures',
-      api_url: 'https://fapi.binance.com/fapi/v1/ticker/24hr?symbol=',
-      market_type: 'futures',
-      status: 'active',
-      description: 'Binance main futures market'
-    }
-    # Добавьте сюда другие биржи по мере необходимости
-  ]
-)
+# Используем find_or_initialize_by + assign_attributes + save! для идемпотентности:
+# - Если биржа с таким slug уже есть, её атрибуты будут обновлены (name, api_url и др.)
+# - Если нет — создастся новая запись.
+# Это позволяет безопасно запускать сиды несколько раз без дублей и с актуализацией данных.
+[
+  {
+    name: 'Binance Spot',
+    slug: 'binance_spot',
+    api_url: 'https://api.binance.com/api/v3/ticker/24hr?symbol=',
+    market_type: 'spot',
+    status: 'active',
+    description: 'Binance main spot market'
+  },
+  {
+    name: 'Binance Futures',
+    slug: 'binance_futures',
+    api_url: 'https://fapi.binance.com/fapi/v1/ticker/24hr?symbol=',
+    market_type: 'futures',
+    status: 'active',
+    description: 'Binance main futures market'
+  }
+  # Добавьте сюда другие биржи по мере необходимости
+].each do |attrs|
+  exchange = Exchange.find_or_initialize_by(slug: attrs[:slug])
+  exchange.assign_attributes(attrs)
+  exchange.save!
+end

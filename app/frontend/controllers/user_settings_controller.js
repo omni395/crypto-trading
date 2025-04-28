@@ -1,10 +1,15 @@
-import { Controller } from "@hotwired/stimulus"
+import { Modal } from "flowbite";
 
 // Контроллер для кнопок "По дефолту" и "Обновить монеты"
 export default class extends Controller {
   static targets = [
     "defaultQuoteAsset",
     "defaultStatus",
+    "defaultVolume",
+    "defaultDeals",
+    "defaultChange",
+    "defaultPriceAbove",
+    "defaultPriceBelow",
     "defaultExchange"
   ];
 
@@ -69,12 +74,50 @@ export default class extends Controller {
   }
 
   connect() {
+    console.log('[UserSettings] Stimulus controller CONNECTED:', this.element);
+    // Логируем открытие модалки (когда появляется в DOM)
+    const modalEl = document.getElementById('settings-modal');
+    if (modalEl) {
+      console.log('[UserSettings] Модалка присутствует в DOM:', modalEl);
+      modalEl.addEventListener('show.tw.modal', () => {
+        console.log('[UserSettings] Модалка ОТКРЫТА (show.tw.modal)');
+      });
+      modalEl.addEventListener('hide.tw.modal', () => {
+        console.log('[UserSettings] Модалка ЗАКРЫТА (hide.tw.modal)');
+      });
+    } else {
+      console.log('[UserSettings] Модалка НЕ найдена в DOM при connect');
+    }
     const form = this.element.querySelector('form');
+    console.log('[UserSettings] Найден ли form внутри controller.element:', !!form, form);
     if (form) {
       form.addEventListener('ajax:success', () => {
+        console.log('[UserSettings] ajax:success event TRIGGERED');
         window.dispatchEvent(new CustomEvent('settings:updated'));
         console.log('[UserSettings] Событие settings:updated отправлено');
+        // Логируем попытку закрытия модалки
+        const modalEl = document.getElementById('settings-modal');
+        console.log('[UserSettings] Попытка найти модалку:', modalEl);
+        if (modalEl) {
+          let modal = Modal.getInstance(modalEl);
+          console.log('[UserSettings] Modal.getInstance:', modal);
+          if (!modal) {
+            modal = new Modal(modalEl);
+            console.log('[UserSettings] Новый инстанс Modal создан:', modal);
+          }
+          if (modal) {
+            modal.hide();
+            console.log('[UserSettings] Вызван modal.hide()');
+          } else {
+            console.log('[UserSettings] Не удалось создать инстанс Modal');
+          }
+        } else {
+          console.log('[UserSettings] Не найден элемент модалки с id settings-modal');
+        }
       });
+      console.log('[UserSettings] Подписка на ajax:success добавлена');
+    } else {
+      console.log('[UserSettings] Не найден form внутри controller.element');
     }
   }
 

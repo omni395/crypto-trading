@@ -9,7 +9,7 @@ class Api::InstrumentsController < ApplicationController
     filters = {}
     filters[:quote_asset] = settings["default_quote_asset"]
     filters[:status] = settings["default_status"]
-    filters[:exchange] = settings["default_exchange"]
+    filters[:exchange] = settings["exchange"]
     filters.compact!
 
     cryptocurrencies = Cryptocurrency.where(filters)

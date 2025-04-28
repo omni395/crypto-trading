@@ -5,6 +5,18 @@
   <div class="mb-2"><strong>Тип рынка:</strong> <%= @exchange.market_type %></div>
   <div class="mb-2"><strong>Статус:</strong> <%= @exchange.status == 'active' ? 'Активна' : 'Отключена' %></div>
   <div class="mb-2"><strong>Описание:</strong> <%= @exchange.description %></div>
+  <div class="mb-4">
+    <span class="font-semibold text-gray-400">Ключ для цены:</span>
+    <span class="text-white"><%= @exchange.price_key %></span>
+  </div>
+  <div class="mb-4">
+    <span class="font-semibold text-gray-400">Ключ для объёма:</span>
+    <span class="text-white"><%= @exchange.volume_key %></span>
+  </div>
+  <div class="mb-4">
+    <span class="font-semibold text-gray-400">Ключ для изменения (%):</span>
+    <span class="text-white"><%= @exchange.change_key %></span>
+  </div>
   <div class="mt-4 flex gap-2">
     <%= link_to 'Редактировать', edit_admin_exchange_path(@exchange), class: 'btn btn-secondary' %>
     <%= link_to 'Назад к списку', admin_exchanges_path, class: 'btn btn-light' %>

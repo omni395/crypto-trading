@@ -41,10 +41,7 @@ class Api::UserSettingsController < ApplicationController
     Rails.logger.info("[API] settings#update for user=#{current_user.id}, incoming=#{settings.inspect}")
     current_user.update!(settings: settings)
     Rails.logger.info("[API] settings#update after save user=#{current_user.id}, settings=#{current_user.settings.inspect}")
-    respond_to do |format|
-      format.html { redirect_to root_path, notice: 'Настройки успешно сохранены.' }
-      format.json { render json: current_user.settings }
-    end
+    render json: current_user.settings
   end
 
   private

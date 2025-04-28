@@ -15,9 +15,8 @@
         <span>Список криптовалют <i class="fa-brands fa-bitcoin"></i></span>
       </div>
       <%= render "components/search" %>
-      <turbo-frame id="instruments-frame" data-controller="instruments" data-instruments-url-value="/main/index">
-        <%= render InstrumentsComponent.new(cryptocurrencies: @cryptocurrencies) %>
-      </turbo-frame>
+      <div id="vue-instruments" data-filters='<%= current_user&.settings_with_defaults&.to_json || {}.to_json %>'></div>
+      <!-- Удалён turbo-frame и InstrumentsComponent: теперь список монет рендерится через Vue -->
     </div>
   </div>
-</div>
+</div> 

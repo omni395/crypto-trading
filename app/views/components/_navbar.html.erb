@@ -17,8 +17,8 @@
       <% if user_signed_in? %>
         <li>
           <button id="settings-btn" type="button"
-            data-modal-target="settings-modal"
-            data-modal-toggle="settings-modal"
+            data-modal-target="vue-settings-modal"
+            data-modal-toggle="vue-settings-modal"
             class="flex items-center justify-center p-2 rounded hover:bg-gray-600 focus:outline-none hover:cursor-pointer">
             <i class="fa-solid fa-gear text-xl text-gray-200"></i>
           </button>
@@ -59,5 +59,4 @@
     </ul>
   </div>
 </nav>
-<div id="settings-modal-root"></div>
-<%= render 'components/settings_modal' %>
+<div id="vue-settings-modal"></div>

@@ -10,7 +10,7 @@ class MainController < ApplicationController
     filters = {}
     filters[:quote_asset] = settings["default_quote_asset"]
     filters[:status] = settings["default_status"]
-    filters[:exchange] = settings["default_exchange"]
+    filters[:exchange] = settings["exchange"]
     filters.compact!
 
     if params[:q].present?
@@ -25,14 +25,14 @@ class MainController < ApplicationController
     @cryptocurrencies_count = @cryptocurrencies.size
 
     # Логирование
-    Rails.logger.info("[INSTRUMENTS_FRAME] index: Количество монет: #{@cryptocurrencies_count}")
+    Rails.logger.info("
+    [******]
+    [INSTRUMENTS_FRAME] index: Количество монет: #{@cryptocurrencies_count}
+    [******]")
 
-    # Ответ HTML и Turbo Stream
+    # Ответ только HTML (Turbo удалён)
     respond_to do |format|
-      format.html do
-      end
-      format.turbo_stream do
-      end
+      format.html
     end
   end
 end

@@ -11,12 +11,6 @@ gem "pg", "~> 1.1"
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
 
-# Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
-gem "turbo-rails"
-
-# Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
-gem "stimulus-rails"
-
 # Use Redis adapter to run Action Cable in production
 gem "redis", ">= 4.0.1"
 
@@ -61,7 +55,7 @@ gem "omniauth"
 gem "omniauth-google-oauth2"
 gem "pundit"
 gem "kaminari"
-gem "view_component"
+gem "view_component" # пока не используем.
 gem "active_decorator"
 gem "cssbundling-rails"
 gem "sidekiq"
