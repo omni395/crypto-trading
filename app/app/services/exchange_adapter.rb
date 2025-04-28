@@ -1,6 +1,4 @@
 class ExchangeAdapter
-  # ... existing code ...
-
   def self.fetch_tickers(exchange_slug, market_type, symbols)
     ex = Exchange.find_by(slug: exchange_slug, market_type: market_type, status: 'active')
     raise "Биржа не найдена или неактивна" unless ex

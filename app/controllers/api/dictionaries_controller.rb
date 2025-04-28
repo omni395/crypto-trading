@@ -5,6 +5,8 @@ class Api::DictionariesController < ApplicationController
 
   # GET /api/dictionaries
   def index
+    # Возвращает все возможные значения для справочников
+    base_assets = Cryptocurrency.distinct.pluck(:base_asset)
     quote_assets = Cryptocurrency.distinct.pluck(:quote_asset)
     statuses = Cryptocurrency.distinct.pluck(:status)
     market_types = Exchange.active.distinct.pluck(:market_type)
@@ -19,6 +21,7 @@ class Api::DictionariesController < ApplicationController
       }
     end
     render json: {
+      base_assets: base_assets,
       quote_assets: quote_assets,
       statuses: statuses,
       market_types: market_types,

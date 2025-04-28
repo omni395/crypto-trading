@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container max-w-2xl min-w-2xl">
     <!-- Добавляем индикатор загрузки -->
     <div v-if="loading" class="text-center text-gray-400 py-8">
       <i class="fas fa-spinner fa-spin"></i> Загрузка...
@@ -20,23 +20,11 @@
             Последнее обновление: {{ new Date().toLocaleTimeString() }}
           </div>
           <div class="text-xs">
-            Биржа: {{ instruments[0]?.exchange || 'Не указана' }}
+            Биржа: {{ instruments[0]?.exchange?.name || 'Не указана' }}
           </div>
         </div>
       </div>
-      
-      <!-- Отладочная информация -->
-      <div v-if="debug" class="bg-gray-800 p-4 rounded mb-4 text-xs font-mono">
-        <div v-for="(ins, index) in instruments" :key="index" class="mb-2">
-          <div class="text-green-400">Монета: {{ ins.symbol }}</div>
-          <div class="pl-4 text-gray-400">
-            <div>Цена: {{ ins.last_price }}</div>
-            <div>Объём: {{ ins.volume }}</div>
-            <div>Изменение: {{ ins.price_change_percent }}%</div>
-          </div>
-        </div>
-      </div>
-      
+            
       <!-- Список инструментов -->
       <div class="space-y-2">
         <Instrument 
@@ -102,29 +90,33 @@ async function toggleFavorite(instrumentId) {
   }
 }
 
-async function fetchInstruments() {
-  if (!store?.filters) {
-    console.error('Store filters not initialized')
-    return
-  }
-  
-  loading.value = true
-  error.value = null
+const fetchInstruments = async () => {
   try {
+    loading.value = true
+    error.value = null
+    
+    console.log('[Instruments] Начало запроса данных')
     const apiFilters = buildApiFilters(store.filters)
-    const params = new URLSearchParams(apiFilters).toString()
-    const res = await fetch(`/api/dynamics?${params}`)
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`)
-    }
-    const data = await res.json()
-    if (data.error) {
-      throw new Error(data.error)
-    }
-    instruments.value = data.instruments || []
+    console.log('[Instruments] Подготовленные фильтры:', apiFilters)
+    
+    const response = await fetch(`/api/dynamics?${new URLSearchParams(apiFilters)}`)
+    const data = await response.json()
+    
+    console.log('[Instruments] Ответ от сервера:', {
+      status: response.status,
+      ok: response.ok,
+      data: data
+    })
+    
+    instruments.value = data
+    
+    console.log('[Instruments] Данные после обработки:', {
+      total: instruments.value.length,
+      sample: instruments.value.slice(0, 3)
+    })
   } catch (e) {
-    error.value = `Ошибка при загрузке данных: ${e.message}`
-    console.error('Error fetching instruments:', e)
+    console.error('[Instruments] Ошибка при загрузке:', e)
+    error.value = 'Ошибка при загрузке данных'
   } finally {
     loading.value = false
   }

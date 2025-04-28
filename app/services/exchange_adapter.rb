@@ -117,6 +117,8 @@ class ExchangeAdapter
         data = JSON.parse(res.body)
         ticker = {
           symbol: symbol,
+          base_asset: base_asset,
+          quote_asset: quote_asset,
           last_price: data[price_key].to_f,
           volume: data[volume_key].to_f,
           price_change_percent: data[change_key].to_f,
