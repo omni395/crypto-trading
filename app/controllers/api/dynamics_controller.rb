@@ -4,16 +4,40 @@ class Api::DynamicsController < ApplicationController
   # GET /api/dynamics
   def index
     begin
+      Rails.logger.info("
+      [******]
+      DynamicsController: начало обработки запроса
+      Параметры фильтров:
+      - quote_asset: #{params[:quote_asset]}
+      - status: #{params[:status]}
+      - exchange: #{params[:exchange]}
+      - min_volume: #{params[:min_volume]}
+      - min_price: #{params[:min_price]}
+      - max_price: #{params[:max_price]}
+      - min_change: #{params[:min_change]}
+      [******]")
+  
       # Get cryptocurrencies based on filters
       cryptos = Cryptocurrency.where(
         quote_asset: params[:quote_asset],
         status: params[:status],
         exchange: params[:exchange]
       )
+      
+      Rails.logger.info("
+      [******]
+      DynamicsController: найдено криптовалют после базовой фильтрации: #{cryptos.size}
+      Символы: #{cryptos.pluck(:symbol).join(', ')}
+      [******]")
   
       # Get tickers from exchange
       tickers = ExchangeAdapter.fetch_tickers(params[:exchange], 'spot', cryptos.pluck(:symbol))
       
+      Rails.logger.info("
+      [******]
+      DynamicsController: получено тикеров от биржи: #{tickers&.size}
+      [******]")
+  
       # Filter and process tickers
       filtered_tickers = tickers.compact.select do |ticker|
         next false unless ticker[:volume].present? && ticker[:last_price].present?
@@ -22,11 +46,28 @@ class Api::DynamicsController < ApplicationController
         price = ticker[:last_price].to_f
         change = ticker[:price_change_percent].to_f.abs
         
-        volume >= params[:min_volume].to_f &&
+        passes = volume >= params[:min_volume].to_f &&
           price >= params[:min_price].to_f &&
           price <= params[:max_price].to_f &&
           change >= params[:min_change].to_f
+  
+        Rails.logger.info("
+        [******]
+        Проверка тикера #{ticker[:symbol]}:
+        - Объем: #{volume} >= #{params[:min_volume]} = #{volume >= params[:min_volume].to_f}
+        - Цена: #{price} >= #{params[:min_price]} && <= #{params[:max_price]} = #{price >= params[:min_price].to_f && price <= params[:max_price].to_f}
+        - Изменение: #{change} >= #{params[:min_change]} = #{change >= params[:min_change].to_f}
+        Прошел фильтры: #{passes}
+        [******]")
+  
+        passes
       end
+  
+      Rails.logger.info("
+      [******]
+      DynamicsController: итоговое количество тикеров после фильтрации: #{filtered_tickers.size}
+      Прошедшие символы: #{filtered_tickers.map { |t| t[:symbol] }.join(', ')}
+      [******]")
   
       render json: filtered_tickers
     rescue => e

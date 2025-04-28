@@ -50,12 +50,22 @@ class ExchangeAdapter
   private
 
   def self.fetch_batch_data(ex, symbols)
-    url = ex.batch_api_url % { symbols: symbols.join(',') }
-    Rails.logger.info("ExchangeAdapter: batch запрос к API: #{url}")
+    # Форматируем символы в нужный формат для API
+    formatted_symbols = symbols.map { |s| "\"#{s}\"" }.join(',')
+    url = ex.batch_api_url % { symbols: formatted_symbols }
+    
+    Rails.logger.info("
+    [******]
+    ExchangeAdapter: batch запрос к API: #{url}
+    [******]")
     
     response = Net::HTTP.get_response(URI(url))
     unless response.is_a?(Net::HTTPSuccess)
-      Rails.logger.error("ExchangeAdapter: ошибка batch API, статус: #{response.code}")
+      Rails.logger.error("
+      [******]
+      ExchangeAdapter: ошибка batch API, статус: #{response.code}
+      Тело ответа: #{response.body}
+      [******]")
       return []
     end
 

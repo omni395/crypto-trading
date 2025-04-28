@@ -15,6 +15,26 @@
       <!-- Статистика -->
       <div class="text-sm text-gray-400 mb-4">
         Найдено монет: {{ instruments.length }}
+        <div v-if="instruments.length > 0" class="mt-2">
+          <div class="text-xs">
+            Последнее обновление: {{ new Date().toLocaleTimeString() }}
+          </div>
+          <div class="text-xs">
+            Биржа: {{ instruments[0]?.exchange || 'Не указана' }}
+          </div>
+        </div>
+      </div>
+      
+      <!-- Отладочная информация -->
+      <div v-if="debug" class="bg-gray-800 p-4 rounded mb-4 text-xs font-mono">
+        <div v-for="(ins, index) in instruments" :key="index" class="mb-2">
+          <div class="text-green-400">Монета: {{ ins.symbol }}</div>
+          <div class="pl-4 text-gray-400">
+            <div>Цена: {{ ins.last_price }}</div>
+            <div>Объём: {{ ins.volume }}</div>
+            <div>Изменение: {{ ins.price_change_percent }}%</div>
+          </div>
+        </div>
       </div>
       
       <!-- Список инструментов -->
@@ -44,6 +64,7 @@ const store = useFiltersStore()
 const loading = ref(false)
 const error = ref(null)
 const instruments = ref([])
+const debug = ref(true) // Включаем режим отладки по умолчанию
 
 // Улучшенная функция построения фильтров
 function buildApiFilters(settings) {
@@ -111,6 +132,17 @@ async function fetchInstruments() {
 
 onMounted(fetchInstruments)
 watch(() => store.filters, fetchInstruments, { deep: true })
+watch(instruments, (newVal) => {
+  console.log('[Instruments] Обновление данных:', {
+    total: newVal.length,
+    data: newVal.map(i => ({
+      symbol: i.symbol,
+      price: i.last_price,
+      volume: i.volume,
+      change: i.price_change_percent
+    }))
+  })
+}, { deep: true })
 </script>
 
 <style scoped>
