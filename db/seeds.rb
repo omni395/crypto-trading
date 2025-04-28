@@ -24,7 +24,12 @@ puts "[SEED] Админ-пользователь: #{admin_email} / #{admin_passw
     batch_api_url: 'https://api.binance.com/api/v3/ticker/24hr?symbols=[%{symbols}]',
     market_type: 'spot',
     status: 'active',
-    description: 'Binance main spot market'
+    description: 'Binance main spot market',
+    price_key: 'lastPrice',
+    volume_key: 'volume',
+    change_key: 'priceChangePercent',
+    symbol_key: 'symbol',
+    trades_key: 'count'
   },
   {
     name: 'Binance Futures',
@@ -33,7 +38,12 @@ puts "[SEED] Админ-пользователь: #{admin_email} / #{admin_passw
     batch_api_url: 'https://fapi.binance.com/fapi/v1/ticker/24hr?symbols=[%{symbols}]',
     market_type: 'futures',
     status: 'active',
-    description: 'Binance main futures market'
+    description: 'Binance main futures market',
+    price_key: 'lastPrice',
+    volume_key: 'volume',
+    change_key: 'priceChangePercent',
+    symbol_key: 'symbol',
+    trades_key: 'count'
   }
   # Добавьте сюда другие биржи по мере необходимости
 ].each do |attrs|

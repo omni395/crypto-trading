@@ -78,6 +78,7 @@ class ExchangeAdapter
         last_price: item[ex.price_key].to_f,
         volume: item[ex.volume_key].to_f,
         price_change_percent: item[ex.change_key].to_f,
+        trades: item[ex.trades_key || 'count'],
         exchange: ex.slug,
         market_type: ex.market_type
       }
@@ -102,6 +103,7 @@ class ExchangeAdapter
     price_key = ex.price_key
     volume_key = ex.volume_key
     change_key = ex.change_key
+    trades_key = ex.trades_key
 
     results = symbols.map do |symbol|
       url = "#{url_template}#{symbol}"  # Изменено формирование URL
@@ -122,6 +124,7 @@ class ExchangeAdapter
           last_price: data[price_key].to_f,
           volume: data[volume_key].to_f,
           price_change_percent: data[change_key].to_f,
+          trades: data[trades_key || 'count'],
           exchange: ex.slug,
           market_type: ex.market_type
         }

@@ -47,6 +47,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_27_133000) do
     t.string "volume_key", default: "volume", null: false
     t.string "change_key", default: "priceChangePercent", null: false
     t.string "symbol_key", default: "symbol", null: false
+    t.string "trades_key", default: "count", null: false
     t.index ["slug"], name: "index_exchanges_on_slug", unique: true
   end
 

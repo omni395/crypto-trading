@@ -17,6 +17,8 @@
           <th class="px-4 py-2">Ключ для цены</th>
           <th class="px-4 py-2">Ключ для объёма</th>
           <th class="px-4 py-2">Ключ для изменения (%)</th>
+          <th class="px-4 py-2">Ключ для количества сделок</th>
+          <th class="px-4 py-2">Ключ для символа</th>
           <th class="p-3 text-right w-32">Действия</th>
         </tr>
       </thead>
@@ -32,6 +34,8 @@
             <td class="px-4 py-2"><%= exchange.price_key %></td>
             <td class="px-4 py-2"><%= exchange.volume_key %></td>
             <td class="px-4 py-2"><%= exchange.change_key %></td>
+            <td class="px-4 py-2"><%= exchange.trades_key %></td>
+            <td class="px-4 py-2"><%= exchange.symbol_key %></td>
             <td class="p-3 text-right w-32">
               <%= link_to edit_admin_exchange_path(exchange), class: 'text-blue-400 hover:text-blue-600 mr-2', title: 'Редактировать' do %>
                 <i class="fa-solid fa-pen-to-square"></i>
