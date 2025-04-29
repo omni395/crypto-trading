@@ -12,8 +12,17 @@ class Api::InstrumentsController < ApplicationController
     filters[:exchange] = settings["exchange"]
     filters.compact!
 
-    cryptocurrencies = Cryptocurrency.where(filters)
-    render json: { cryptocurrencies: cryptocurrencies }
+    # Сначала пытаемся получить из кеша
+    instruments = InstrumentsCacheService.fetch(filters)
+    if instruments.nil?
+      # Если нет в кеше — собираем и кешируем
+      instruments = InstrumentsCacheService.build_and_cache(filters)
+      Rails.logger.info "[Api::InstrumentsController] Кеш отсутствовал — данные собраны и закешированы"
+    else
+      Rails.logger.info "[Api::InstrumentsController] Данные взяты из кеша"
+    end
+
+    render json: { cryptocurrencies: instruments }
   end
 
   # GET /api/instruments/favorites
