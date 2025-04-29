@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col border-b border-gray-600 py-2 px-4 hover:bg-gray-700 transition">
+  <div class="flex flex-col border-b border-gray-600 py-2 hover:bg-gray-700 transition">
     <!-- Первая строка: иконка, название, процент изменения -->
     <div class="flex items-center justify-between">
       <div class="flex items-center">
@@ -34,11 +34,11 @@
     <div class="flex flex-col mt-1 ml-7 gap-0.5">
       <div class="flex items-center justify-between">
         <span class="text-xs text-gray-400">Объём:</span>
-        <span class="text-xs text-blue-300">{{ formatNumber(instrument.volume) }}</span>
+        <span class="text-xs" :style="{ color: '#8ec5fe' }">{{ formatNumber(instrument.volume) }}</span>
       </div>
       <div class="flex items-center justify-between">
         <span class="text-xs text-gray-400">Сделок:</span>
-        <span class="text-xs text-purple-300">{{ formatNumber(instrument.trades) }}</span>
+        <span class="text-xs" :style="{ color: '#c27bff' }">{{ formatNumber(instrument.trades) }}</span>
       </div>
     </div>
   </div>

@@ -37,37 +37,37 @@
       </div>
 
       <!-- Секция сортировки -->
-      <div class="sort-section flex justify-between items-center mb-4" style="max-width: 500px;">
+      <div class="sort-section flex justify-between items-center mb-4 mx-4" style="max-width: 500px;">
         <button class="sort-btn" @click="sortBy('alpha')" :class="{ active: sortKey === 'alpha' }" title="По алфавиту">
-          <i class="fas fa-sort-alpha-down"></i>
+          <i class="fas fa-sort-alpha-down" :style="{ color: '#008137' }"></i>
           <span v-if="sortTouched && sortKey === 'alpha'">
             <i v-if="sortAsc" class="fas fa-arrow-down ml-1 text-yellow-500 drop-shadow font-bold"></i>
             <i v-else class="fas fa-arrow-up ml-1 text-yellow-500 drop-shadow font-bold"></i>
           </span>
         </button>
         <button class="sort-btn" @click="sortBy('change')" :class="{ active: sortKey === 'change' }" title="Изменение в %">
-          <i class="fas fa-percent"></i>
+          <i class="fas fa-percent" :style="{ color: '#008137' }"></i>
           <span v-if="sortTouched && sortKey === 'change'">
             <i v-if="sortAsc" class="fas fa-arrow-down ml-1 text-yellow-500 drop-shadow font-bold"></i>
             <i v-else class="fas fa-arrow-up ml-1 text-yellow-500 drop-shadow font-bold"></i>
           </span>
         </button>
         <button class="sort-btn" @click="sortBy('volume')" :class="{ active: sortKey === 'volume' }" title="Объем">
-          <i class="fas fa-coins"></i>
+          <i class="fa-solid fa-chart-column" :style="{ color: '#008137' }"></i>
           <span v-if="sortTouched && sortKey === 'volume'">
             <i v-if="sortAsc" class="fas fa-arrow-down ml-1 text-yellow-500 drop-shadow font-bold"></i>
             <i v-else class="fas fa-arrow-up ml-1 text-yellow-500 drop-shadow font-bold"></i>
           </span>
         </button>
         <button class="sort-btn" @click="sortBy('trades')" :class="{ active: sortKey === 'trades' }" title="Количество сделок">
-          <i class="fas fa-exchange-alt"></i>
+          <i class="fa-solid fa-money-bill-trend-up" :style="{ color: '#008137' }"></i>
           <span v-if="sortTouched && sortKey === 'trades'">
             <i v-if="sortAsc" class="fas fa-arrow-down ml-1 text-yellow-500 drop-shadow font-bold"></i>
             <i v-else class="fas fa-arrow-up ml-1 text-yellow-500 drop-shadow font-bold"></i>
           </span>
         </button>
         <button class="sort-btn" @click="sortBy('price')" :class="{ active: sortKey === 'price' }" title="Цена">
-          <i class="fas fa-dollar-sign"></i>
+          <i class="fas fa-dollar-sign" :style="{ color: '#008137' }"></i>
           <span v-if="sortTouched && sortKey === 'price'">
             <i v-if="sortAsc" class="fas fa-arrow-down ml-1 text-yellow-500 drop-shadow font-bold"></i>
             <i v-else class="fas fa-arrow-up ml-1 text-yellow-500 drop-shadow font-bold"></i>
