@@ -163,6 +163,8 @@ async function saveSettings() {
     })
     if (!resp.ok) throw new Error('Ошибка сохранения настроек')
     toastr.success('Настройки сохранены!')
+    closeModal()
+    window.dispatchEvent(new CustomEvent('filters-updated'))
   } catch (e) {
     error.value = e.message
     toastr.error('Ошибка сохранения: ' + e.message)

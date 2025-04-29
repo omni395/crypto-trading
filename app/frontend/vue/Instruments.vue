@@ -165,6 +165,12 @@ watch(instruments, (newVal) => {
     }))
   })
 }, { deep: true })
+
+// --- Новый хэндлер для обновления инструментов при изменении фильтров ---
+window.addEventListener('filters-updated', async () => {
+  await store.loadUserFilters() // подтянуть новые фильтры из API
+  await fetchInstruments()
+})
 </script>
 
 <style scoped>
