@@ -6,8 +6,15 @@ import { useFiltersStore } from '../store/useFiltersStore';
 import App from '../vue/App.vue';
 import Instruments from '../vue/Instruments.vue';
 import SettingsModal from '../vue/SettingsModal.vue';
+import UserDropdown from '../vue/UserDropdown.vue';
 
-// Основные импорты
+// Монтирование дропдауна пользователя
+if (document.getElementById('vue-user-dropdown')) {
+  const app = createApp(UserDropdown);
+  app.mount('#vue-user-dropdown');
+}
+
+// Монтирование модалки настроек
 if (document.getElementById('vue-settings-modal')) {
   const pinia = createPinia();
   const app = createApp(SettingsModal);
@@ -16,6 +23,7 @@ if (document.getElementById('vue-settings-modal')) {
   app.mount('#vue-settings-modal');
 }
 
+// Монтирование основного приложения инструментов
 if (document.getElementById('vue-instruments')) {
   const userFilters = JSON.parse(document.getElementById('vue-instruments').dataset.filters || '{}');
   
@@ -32,16 +40,3 @@ if (document.getElementById('vue-instruments')) {
 }
 
 console.log('Vue entrypoint loaded');
-
-// Дефолтные значения фильтров
-const DEFAULT_FILTERS = {
-  default_volume: "300000",
-  default_deals: "100000",
-  default_change: "2",
-  default_price_above: "0.01",
-  default_price_below: "5",
-  default_basecoin: "USDT",
-  default_exchange: "Binance Spot",
-  default_quote_asset: "USDT",
-  default_status: "trading"
-};
