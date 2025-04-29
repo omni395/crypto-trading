@@ -29,12 +29,14 @@ class Api::DynamicsController < ApplicationController
         volume = ticker[:volume].to_f
         price = ticker[:last_price].to_f
         change = ticker[:price_change_percent].to_f.abs
+        trades = ticker[:trades].to_i
 
         passes = true
         passes &&= volume >= params[:min_volume].to_f if params[:min_volume].present?
         passes &&= price >= params[:min_price].to_f if params[:min_price].present?
         passes &&= price <= params[:max_price].to_f if params[:max_price].present?
         passes &&= change >= params[:min_change].to_f if params[:min_change].present?
+        passes &&= trades >= params[:min_deals].to_i if params[:min_deals].present?
 
         passes
       end
@@ -45,6 +47,9 @@ class Api::DynamicsController < ApplicationController
         crypto = cryptos.find { |c| c.symbol == ticker[:symbol] }
         build_instrument_data(crypto, ticker) if crypto
       end.compact
+
+      # Сортировка по алфавиту (A-Z)
+      instruments = instruments.sort_by { |ins| ins[:symbol].to_s.upcase }
 
       render json: instruments
     rescue => e

@@ -24,6 +24,44 @@
           </div>
         </div>
       </div>
+      <!-- Секция сортировки -->
+      <div class="sort-section flex justify-between items-center mb-4" style="max-width: 500px;">
+        <button class="sort-btn" @click="sortBy('alpha')" :class="{ active: sortKey === 'alpha' }" title="По алфавиту">
+          <i class="fas fa-sort-alpha-down"></i>
+          <span v-if="sortTouched && sortKey === 'alpha'">
+            <i v-if="sortAsc" class="fas fa-arrow-down ml-1 text-yellow-500 drop-shadow font-bold"></i>
+            <i v-else class="fas fa-arrow-up ml-1 text-yellow-500 drop-shadow font-bold"></i>
+          </span>
+        </button>
+        <button class="sort-btn" @click="sortBy('change')" :class="{ active: sortKey === 'change' }" title="Изменение в %">
+          <i class="fas fa-percent"></i>
+          <span v-if="sortTouched && sortKey === 'change'">
+            <i v-if="sortAsc" class="fas fa-arrow-down ml-1 text-yellow-500 drop-shadow font-bold"></i>
+            <i v-else class="fas fa-arrow-up ml-1 text-yellow-500 drop-shadow font-bold"></i>
+          </span>
+        </button>
+        <button class="sort-btn" @click="sortBy('volume')" :class="{ active: sortKey === 'volume' }" title="Объем">
+          <i class="fas fa-coins"></i>
+          <span v-if="sortTouched && sortKey === 'volume'">
+            <i v-if="sortAsc" class="fas fa-arrow-down ml-1 text-yellow-500 drop-shadow font-bold"></i>
+            <i v-else class="fas fa-arrow-up ml-1 text-yellow-500 drop-shadow font-bold"></i>
+          </span>
+        </button>
+        <button class="sort-btn" @click="sortBy('trades')" :class="{ active: sortKey === 'trades' }" title="Количество сделок">
+          <i class="fas fa-exchange-alt"></i>
+          <span v-if="sortTouched && sortKey === 'trades'">
+            <i v-if="sortAsc" class="fas fa-arrow-down ml-1 text-yellow-500 drop-shadow font-bold"></i>
+            <i v-else class="fas fa-arrow-up ml-1 text-yellow-500 drop-shadow font-bold"></i>
+          </span>
+        </button>
+        <button class="sort-btn" @click="sortBy('price')" :class="{ active: sortKey === 'price' }" title="Цена">
+          <i class="fas fa-dollar-sign"></i>
+          <span v-if="sortTouched && sortKey === 'price'">
+            <i v-if="sortAsc" class="fas fa-arrow-down ml-1 text-yellow-500 drop-shadow font-bold"></i>
+            <i v-else class="fas fa-arrow-up ml-1 text-yellow-500 drop-shadow font-bold"></i>
+          </span>
+        </button>
+      </div>
             
       <!-- Список инструментов -->
       <div class="space-y-2">
@@ -54,8 +92,33 @@ const error = ref(null)
 const instruments = ref([])
 const debug = ref(true) // Включаем режим отладки по умолчанию
 
-// Импортируем exchanges из SettingsModal (или грузим отдельно)
 const exchanges = ref([])
+
+// По умолчанию сортировка по алфавиту вверх
+const sortKey = ref('alpha')
+const sortAsc = ref(true)
+const sortTouched = ref(false) // Был ли пользовательский выбор сортировки
+
+function sortBy(key) {
+  if (!sortTouched.value) sortTouched.value = true
+  if (sortKey.value === key) {
+    sortAsc.value = !sortAsc.value
+  } else {
+    sortKey.value = key
+    sortAsc.value = key === 'alpha' // Для алфавита по умолчанию вверх, для остальных — вниз
+  }
+  instruments.value.sort((a, b) => {
+    let result = 0
+    if (key === 'change') result = b.price_change_percent - a.price_change_percent
+    if (key === 'volume') result = b.volume - a.volume
+    if (key === 'trades') result = b.trades - a.trades
+    if (key === 'price') result = b.last_price - a.last_price
+    if (key === 'alpha') result = a.symbol.localeCompare(b.symbol)
+    return sortAsc.value ? -result : result
+  })
+}
+
+// Импортируем exchanges из SettingsModal (или грузим отдельно)
 
 // Загружаем фильтры пользователя и exchanges при монтировании
 onMounted(async () => {
@@ -66,8 +129,7 @@ onMounted(async () => {
     const dicts = await dictsRes.json()
     exchanges.value = dicts.exchanges || []
   } catch (e) {
-    console.warn('[Instruments] Не удалось загрузить exchanges:', e)
-    exchanges.value = []
+    error.value = 'Ошибка при загрузке exchanges'
   }
   fetchInstruments()
 })
@@ -121,27 +183,13 @@ const fetchInstruments = async () => {
     loading.value = true
     error.value = null
     
-    console.log('[Instruments] Начало запроса данных')
     const apiFilters = buildApiFilters(store.filters)
-    console.log('[Instruments] Подготовленные фильтры:', apiFilters)
     
     const response = await fetch(`/api/dynamics?${new URLSearchParams(apiFilters)}`)
     const data = await response.json()
     
-    console.log('[Instruments] Ответ от сервера:', {
-      status: response.status,
-      ok: response.ok,
-      data: data
-    })
-    
     instruments.value = data
-    
-    console.log('[Instruments] Данные после обработки:', {
-      total: instruments.value.length,
-      sample: instruments.value.slice(0, 3)
-    })
   } catch (e) {
-    console.error('[Instruments] Ошибка при загрузке:', e)
     error.value = 'Ошибка при загрузке данных'
   } finally {
     loading.value = false
@@ -150,20 +198,10 @@ const fetchInstruments = async () => {
 
 // Логируем любые изменения фильтров
 watch(() => store.filters, (val) => {
-  console.log('[Instruments] Изменились фильтры:', val)
 }, { deep: true })
 
 watch(() => store.filters, fetchInstruments, { deep: true })
 watch(instruments, (newVal) => {
-  console.log('[Instruments] Обновление данных:', {
-    total: newVal.length,
-    data: newVal.map(i => ({
-      symbol: i.symbol,
-      price: i.last_price,
-      volume: i.volume,
-      change: i.price_change_percent
-    }))
-  })
 }, { deep: true })
 
 // --- Новый хэндлер для обновления инструментов при изменении фильтров ---
@@ -175,4 +213,30 @@ window.addEventListener('filters-updated', async () => {
 
 <style scoped>
 /**** Можно добавить стили для списка ****/
+.sort-section {
+  margin-bottom: 16px;
+}
+
+.sort-btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  background-color: #f7f7f7;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.sort-btn:hover {
+  background-color: #e7e7e7;
+}
+
+.sort-btn.active {
+  background-color: #4CAF50;
+  color: #fff;
+}
+
+.ml-1 {
+  margin-left: 4px;
+}
 </style>

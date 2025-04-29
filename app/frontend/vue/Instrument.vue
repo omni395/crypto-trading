@@ -8,8 +8,8 @@
             :src="`https://cdn.jsdelivr.net/gh/vadimmalykhin/binance-icons/crypto/${instrument.base_asset?.toLowerCase()}.svg`"
             @error="showFallback($event)"
             :alt="instrument.base_asset"
-            width="20"
-            height="20"
+            width="16"
+            height="16"
             loading="lazy"
             class="inline-block align-middle rounded-full bg-gray-800 border border-gray-600"
             :id="`icon-${instrument.base_asset?.toLowerCase()}`"
@@ -17,9 +17,9 @@
           />
           <i v-if="fallbackIcon" class="fa-solid fa-coins text-gray-500 align-middle"></i>
         </span>
-        <span class="font-mono text-lg text-white">{{ instrument.base_asset }}</span>
+        <span class="font-mono text-md text-white">{{ instrument.base_asset }}</span>
       </div>
-      <div class="text-lg" :class="percentClass(instrument.price_change_percent)">
+      <div class="text-md" :class="percentClass(instrument.price_change_percent)">
         {{ instrument.price_change_percent }}%
       </div>
     </div>
