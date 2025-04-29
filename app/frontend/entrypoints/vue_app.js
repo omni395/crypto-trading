@@ -6,7 +6,6 @@ import { useFiltersStore } from '../store/useFiltersStore';
 import App from '../vue/App.vue';
 import Instruments from '../vue/Instruments.vue';
 import SettingsModal from '../vue/SettingsModal.vue';
-import Toastr from '../vue/Toastr.vue';
 
 // Основные импорты
 if (document.getElementById('vue-settings-modal')) {

@@ -128,6 +128,7 @@ async function fetchUserSettings() {
     isAdmin.value = dicts.is_admin || false
   } catch (e) {
     error.value = e.message
+    toastr.error('Ошибка загрузки настроек: ' + e.message)
   } finally {
     loading.value = false
   }
@@ -144,6 +145,7 @@ function closeModal() {
 
 function resetToDefaults() {
   localSettings.value = { ...DEFAULT_SETTINGS }
+  toastr.info('Настройки сброшены к значениям по умолчанию')
 }
 
 async function saveSettings() {
@@ -159,12 +161,11 @@ async function saveSettings() {
       },
       body: JSON.stringify(localSettings.value)
     })
-    const result = await resp.json().catch(() => ({}))
-    closeModal()
-    toastr.show('Настройки успешно сохранены!', 'success')
+    if (!resp.ok) throw new Error('Ошибка сохранения настроек')
+    toastr.success('Настройки сохранены!')
   } catch (e) {
     error.value = e.message
-    toastr.show('Ошибка сохранения: ' + e.message, 'error')
+    toastr.error('Ошибка сохранения: ' + e.message)
   } finally {
     loading.value = false
   }
