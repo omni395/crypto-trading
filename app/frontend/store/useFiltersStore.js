@@ -42,7 +42,6 @@ export const useFiltersStore = defineStore('filters', () => {
         Object.entries(apiFilters).filter(([k, v]) => v !== undefined && v !== null)
       )
       filters.value = { ...DEFAULT_FILTERS, ...cleanApiFilters }
-      console.log('[FiltersStore] Загружены фильтры пользователя:', cleanApiFilters)
     } catch (e) {
       console.warn('[FiltersStore] Не удалось загрузить фильтры пользователя:', e)
       // Если ошибка — не сбрасываем filters, оставляем дефолты

@@ -13,13 +13,8 @@ class MainController < ApplicationController
     filters[:exchange] = settings["exchange"]
     filters.compact!
 
-    if params[:q].present?
-      @q = Cryptocurrency.ransack(params[:q])
-      @cryptocurrencies = @q.result.where(filters)
-    else
-      @q = Cryptocurrency.ransack({})
-      @cryptocurrencies = Cryptocurrency.where(filters)
-    end
+    # Поиск и ransack удалены — поиск теперь только через API/Vue
+    @cryptocurrencies = Cryptocurrency.where(filters)
 
     # Получить количество монет в списке
     @cryptocurrencies_count = @cryptocurrencies.size

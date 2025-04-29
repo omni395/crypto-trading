@@ -24,6 +24,18 @@
           </div>
         </div>
       </div>
+
+      <!-- Поле поиска монет -->
+      <div class="mb-2 flex justify-center">
+        <input
+          v-model="searchQuery"
+          type="text"
+          placeholder="Поиск монет по списку..."
+          class="coin-search__input text-md py-1 px-2 rounded border border-gray-300 focus:border-blue-400 focus:outline-none"
+          style="max-width:300px; height:32px;"
+        />
+      </div>
+
       <!-- Секция сортировки -->
       <div class="sort-section flex justify-between items-center mb-4" style="max-width: 500px;">
         <button class="sort-btn" @click="sortBy('alpha')" :class="{ active: sortKey === 'alpha' }" title="По алфавиту">
@@ -63,10 +75,10 @@
         </button>
       </div>
             
-      <!-- Список инструментов -->
+      <!-- Список инструментов с фильтрацией по поиску -->
       <div class="space-y-2">
         <Instrument 
-          v-for="ins in instruments" 
+          v-for="ins in filteredInstruments" 
           :key="ins.id" 
           :instrument="ins"
           @favorite="toggleFavorite"
@@ -178,6 +190,8 @@ async function toggleFavorite(instrumentId) {
   }
 }
 
+const searchQuery = ref('')
+
 const fetchInstruments = async () => {
   try {
     loading.value = true
@@ -195,6 +209,17 @@ const fetchInstruments = async () => {
     loading.value = false
   }
 }
+
+// computed: фильтрация по base_asset, symbol, name
+const filteredInstruments = computed(() => {
+  if (!searchQuery.value.trim()) return instruments.value
+  const q = searchQuery.value.trim().toLowerCase()
+  return instruments.value.filter(ins =>
+    (ins.base_asset && ins.base_asset.toLowerCase().includes(q)) ||
+    (ins.symbol && ins.symbol.toLowerCase().includes(q)) ||
+    (ins.name && ins.name.toLowerCase().includes(q))
+  )
+})
 
 // Логируем любые изменения фильтров
 watch(() => store.filters, (val) => {

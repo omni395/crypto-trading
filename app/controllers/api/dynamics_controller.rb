@@ -13,13 +13,19 @@ class Api::DynamicsController < ApplicationController
 
       # Ключ кеша и попытка достать сырые данные
       raw_tickers = InstrumentsCacheService.fetch(cache_filters)
+      # ГАРАНТИРУЕМ, что cryptos определён всегда
+      cryptos ||= Cryptocurrency.where(cache_filters).to_a
       unless raw_tickers
         # Получаем криптовалюты по базовым фильтрам
         cryptos = Cryptocurrency.where(cache_filters)
-        # Получаем тикеры с биржи
-        raw_tickers = ExchangeAdapter.fetch_tickers(params[:exchange], cryptos.pluck(:symbol))
-        # Сохраняем в кеш
-        InstrumentsCacheService.write(cache_filters, raw_tickers)
+        if cryptos.empty? || params[:exchange].blank?
+          raw_tickers = []
+        else
+          # Получаем тикеры с биржи
+          raw_tickers = ExchangeAdapter.fetch_tickers(params[:exchange], cryptos.pluck(:symbol))
+          # Сохраняем в кеш
+          InstrumentsCacheService.write(cache_filters, raw_tickers)
+        end
       end
 
       # Фильтрация по min_volume, min_price, max_price, min_change и т.д.
@@ -30,6 +36,7 @@ class Api::DynamicsController < ApplicationController
         price = ticker[:last_price].to_f
         change = ticker[:price_change_percent].to_f.abs
         trades = ticker[:trades].to_i
+        symbol = ticker[:symbol].to_s
 
         passes = true
         passes &&= volume >= params[:min_volume].to_f if params[:min_volume].present?
@@ -37,12 +44,10 @@ class Api::DynamicsController < ApplicationController
         passes &&= price <= params[:max_price].to_f if params[:max_price].present?
         passes &&= change >= params[:min_change].to_f if params[:min_change].present?
         passes &&= trades >= params[:min_deals].to_i if params[:min_deals].present?
-
         passes
       end
 
       # Формируем итоговую структуру для фронта
-      cryptos ||= Cryptocurrency.where(cache_filters).to_a
       instruments = filtered_tickers.map do |ticker|
         crypto = cryptos.find { |c| c.symbol == ticker[:symbol] }
         build_instrument_data(crypto, ticker) if crypto

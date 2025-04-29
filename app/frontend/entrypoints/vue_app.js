@@ -23,6 +23,7 @@ if (document.getElementById('vue-settings-modal')) {
   app.mount('#vue-settings-modal');
 }
 
+
 // Монтирование основного приложения инструментов
 if (document.getElementById('vue-instruments')) {
   const userFilters = JSON.parse(document.getElementById('vue-instruments').dataset.filters || '{}');

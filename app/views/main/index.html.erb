@@ -1,12 +1,10 @@
 <div class="flex flex-row min-h-[calc(100vh-4rem)] bg-gray-700 min-w-0">
   <!-- Левая часть: график -->
   <div class="flex-auto min-w-0 p-2">
-    <turbo-frame id="main-chart-frame">
       <%= render 'components/chart' %>
       <div class="mt-6">
         <!-- Дополнительные графики (плейсхолдер) -->
       </div>
-    </turbo-frame>
   </div>
   <!-- Правая часть: инструменты -->
   <div class="flex-shrink-0 w-1/5 min-w-[180px] max-w-[20vw] p-2 border-l border-gray-200" style="width:20vw; min-width:180px; max-width:20vw;">
@@ -14,9 +12,9 @@
       <div class="rounded shadow text-white mb-2 flex items-center justify-between">
         <span>Список криптовалют <i class="fa-brands fa-bitcoin"></i></span>
       </div>
-      <%= render "components/search" %>
+      <!-- Vue-компонент поиска монет -->
+      <div id="vue-coin-search"></div>
       <div id="vue-instruments" data-filters='<%= current_user&.settings_with_defaults&.to_json || {}.to_json %>'></div>
-      <!-- Удалён turbo-frame и InstrumentsComponent: теперь список монет рендерится через Vue -->
     </div>
   </div>
 </div> 
