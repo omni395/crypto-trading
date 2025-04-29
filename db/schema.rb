@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_04_27_133000) do
+ActiveRecord::Schema[7.1].define(version: 2025_04_28_203500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -37,7 +37,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_27_133000) do
     t.string "name", null: false
     t.string "slug", null: false
     t.string "api_url", null: false
-    t.string "market_type", null: false
     t.string "status", default: "active", null: false
     t.text "description"
     t.datetime "created_at", null: false

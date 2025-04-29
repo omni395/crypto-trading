@@ -1,9 +1,8 @@
 class Api::ExchangeController < ApplicationController
   # GET /api/exchange
-  # Параметры: exchange, market_type, symbols[] (массив), фильтры (min_volume, max_price, ...)
+  # Параметры: exchange, symbols[] (массив), фильтры (min_volume, max_price, ...)
   def index
     exchange = params[:exchange]
-    market_type = params[:market_type]
     symbols = Array(params[:symbols])
 
     # Пример фильтров
@@ -11,7 +10,7 @@ class Api::ExchangeController < ApplicationController
     max_price = params[:max_price]&.to_f
     min_change_percent = params[:min_change_percent]&.to_f
 
-    tickers = ExchangeAdapter.fetch_tickers(exchange, market_type, symbols)
+    tickers = ExchangeAdapter.fetch_tickers(exchange, symbols)
 
     # Применяем фильтры (можно вынести в отдельный сервис)
     filtered = tickers.select do |ticker|

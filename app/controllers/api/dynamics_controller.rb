@@ -12,7 +12,7 @@ class Api::DynamicsController < ApplicationController
       )
 
       # Get tickers from exchange
-      tickers = ExchangeAdapter.fetch_tickers(params[:exchange], 'spot', cryptos.pluck(:symbol))
+      tickers = ExchangeAdapter.fetch_tickers(params[:exchange], cryptos.pluck(:symbol))
 
       # Filter and process tickers
       filtered_tickers = tickers.compact.select do |ticker|
@@ -38,7 +38,8 @@ class Api::DynamicsController < ApplicationController
 
       render json: instruments
     rescue => e
-      render json: { error: e.message }, status: :internal_server_error
+      Rails.logger.error "[API::DynamicsController] ERROR: #{e.class}: #{e.message}\n#{e.backtrace.join("\n")}"
+      render json: { error: e.message, class: e.class.name, backtrace: e.backtrace[0..5] }, status: :internal_server_error
     end
   end
 
@@ -77,13 +78,14 @@ class Api::DynamicsController < ApplicationController
       quote_asset: crypto.quote_asset,
       status: crypto.status,
       name: crypto.name,
-      exchange: crypto.exchange,
-      market_type: crypto.exchange&.market_type,
-      last_price: ticker[:last_price],
-      volume: ticker[:volume],
-      trades: ticker[:trades],
-      price_change_percent: ticker[:price_change_percent],
-      is_favorite: current_user&.favorite_crypto?(crypto.id),
+      exchange: crypto.exchange&.slug,
+      exchange_name: crypto.exchange&.name,
+      last_price: ticker[:last_price].to_f,
+      volume: ticker[:volume].to_f,
+      trades: ticker[:trades].to_i,
+      price_change_percent: ticker[:price_change_percent].to_f,
+      # TODO: Реализовать логику favorites позже
+      is_favorite: current_user&.respond_to?(:favorite_crypto?) ? current_user.favorite_crypto?(crypto.id) : false,
       raw: {
         crypto: crypto.as_json,
         ticker: ticker.as_json

@@ -31,5 +31,18 @@ export const useFiltersStore = defineStore('filters', () => {
     return filters.value
   }
 
-  return { filters, setFilters, resetFilters, getCurrentFilters, DEFAULT_FILTERS }
+  async function loadUserFilters() {
+    try {
+      const res = await fetch('/api/user_settings')
+      if (!res.ok) throw new Error('Ошибка загрузки настроек пользователя')
+      const userSettings = await res.json()
+      setFilters(userSettings)
+      console.log('[FiltersStore] Загружены фильтры пользователя:', userSettings)
+    } catch (e) {
+      console.warn('[FiltersStore] Не удалось загрузить фильтры пользователя:', e)
+      resetFilters()
+    }
+  }
+
+  return { filters, setFilters, resetFilters, getCurrentFilters, DEFAULT_FILTERS, loadUserFilters }
 })

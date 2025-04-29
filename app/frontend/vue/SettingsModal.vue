@@ -47,10 +47,7 @@
               <div class="flex gap-2">
                 <input type="number" id="default_volume" min="0" placeholder="300000"
                   v-model.number="settings.default_volume"
-                  class="px-2 py-1 rounded bg-gray-800 text-white text-xs w-2/3">
-                <select v-model="settings.default_volume_currency" class="px-2 py-1 rounded bg-gray-800 text-white text-xs w-1/3">
-                  <option value="coin">монет/USD</option>
-                </select>
+                  class="px-2 py-1 rounded bg-gray-800 text-white text-xs w-full">
               </div>
             </div>
             <div class="mb-4">
@@ -143,7 +140,6 @@ onMounted(async () => {
       default_status: userSettings.default_status || (statuses.value[0] || ''),
       default_exchange: userSettings.default_exchange || (exchanges.value.find(ex => ex.name.toLowerCase().includes('spot'))?.name || exchanges.value[0]?.name || ''),
       default_volume: userSettings.default_volume ?? 300000,
-      default_volume_currency: userSettings.default_volume_currency || 'coin',
       default_deals: userSettings.default_deals ?? 100000,
       default_change: userSettings.default_change ?? 0,
       default_price_above: userSettings.default_price_above ?? 0.01,
@@ -162,16 +158,19 @@ async function saveSettings() {
   loading.value = true
   error.value = null
   try {
+    console.log('[SettingsModal] saveSettings: start', JSON.stringify(settings))
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-    await fetch('/api/user_settings', {
+    const resp = await fetch('/api/user_settings', {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
         'X-CSRF-Token': csrfToken
       },
-      body: JSON.stringify(settings.value)
+      body: JSON.stringify(settings)
     })
-    store.setFilters(settings.value)
+    const result = await resp.json().catch(() => ({}))
+    console.log('[SettingsModal] saveSettings: response', resp.status, result)
+    store.setFilters(settings)
     closeModal()
     toastr.show('Настройки успешно сохранены!', 'success')
   } catch (e) {
@@ -189,7 +188,6 @@ function resetToDefaults() {
     default_status: 'trading',
     default_exchange: exchanges.value.find(ex => ex.name.toLowerCase().includes('spot'))?.name || exchanges.value[0]?.name || '',
     default_volume: 300000,
-    default_volume_currency: 'coin',
     default_deals: 100000,
     default_change: 0,
     default_price_above: 0.01,

@@ -2,7 +2,6 @@
   <h1 class="text-2xl font-bold mb-4">Биржа: <%= @exchange.name %></h1>
   <div class="mb-2"><strong>Slug:</strong> <%= @exchange.slug %></div>
   <div class="mb-2"><strong>API URL:</strong> <%= @exchange.api_url %></div>
-  <div class="mb-2"><strong>Тип рынка:</strong> <%= @exchange.market_type %></div>
   <div class="mb-2"><strong>Статус:</strong> <%= @exchange.status == 'active' ? 'Активна' : 'Отключена' %></div>
   <div class="mb-2"><strong>Описание:</strong> <%= @exchange.description %></div>
   <div class="mb-4">

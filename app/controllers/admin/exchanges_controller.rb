@@ -45,7 +45,7 @@ class Admin::ExchangesController < ApplicationController
   end
 
   def exchange_params
-    params.require(:exchange).permit(:name, :slug, :api_url, :market_type, :status, :description)
+    params.require(:exchange).permit(:name, :slug, :api_url, :status, :description)
   end
 
   def authenticate_admin!

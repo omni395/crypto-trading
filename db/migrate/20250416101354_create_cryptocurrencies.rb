@@ -12,10 +12,9 @@ class CreateCryptocurrencies < ActiveRecord::Migration[7.1]
       t.string :exchange_url
       t.string :icon_url
       t.text :description
-      t.string :market_type, null: false, default: 'spot' # spot, futures
       t.timestamps
     end
     remove_index :cryptocurrencies, :symbol if index_exists?(:cryptocurrencies, :symbol)
-    add_index :cryptocurrencies, [:symbol, :market_type], unique: true
+    add_index :cryptocurrencies, [:symbol], unique: true
   end
 end

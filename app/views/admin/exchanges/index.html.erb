@@ -11,7 +11,6 @@
           <th class="p-3 text-left">ID</th>
           <th class="p-3 text-left">Название</th>
           <th class="p-3 text-left">Slug</th>
-          <th class="p-3 text-left">Тип рынка</th>
           <th class="p-3 text-left">API URL</th>
           <th class="p-3 text-left">Статус</th>
           <th class="px-4 py-2">Ключ для цены</th>
@@ -28,7 +27,6 @@
             <td class="p-3 font-mono text-gray-400"><%= exchange.id %></td>
             <td class="p-3 font-semibold"><%= exchange.name %></td>
             <td class="p-3"><%= exchange.slug %></td>
-            <td class="p-3 text-xs text-gray-300"><%= exchange.market_type %></td>
             <td class="p-3"><%= exchange.api_url %></td>
             <td class="p-3 text-xs"><%= exchange.status == 'active' ? 'Активна' : 'Отключена' %></td>
             <td class="px-4 py-2"><%= exchange.price_key %></td>

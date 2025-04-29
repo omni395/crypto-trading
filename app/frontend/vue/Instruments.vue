@@ -54,6 +54,12 @@ const error = ref(null)
 const instruments = ref([])
 const debug = ref(true) // Включаем режим отладки по умолчанию
 
+// Загружаем фильтры пользователя при монтировании
+onMounted(async () => {
+  await store.loadUserFilters()
+  fetchInstruments()
+})
+
 // Улучшенная функция построения фильтров
 function buildApiFilters(settings) {
   const filters = {
@@ -122,7 +128,11 @@ const fetchInstruments = async () => {
   }
 }
 
-onMounted(fetchInstruments)
+// Логируем любые изменения фильтров
+watch(() => store.filters, (val) => {
+  console.log('[Instruments] Изменились фильтры:', val)
+}, { deep: true })
+
 watch(() => store.filters, fetchInstruments, { deep: true })
 watch(instruments, (newVal) => {
   console.log('[Instruments] Обновление данных:', {
