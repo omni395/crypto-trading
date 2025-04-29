@@ -82,6 +82,7 @@
           :key="ins.id" 
           :instrument="ins"
           @favorite="toggleFavorite"
+          :sortKey="sortKey"
         />
       </div>
       
