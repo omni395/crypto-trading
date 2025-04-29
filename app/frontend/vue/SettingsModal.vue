@@ -298,7 +298,7 @@ function resetToDefaults() {
     default_exchange: exchanges.value.find(ex => ex.slug.toLowerCase().includes('spot'))?.slug || exchanges.value[0]?.slug || '',
     default_volume: 300000,
     default_deals: 100000,
-    default_change: 0,
+    default_change: 2,
     default_price_above: 0.01,
     default_price_below: 5
   })
