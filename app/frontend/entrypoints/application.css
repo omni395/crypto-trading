@@ -2,3 +2,24 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/* Кастомный скроллбар только для блока с классом .custom-scrollbar */
+.custom-scrollbar {
+    scrollbar-width: thin;              /* Firefox */
+    scrollbar-color: #008137 #23272f;   /* Firefox */
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+    background: #23272f;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #008137;
+    border-radius: 4px;
+    /* Визуальный отступ слева через box-shadow */
+    box-shadow: -15px 0 0 0 #23272f;
+}
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #00b050;
+  }

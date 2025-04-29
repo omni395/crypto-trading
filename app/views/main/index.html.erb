@@ -1,20 +1,4 @@
-<div class="flex flex-row min-h-[calc(100vh-4rem)] bg-gray-700 min-w-0">
-  <!-- Левая часть: график -->
-  <div class="flex-auto min-w-0 p-2">
-      <%= render 'components/chart' %>
-      <div class="mt-6">
-        <!-- Дополнительные графики (плейсхолдер) -->
-      </div>
-  </div>
-  <!-- Правая часть: инструменты -->
-  <div class="flex-shrink-0 w-1/5 min-w-[180px] max-w-[20vw] p-2 border-l border-gray-200" style="width:20vw; min-width:180px; max-width:20vw;">
-    <div>
-      <div class="rounded shadow text-white mb-2 flex items-center justify-between">
-        <span>Список криптовалют <i class="fa-brands fa-bitcoin"></i></span>
-      </div>
-      <!-- Vue-компонент поиска монет -->
-      <div id="vue-coin-search"></div>
-      <div id="vue-instruments" data-filters='<%= current_user&.settings_with_defaults&.to_json || {}.to_json %>'></div>
-    </div>
-  </div>
-</div> 
+<div class="flex flex-row min-h-0 bg-gray-700 min-w-0" style="height:calc(100vh - 88px);">
+  <!-- Весь layout теперь управляется Vue -->
+  <div id="vue-instruments" data-filters='<%= current_user&.settings_with_defaults&.to_json || {}.to_json %>' class="flex-auto min-w-0 p-0 w-full"></div>
+</div>

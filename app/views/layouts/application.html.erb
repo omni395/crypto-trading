@@ -17,11 +17,11 @@
     <%= vite_javascript_tag 'vue_app' %>
   </head>
 
-  <body class="bg-gray-700 min-h-screen" data-user-signed-in="<%= user_signed_in? %>">
+  <body class="bg-gray-700" data-user-signed-in="<%= user_signed_in? %>">
     <div class="mb-4">
       <%= render "components/navbar" %>
     </div>
-    <main class="p-4">
+    <main class="p-0">
       <%= yield %>
     </main>
   </body>
