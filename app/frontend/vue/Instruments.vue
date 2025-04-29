@@ -31,8 +31,8 @@
           v-model="searchQuery"
           type="text"
           placeholder="Поиск монет по списку..."
-          class="coin-search__input text-md py-1 px-2 rounded border border-gray-300 focus:border-blue-400 focus:outline-none"
-          style="max-width:300px; height:32px;"
+          class="coin-search__input text-md py-1 px-2 rounded border border-gray-300 focus:border-blue-400 focus:outline-none w-full"
+          style="height:32px;"
         />
       </div>
 

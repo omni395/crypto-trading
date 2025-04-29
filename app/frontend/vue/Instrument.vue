@@ -46,26 +46,22 @@
       </span>
     </div>
     </div>
-    <!-- Далее: объем, сделки -->
-    <div class="flex flex-col mt-1 ml-7 gap-0.5">
-      <div class="flex items-center justify-between">
-        <span class="text-xs text-gray-400">Объём:</span>
-        <span class="text-xs" :style="{
-          color: sortKey === 'volume' ? '#8ec5fe' : '#b8d4f8',
-          fontWeight: sortKey === 'volume' ? 'bold' : 'normal',
-          textDecoration: sortKey === 'volume' ? 'underline' : 'none',
-          opacity: sortKey === 'volume' ? 1 : 0.85
-        }">{{ formatNumber(instrument.volume) }}</span>
-      </div>
-      <div class="flex items-center justify-between">
-        <span class="text-xs text-gray-400">Сделок:</span>
-        <span class="text-xs" :style="{
-          color: sortKey === 'trades' ? '#c27bff' : '#e2cfff',
-          fontWeight: sortKey === 'trades' ? 'bold' : 'normal',
-          textDecoration: sortKey === 'trades' ? 'underline' : 'none',
-          opacity: sortKey === 'trades' ? 1 : 0.85
-        }">{{ formatNumber(instrument.trades) }}</span>
-      </div>
+    <!-- Объём и сделки в одну строку -->
+    <div class="flex items-center gap-4 mt-1 ml-7">
+      <span class="text-xs text-gray-400"><i class="fa-solid fa-chart-column"></i></span>
+      <span class="text-xs" :style="{
+        color: sortKey === 'volume' ? '#8ec5fe' : '#b8d4f8',
+        fontWeight: sortKey === 'volume' ? 'bold' : 'normal',
+        textDecoration: sortKey === 'volume' ? 'underline' : 'none',
+        opacity: sortKey === 'volume' ? 1 : 0.85
+      }">{{ formatNumber(instrument.volume) }}</span>
+      <span class="text-xs text-gray-400 ml-3"><i class="fa-solid fa-money-bill-trend-up"></i></span>
+      <span class="text-xs" :style="{
+        color: sortKey === 'trades' ? '#c27bff' : '#e2cfff',
+        fontWeight: sortKey === 'trades' ? 'bold' : 'normal',
+        textDecoration: sortKey === 'trades' ? 'underline' : 'none',
+        opacity: sortKey === 'trades' ? 1 : 0.85
+      }">{{ formatNumber(instrument.trades) }}</span>
     </div>
   </div>
 </template>
