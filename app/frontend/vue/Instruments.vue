@@ -20,7 +20,7 @@
             Последнее обновление: {{ new Date().toLocaleTimeString() }}
           </div>
           <div class="text-xs">
-            Биржа: {{ instruments[0]?.exchange?.name || 'Не указана' }}
+            Биржа: {{ currentExchangeName }}
           </div>
         </div>
       </div>
@@ -44,7 +44,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import { useFiltersStore } from '../store/useFiltersStore'
 import Instrument from './Instrument.vue'
 
@@ -54,10 +54,30 @@ const error = ref(null)
 const instruments = ref([])
 const debug = ref(true) // Включаем режим отладки по умолчанию
 
-// Загружаем фильтры пользователя при монтировании
+// Импортируем exchanges из SettingsModal (или грузим отдельно)
+const exchanges = ref([])
+
+// Загружаем фильтры пользователя и exchanges при монтировании
 onMounted(async () => {
   await store.loadUserFilters()
+  // Загружаем exchanges из /api/dictionaries
+  try {
+    const dictsRes = await fetch('/api/dictionaries')
+    const dicts = await dictsRes.json()
+    exchanges.value = dicts.exchanges || []
+  } catch (e) {
+    console.warn('[Instruments] Не удалось загрузить exchanges:', e)
+    exchanges.value = []
+  }
   fetchInstruments()
+})
+
+// Вычисляем имя биржи по slug из первого инструмента
+const currentExchangeName = computed(() => {
+  if (!instruments.value.length) return 'Не указана'
+  const slug = instruments.value[0]?.exchange
+  const found = exchanges.value.find(ex => ex.slug === slug)
+  return found?.name || slug || 'Не указана'
 })
 
 // Улучшенная функция построения фильтров

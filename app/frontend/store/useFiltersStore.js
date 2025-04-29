@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 // Дефолтные значения фильтров
-const DEFAULT_FILTERS = {
+export const DEFAULT_FILTERS = {
   default_volume: "300000",
   default_deals: "100000",
   default_change: "2",
@@ -19,7 +19,8 @@ export const useFiltersStore = defineStore('filters', () => {
   const filters = ref({ ...DEFAULT_FILTERS }) // Инициализируем сразу дефолтными значениями
 
   function setFilters(newFilters) {
-    filters.value = { ...DEFAULT_FILTERS, ...filters.value, ...newFilters }
+    // ГАРАНТИРОВАННО: всегда мержим с дефолтами!
+    filters.value = { ...DEFAULT_FILTERS, ...newFilters }
   }
 
   function resetFilters() {
@@ -34,13 +35,17 @@ export const useFiltersStore = defineStore('filters', () => {
   async function loadUserFilters() {
     try {
       const res = await fetch('/api/user_settings')
-      if (!res.ok) throw new Error('Ошибка загрузки настроек пользователя')
-      const userSettings = await res.json()
-      setFilters(userSettings)
-      console.log('[FiltersStore] Загружены фильтры пользователя:', userSettings)
+      if (!res.ok) throw new Error('Ошибка загрузки фильтров')
+      const apiFilters = await res.json()
+      // Берём только валидные значения (не undefined и не null)
+      const cleanApiFilters = Object.fromEntries(
+        Object.entries(apiFilters).filter(([k, v]) => v !== undefined && v !== null)
+      )
+      filters.value = { ...DEFAULT_FILTERS, ...cleanApiFilters }
+      console.log('[FiltersStore] Загружены фильтры пользователя:', cleanApiFilters)
     } catch (e) {
       console.warn('[FiltersStore] Не удалось загрузить фильтры пользователя:', e)
-      resetFilters()
+      // Если ошибка — не сбрасываем filters, оставляем дефолты
     }
   }
 
