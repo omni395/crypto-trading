@@ -1,7 +1,10 @@
 <template>
   <div
-    class="instrument-row"
-    :class="{ selected: selected, hovered: hovered }"
+    class="instrument-row transition-all duration-200 ease-in-out p-3 mb-2 rounded-lg"
+    :class="{
+      'selected-instrument': selected,
+      'hover-instrument': !selected
+    }"
     @mouseenter="hovered = true"
     @mouseleave="hovered = false"
   >
@@ -113,21 +116,26 @@ function formatNumber(val) {
 
 <style scoped>
 .instrument-row {
-  cursor: pointer;
-  border-radius: 8px;
-  margin-left: 8px;
-  margin-right: 8px;
-  padding: 8px 0;
-  border-bottom: 1px solid #374151;
-  background: transparent;
+  border: 1px solid transparent;
 }
-.instrument-row.selected {
+
+.selected-instrument {
   background: linear-gradient(90deg, #183f2f 0%, #1f513c 100%);
-  box-shadow: 0 0 0 2px #34d399;
-  border-color: #34d399;
+  border: 2px solid #34d399;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
+  position: relative;
+  z-index: 2;
 }
-.instrument-row.hovered:not(.selected) {
+
+.hover-instrument:hover {
   background: linear-gradient(90deg, #23272f 0%, #2e353f 100%);
-  box-shadow: 0 0 0 2px #34d39944;
+  border-color: rgba(52, 211, 153, 0.3);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Убираем конфликтующие стили */
+.selected-instrument:hover {
+  background: linear-gradient(90deg, #183f2f 0%, #1f513c 100%);
 }
 </style>

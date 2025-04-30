@@ -25,7 +25,7 @@
           <input
             v-model="searchQuery"
             type="text"
-            placeholder="Поиск монет по списку..."
+            placeholder="Поиск по списку..."
             class="coin-search__input text-md py-1 px-2 rounded border border-gray-300 focus:border-blue-400 focus:outline-none w-full"
             style="height:32px;"
           />
@@ -76,8 +76,9 @@
             @favorite="toggleFavorite"
             :sortKey="sortKey"
             :selected="selectedInstrument && selectedInstrument.id === ins.id"
-            @click="$emit('select-instrument', ins)"
-            class="cursor-pointer select-none w-full max-w-full"          />
+            @click="handleSelectInstrument(ins)"
+            class="cursor-pointer select-none w-full max-w-full"
+          />
         </div>
         <!-- Сообщение если нет данных -->
         <div v-if="!instruments.length" class="text-center text-gray-400 py-8">
@@ -198,6 +199,10 @@ const fetchInstruments = async () => {
     const data = await response.json()
     
     instruments.value = data
+    // Automatically select the first coin if available
+    if (data.length > 0 && props.selectedInstrument === null) {
+      emit('select-instrument', data[0])
+    }
   } catch (e) {
     error.value = 'Ошибка при загрузке данных'
   } finally {
@@ -238,6 +243,12 @@ const props = defineProps({
     default: null
   }
 })
+
+const emit = defineEmits(['select-instrument'])
+
+function handleSelectInstrument(ins) {
+  emit('select-instrument', ins)
+}
 </script>
 
 <style scoped>
