@@ -1,18 +1,19 @@
-import { defineConfig } from 'vite'
-import RubyPlugin from 'vite-plugin-ruby'
-import vue from '@vitejs/plugin-vue';
+import { defineConfig } from "vite";
+import ViteRails from "vite-plugin-rails";
+import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   plugins: [
+    tailwindcss(),
     RubyPlugin(),
-    vue(), // добавлен плагин для поддержки .vue файлов
-  ],
-  build: {
-    rollupOptions: {
-      input: {
-        application: 'app/frontend/entrypoints/application.js',
-        vue_app: 'app/frontend/entrypoints/vue_app.js',
+    ViteRails({
+      envVars: { RAILS_ENV: "development" },
+      envOptions: { defineOn: "import.meta.env" },
+      fullReload: {
+        additionalPaths: ["config/routes.rb", "app/views/**/*"],
+        delay: 300,
       },
-    },
-  },
-})
+    }),
+  ],
+  build: { sourcemap: false },
+});

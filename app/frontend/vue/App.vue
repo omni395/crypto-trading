@@ -3,12 +3,9 @@
     <!-- Левая часть: основная информация по монете -->
     <div class="flex-auto min-w-0 p-2">
       <MainView :instrument="selectedInstrument" />
-      <div class="mt-6">
-        <!-- Дополнительные графики (плейсхолдер) -->
-      </div>
     </div>
     <!-- Правая часть: инструменты -->
-    <div class="flex-shrink-0 w-1/5 min-w-[200px] max-w-[20vw] p-2 border-l border-gray-200" style="width:20vw; min-width:200px; max-width:20vw;">
+    <div class="flex-shrink-0 w-1/5 min-w-[200px] max-w-[16vw] p-2 border-l border-gray-200" style="width:16vw; min-width:200px; max-width:16vw;">
       <!--
       <div class="rounded shadow text-white mb-2 flex items-center justify-between">
         <span>Список криптовалют <i class="fa-brands fa-bitcoin"></i></span>

@@ -46,7 +46,8 @@ group :development do
   # gem "spring"  
 end
 
-gem "sassc-rails"
+#gem "sassc-rails"
+gem "tailwindcss-ruby"
 gem "tailwindcss-rails"
 gem "sprockets-rails"
 gem "haml-rails"

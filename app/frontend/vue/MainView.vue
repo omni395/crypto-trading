@@ -1,10 +1,45 @@
 <template>
-  <div class="main-view min-h-[320px]">
-    <div v-if="instrument" class="text-2xl font-bold text-white mb-4">
-      {{ instrument.base_asset }}
+  <div class="main-view">
+    <div v-if="instrument">
+      <div class="text-2xl text-white mb-2">
+        {{ instrument.base_asset }}
+      </div>
+      
+      <!-- Верхний ряд -->
+      <div class="flex gap-2 mb-2">
+        <!-- Основной график (2/3 ширины) -->
+        <div class="w-2/3 bg-gray-900">
+          <div class="text-white p-2">Основной график (5M)</div>
+          <div class="chart-area h-[380px]"></div>
+        </div>
+        
+        <!-- Правая колонка (1/3 ширины) -->
+        <div class="w-1/3 flex flex-col gap-2">
+          <div class="bg-gray-900 flex-1">
+            <div class="text-white p-2">Часовой график (1H)</div>
+            <div class="chart-area h-[190px]"></div>
+          </div>
+          <div class="bg-gray-900 flex-1">
+            <div class="text-white p-2">Дневной график (1D)</div>
+            <div class="chart-area h-[190px]"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Нижний ряд -->
+      <div class="flex gap-2">
+        <div class="w-1/2 bg-gray-900">
+          <div class="text-white p-2">Гистограмма 1</div>
+          <div class="chart-area h-[200px]"></div>
+        </div>
+        <div class="w-1/2 bg-gray-900">
+          <div class="text-white p-2">Гистограмма 2</div>
+          <div class="chart-area h-[200px]"></div>
+        </div>
+      </div>
     </div>
     <div v-else class="flex items-center justify-center h-full">
-      <i class="fa-solid fa-coins text-gray-400 text-6xl mx-auto mt-24" title="Выберите монету из списка справа"></i>
+      <i class="fa-solid fa-coins text-gray-400 text-6xl"></i>
     </div>
   </div>
 </template>
@@ -21,7 +56,10 @@ const props = defineProps({
 
 <style scoped>
 .main-view {
-  min-height: 320px;
-  position: relative;
+  height: 100%;
+}
+
+.chart-area {
+  width: 100%;
 }
 </style>
