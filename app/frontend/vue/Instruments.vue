@@ -13,11 +13,9 @@
       <div v-else class="flex flex-col h-full min-h-0">
         <!-- НЕскроллируемая часть -->
         <div class="text-sm text-gray-400 mb-4 shrink-0">
-          Найдено монет: {{ instruments.length }}
+          <span>Найдено монет: {{ instruments.length }}</span>
+          <span class="ml-2 text-xs">({{ new Date().toLocaleTimeString() }})</span>
           <div v-if="instruments.length > 0" class="mt-2">
-            <div class="text-xs">
-              Последнее обновление: {{ new Date().toLocaleTimeString() }}
-            </div>
             <div class="text-xs">
               Биржа: {{ currentExchangeName }}
             </div>
