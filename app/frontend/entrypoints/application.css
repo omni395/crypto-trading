@@ -1,9 +1,8 @@
-@import "tailwindcss";
-@import "flowbite/dist/flowbite.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@source "../../../app/views/**/*.html.erb";
-@source "../../../app/views/**/*.rb";
-@source "../../../app/helpers/**/*.rb";
+@import "flowbite/dist/flowbite.min.css";
 
 @layer components {
   .instrument-row {
@@ -31,10 +30,9 @@
   }
 }
 
-/* Кастомный скроллбар только для блока с классом .custom-scrollbar */
 .custom-scrollbar {
-  scrollbar-width: thin;              /* Firefox */
-  scrollbar-color: #008137 #23272f;   /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: #008137 #23272f;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
@@ -45,10 +43,4 @@
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background: #008137;
   border-radius: 8px;
-  /* Визуальный отступ слева через box-shadow */
-  box-shadow: -8px 0 0 0 #23272f;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #00b050;
 }

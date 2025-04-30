@@ -47,8 +47,8 @@ group :development do
 end
 
 #gem "sassc-rails"
-gem "tailwindcss-ruby"
-gem "tailwindcss-rails"
+#gem "tailwindcss-ruby"
+#gem "tailwindcss-rails"
 gem "sprockets-rails"
 gem "haml-rails"
 gem "devise"
