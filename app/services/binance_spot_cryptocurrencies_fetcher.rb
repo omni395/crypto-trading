@@ -6,20 +6,12 @@ class BinanceSpotCryptocurrenciesFetcher
   API_URL = 'https://api.binance.com/api/v3/exchangeInfo'
 
   def self.fetch_and_update!
-    Rails.logger.info "
-    [******]
-    [CryptoListing] Start update at #{Time.current}
-    [******]"
     uri = URI(API_URL)
     response = Net::HTTP.get(uri)
     data = JSON.parse(response)
 
     # Получаем текущие монеты из базы
     db_cryptos = Cryptocurrency.where(exchange: 'binance_spot').pluck(:symbol, :base_asset, :quote_asset, :status).index_by { |s, _, _, _| s }
-    Rails.logger.info "
-    [******]
-    [CryptoListing] SPOT: В базе монет: #{db_cryptos.size}
-    [******]"
     api_symbols = []
 
     # Находим биржу один раз перед циклом
@@ -50,19 +42,7 @@ class BinanceSpotCryptocurrenciesFetcher
       end
     end
 
-    Rails.logger.info "
-    [******]
-    [CryptoListing] SPOT: Получено из API: #{api_symbols.size} монет
-    [******]"
     # Деактивируем монеты, которых больше нет в API
     Cryptocurrency.where(exchange: 'binance_spot').where.not(symbol: api_symbols).update_all(status: 'inactive')
-    Rails.logger.info "
-    [******]
-    [CryptoListing] SPOT: Деактивировано: #{Cryptocurrency.where(exchange: 'binance_spot').where.not(symbol: api_symbols).count} монет
-    [******]"
-    Rails.logger.info "
-    [******]
-    [CryptoListing] Finish update at #{Time.current}
-    [******]"
   end
 end

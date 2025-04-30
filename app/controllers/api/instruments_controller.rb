@@ -17,9 +17,7 @@ class Api::InstrumentsController < ApplicationController
     if instruments.nil?
       # Если нет в кеше — собираем и кешируем
       instruments = InstrumentsCacheService.build_and_cache(filters)
-      Rails.logger.info "[Api::InstrumentsController] Кеш отсутствовал — данные собраны и закешированы"
     else
-      Rails.logger.info "[Api::InstrumentsController] Данные взяты из кеша"
     end
 
     render json: { cryptocurrencies: instruments }

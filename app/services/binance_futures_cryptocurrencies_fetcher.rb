@@ -6,21 +6,11 @@ class BinanceFuturesCryptocurrenciesFetcher
   API_URL = 'https://fapi.binance.com/fapi/v1/exchangeInfo'
 
   def self.fetch_and_update!
-    Rails.logger.info "
-    [******]
-    [CryptoListing:Futures] Start update at #{Time.current}
-    [******]
-    "
     uri = URI(API_URL)
     response = Net::HTTP.get(uri)
     data = JSON.parse(response)
 
     db_cryptos = Cryptocurrency.where(exchange: 'binance_futures').pluck(:symbol, :base_asset, :quote_asset, :status).index_by { |s, _, _, _| s }
-    Rails.logger.info "
-    [******]
-    [CryptoListing:Futures] В базе монет: #{db_cryptos.size}
-    [******]
-    "
     api_symbols = []
 
     # Находим биржу один раз перед циклом
@@ -51,22 +41,7 @@ class BinanceFuturesCryptocurrenciesFetcher
       end
     end
 
-    Rails.logger.info "
-    [******]
-    [CryptoListing:Futures] Получено из API: #{api_symbols.size} монет
-    [******]
-    "
     deactivated_count = Cryptocurrency.where(exchange: 'binance_futures').where.not(symbol: api_symbols).count
     Cryptocurrency.where(exchange: 'binance_futures').where.not(symbol: api_symbols).update_all(status: 'inactive')
-    Rails.logger.info "
-    [******]
-    [CryptoListing:Futures] Деактивировано: #{deactivated_count} монет
-    [******]
-    "
-    Rails.logger.info "
-    [******]
-    [CryptoListing:Futures] Finish update at #{Time.current}
-    [******]
-    "
   end
 end

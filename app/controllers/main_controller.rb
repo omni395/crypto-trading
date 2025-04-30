@@ -19,12 +19,6 @@ class MainController < ApplicationController
     # Получить количество монет в списке
     @cryptocurrencies_count = @cryptocurrencies.size
 
-    # Логирование
-    Rails.logger.info("
-    [******]
-    [INSTRUMENTS_FRAME] index: Количество монет: #{@cryptocurrencies_count}
-    [******]")
-
     # Ответ только HTML (Turbo удалён)
     respond_to do |format|
       format.html

@@ -10,7 +10,6 @@ class InstrumentsCacheJob < ApplicationJob
 
   def perform
     POPULAR_FILTERS.each do |filters|
-      Rails.logger.info "[InstrumentsCacheJob] Кешируем фильтры: #{filters.inspect}"
       # Получаем криптовалюты по базовым фильтрам
       cryptos = Cryptocurrency.where(filters)
       # Получаем тикеры с биржи

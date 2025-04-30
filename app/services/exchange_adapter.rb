@@ -7,7 +7,6 @@ class ExchangeAdapter
   PRICE_CACHE_TTL = 1.minute
 
   def self.fetch_tickers(exchange_slug, symbols)
-    Rails.logger.info("[******] ExchangeAdapter: начало fetch_tickers [******]")
 
     cached_data = fetch_from_cache(exchange_slug, symbols)
     cached_symbols = cached_data.keys
@@ -56,7 +55,6 @@ class ExchangeAdapter
     # Собираем все тикеры в исходном порядке symbols
     all_data = symbols.map { |symbol| cached_data[symbol] || fresh_data.find { |d| d[:symbol] == symbol } }.compact
 
-    Rails.logger.info("[******] ExchangeAdapter: завершение fetch_tickers [******]")
     all_data
   end
 
@@ -66,8 +64,6 @@ class ExchangeAdapter
     # Форматируем символы в нужный формат для API
     formatted_symbols = symbols.map { |s| "\"#{s}\"" }.join(',')
     url = ex.batch_api_url % { symbols: formatted_symbols }
-    
-    Rails.logger.info("[******] ExchangeAdapter: batch запрос к API: #{url} [******]")
     
     response = Net::HTTP.get_response(URI(url))
     unless response.is_a?(Net::HTTPSuccess)
@@ -95,14 +91,6 @@ class ExchangeAdapter
   end
 
   def self.fetch_individual_data(ex, symbols)
-    Rails.logger.info("[******] ExchangeAdapter: биржа найдена [******]")
-    Rails.logger.info("Конфигурация биржи:")
-    Rails.logger.info("- api_url: #{ex.api_url}")
-    Rails.logger.info("- price_key: #{ex.price_key}")
-    Rails.logger.info("- volume_key: #{ex.volume_key}")
-    Rails.logger.info("- change_key: #{ex.change_key}")
-    Rails.logger.info("- symbol_key: #{ex.symbol_key}")
-
     url_template = ex.api_url
     price_key = ex.price_key
     volume_key = ex.volume_key
@@ -112,7 +100,6 @@ class ExchangeAdapter
     results = symbols.map do |symbol|
       url = "#{url_template}#{symbol}"  # Изменено формирование URL
       begin
-        Rails.logger.info("ExchangeAdapter: запрос к API для #{symbol}: #{url}")
         res = Net::HTTP.get_response(URI(url))
         
         unless res.is_a?(Net::HTTPSuccess)
@@ -129,13 +116,6 @@ class ExchangeAdapter
           trades: data[trades_key || 'count'],
           exchange: ex.slug
         }
-
-        Rails.logger.info("[******] ExchangeAdapter: получены данные для #{symbol}:")
-        Rails.logger.info("- last_price: #{ticker[:last_price]}")
-        Rails.logger.info("- volume: #{ticker[:volume]}")
-        Rails.logger.info("- price_change_percent: #{ticker[:price_change_percent]}")
-        Rails.logger.info("[******]")
-
         ticker
       rescue => e
         Rails.logger.error("[******] ExchangeAdapter: ошибка при получении данных")
@@ -147,12 +127,6 @@ class ExchangeAdapter
         nil
       end
     end
-
-    Rails.logger.info("[******] ExchangeAdapter: завершение fetch_tickers")
-    Rails.logger.info("Обработано символов: #{symbols.size}")
-    Rails.logger.info("Успешно получено: #{results.compact.size}")
-    Rails.logger.info("[******]")
-
     results
   end
 

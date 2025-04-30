@@ -5,7 +5,6 @@ class Api::UserSettingsController < ApplicationController
   def show
     # Для незалогиненных отдаём дефолты
     if user_signed_in? && current_user
-      Rails.logger.info("[API] settings#show for user=#{current_user.id}, settings=#{current_user.settings.inspect}")
       render json: current_user.settings_with_defaults
     else
       render json: User::DEFAULT_SETTINGS
@@ -38,9 +37,7 @@ class Api::UserSettingsController < ApplicationController
       v.nil? || v == "" ? User::DEFAULT_SETTINGS.values[idx] : v
     end
 
-    Rails.logger.info("[API] settings#update for user=#{current_user.id}, incoming=#{settings.inspect}")
     current_user.update!(settings: settings)
-    Rails.logger.info("[API] settings#update after save user=#{current_user.id}, settings=#{current_user.settings.inspect}")
     render json: current_user.settings
   end
 
