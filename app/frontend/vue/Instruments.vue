@@ -73,11 +73,8 @@
             v-for="ins in filteredInstruments" 
             :key="ins.id" 
             :instrument="ins"
-            @favorite="toggleFavorite"
-            :sortKey="sortKey"
-            :selected="selectedInstrument && selectedInstrument.id === ins.id"
+            :selected="currentSelectedInstrument && currentSelectedInstrument.id === ins.id"
             @click="handleSelectInstrument(ins)"
-            class="cursor-pointer select-none w-full max-w-full"
           />
         </div>
         <!-- Сообщение если нет данных -->
@@ -98,14 +95,12 @@ const store = useFiltersStore()
 const loading = ref(false)
 const error = ref(null)
 const instruments = ref([])
-const debug = ref(true) // Включаем режим отладки по умолчанию
-
 const exchanges = ref([])
 
 // По умолчанию сортировка по алфавиту вверх
 const sortKey = ref('alpha')
 const sortAsc = ref(true)
-const sortTouched = ref(false) // Был ли пользовательский выбор сортировки
+const sortTouched = ref(false)
 
 function sortBy(key) {
   if (!sortTouched.value) sortTouched.value = true
@@ -199,9 +194,8 @@ const fetchInstruments = async () => {
     const data = await response.json()
     
     instruments.value = data
-    // Automatically select the first coin if available
-    if (data.length > 0 && props.selectedInstrument === null) {
-      emit('select-instrument', data[0])
+    if (data.length > 0 && !currentSelectedInstrument.value) {
+      handleSelectInstrument(data[0])
     }
   } catch (e) {
     error.value = 'Ошибка при загрузке данных'
@@ -210,7 +204,6 @@ const fetchInstruments = async () => {
   }
 }
 
-// computed: фильтрация по base_asset, symbol, name
 const filteredInstruments = computed(() => {
   if (!searchQuery.value.trim()) return instruments.value
   const q = searchQuery.value.trim().toLowerCase()
@@ -221,21 +214,14 @@ const filteredInstruments = computed(() => {
   )
 })
 
-// Логируем любые изменения фильтров
-watch(() => store.filters, (val) => {
-}, { deep: true })
-
+// Убираем пустые watch
 watch(() => store.filters, fetchInstruments, { deep: true })
-watch(instruments, (newVal) => {
-}, { deep: true })
 
-// --- Новый хэндлер для обновления инструментов при изменении фильтров ---
 window.addEventListener('filters-updated', async () => {
-  await store.loadUserFilters() // подтянуть новые фильтры из API
+  await store.loadUserFilters()
   await fetchInstruments()
 })
 
-// Получаем выбранный инструмент из родителя через пропс
 const props = defineProps({
   selectedInstrument: {
     type: Object,
@@ -246,7 +232,10 @@ const props = defineProps({
 
 const emit = defineEmits(['select-instrument'])
 
+const currentSelectedInstrument = ref(null)
+
 function handleSelectInstrument(ins) {
+  currentSelectedInstrument.value = ins
   emit('select-instrument', ins)
 }
 </script>

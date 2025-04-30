@@ -8,7 +8,7 @@
       </div>
     </div>
     <!-- Правая часть: инструменты -->
-    <div class="flex-shrink-0 w-1/5 min-w-[180px] max-w-[15vw] p-2 border-l border-gray-200" style="width:15vw; min-width:180px; max-width:15vw;">
+    <div class="flex-shrink-0 w-1/5 min-w-[200px] max-w-[20vw] p-2 border-l border-gray-200" style="width:20vw; min-width:200px; max-width:20vw;">
       <!--
       <div class="rounded shadow text-white mb-2 flex items-center justify-between">
         <span>Список криптовалют <i class="fa-brands fa-bitcoin"></i></span>

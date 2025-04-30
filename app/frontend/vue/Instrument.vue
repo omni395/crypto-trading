@@ -1,6 +1,6 @@
 <template>
   <div
-    class="instrument-row transition-all duration-200 ease-in-out p-3 mb-2 rounded-lg"
+    class="instrument-row mr-2 mt-2 p-2 rounded-md"
     :class="{
       'selected-instrument': selected,
       'hover-instrument': !selected
@@ -38,7 +38,7 @@
         }">{{ instrument.price_change_percent }}%</span>
       </div>
     </div>
-    <!-- Вторая строка: изменение и котируемая монета -->
+    <!-- Вторая строка: цена и котируемая монета -->
     <div class="flex items-center justify-between pr-3">
       <div class="text-xs text-gray-400 ml-7">{{ instrument.quote_asset }}</div>
       <div class="flex items-center justify-between ml-7 mt-0.5">
@@ -54,22 +54,26 @@
         </span>
       </div>
     </div>
-    <!-- Объём и сделки в одну строку -->
-    <div class="flex items-center gap-4 mt-1 ml-7 pr-3">
-      <span class="text-xs text-gray-400"><i class="fa-solid fa-chart-column"></i></span>
-      <span class="text-xs" :style="{
-        color: sortKey === 'volume' ? '#8ec5fe' : '#b8d4f8',
-        fontWeight: sortKey === 'volume' ? 'bold' : 'normal',
-        textDecoration: sortKey === 'volume' ? 'underline' : 'none',
-        opacity: sortKey === 'volume' ? 1 : 0.85
-      }">{{ formatNumber(instrument.volume) }}</span>
-      <span class="text-xs text-gray-400 ml-3"><i class="fa-solid fa-money-bill-trend-up"></i></span>
-      <span class="text-xs" :style="{
-        color: sortKey === 'trades' ? '#c27bff' : '#e2cfff',
-        fontWeight: sortKey === 'trades' ? 'bold' : 'normal',
-        textDecoration: sortKey === 'trades' ? 'underline' : 'none',
-        opacity: sortKey === 'trades' ? 1 : 0.85
-      }">{{ formatNumber(instrument.trades) }}</span>
+    <!-- Третья строка: Объём и сделки в одну строку -->
+    <div class="flex mt-1 items-center justify-between pr-3">
+      <div>
+        <span class="text-xs text-gray-400 mr-1"><i class="fa-solid fa-chart-column"></i></span>
+        <span class="text-xs" :style="{
+          color: sortKey === 'volume' ? '#8ec5fe' : '#b8d4f8',
+          fontWeight: sortKey === 'volume' ? 'bold' : 'normal',
+          textDecoration: sortKey === 'volume' ? 'underline' : 'none',
+          opacity: sortKey === 'volume' ? 1 : 0.85
+        }">{{ formatNumber(instrument.volume) }}</span>
+      </div>
+      <div>
+        <span class="text-xs text-gray-400 mr-1"><i class="fa-solid fa-money-bill-trend-up"></i></span>
+        <span class="text-xs" :style="{
+          color: sortKey === 'trades' ? '#c27bff' : '#e2cfff',
+          fontWeight: sortKey === 'trades' ? 'bold' : 'normal',
+          textDecoration: sortKey === 'trades' ? 'underline' : 'none',
+          opacity: sortKey === 'trades' ? 1 : 0.85
+        }">{{ formatNumber(instrument.trades) }}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -93,7 +97,6 @@ const props = defineProps({
 })
 
 const hovered = ref(false)
-// fallbackIcon определяет, нужно ли показывать иконку-заглушку
 const fallbackIcon = ref(false)
 
 function showFallback(e) {
