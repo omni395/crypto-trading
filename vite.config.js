@@ -5,7 +5,6 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   plugins: [
     tailwindcss(),
-    RubyPlugin(),
     ViteRails({
       envVars: { RAILS_ENV: "development" },
       envOptions: { defineOn: "import.meta.env" },
