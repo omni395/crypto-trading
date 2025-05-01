@@ -4,7 +4,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
-import { createChart } from 'lightweight-charts'
+import { createChart, version as lwcVersion } from 'lightweight-charts'
 import axios from 'axios'
 
 const props = defineProps({
@@ -63,19 +63,17 @@ function handleResize() {
 }
 
 onMounted(() => {
+  console.log('Lightweight Charts version:', lwcVersion)
   chart = createChart(chartContainer.value, {
     ...chartOptions,
     width: chartContainer.value.clientWidth,
     height: chartContainer.value.clientHeight,
   })
 
-  console.log('Chart instance:', chart)
-  console.log('ChartContainer:', chartContainer.value)
-  if (typeof chart.addCandlestickSeries !== 'function') {
-    console.error('addCandlestickSeries is not a function on chart:', chart)
+  candlestickSeries = chart.addSeries(candlestickSeries, seriesOptions)
+  if (candlestickSeries) {
+    candlestickSeries.setData(response.data)
   }
-
-  candlestickSeries = chart.addSeries('candlestick', seriesOptions)
 
   fetchChartData()
 
