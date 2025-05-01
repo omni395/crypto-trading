@@ -1,6 +1,7 @@
 class Admin::ExchangesController < ApplicationController
   before_action :set_exchange, only: %i[show edit update destroy]
-  before_action :authenticate_admin!
+  before_action :authenticate_user!
+  before_action :authorize_admin!
 
   def index
     @exchanges = Exchange.all.order(:name)
@@ -48,7 +49,7 @@ class Admin::ExchangesController < ApplicationController
     params.require(:exchange).permit(:name, :slug, :api_url, :status, :description, :price_key, :volume_key, :change_key, :trades_key, :symbol_key, :chart_url)
   end
 
-  def authenticate_admin!
-    # TODO: Реализовать проверку роли админа, как в контроллерах ролей
+  def authorize_admin!
+    authorize :admin, :admin? # Теперь используем универсальную проверку админских прав
   end
 end
