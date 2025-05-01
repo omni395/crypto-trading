@@ -1,4 +1,4 @@
-class CreateExchanges < ActiveRecord::Migration[7.0]
+class CreateExchanges < ActiveRecord::Migration[8.0]
   def change
     create_table :exchanges do |t|
       t.string :name, null: false

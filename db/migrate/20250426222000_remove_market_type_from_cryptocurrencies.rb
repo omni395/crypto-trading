@@ -1,4 +1,4 @@
-class RemoveMarketTypeFromCryptocurrencies < ActiveRecord::Migration[7.1]
+class RemoveMarketTypeFromCryptocurrencies < ActiveRecord::Migration[8.0]
   def change
     remove_column :cryptocurrencies, :market_type, :string if column_exists?(:cryptocurrencies, :market_type)
     if index_exists?(:cryptocurrencies, [:symbol, :market_type])
