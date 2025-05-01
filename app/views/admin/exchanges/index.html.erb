@@ -5,21 +5,23 @@
   </h1>
   <%= link_to 'Добавить биржу', new_admin_exchange_path, class: 'bg-blue-600 text-white px-2 py-1 rounded mb-5 inline-block shadow hover:bg-blue-700 transition' %>
   <div class="overflow-x-auto rounded-lg shadow border border-gray-600 bg-gray-800 mt-4">
-    <table class="w-full text-xs text-gray-200">
+    <table class="w-full text-xs text-gray-200 overflow-hidden">
       <thead>
         <tr class="bg-gray-700 text-gray-300 uppercase text-xs tracking-wider">
           <th class="p-3 text-left">ID</th>
           <th class="p-3 text-left">Название</th>
           <th class="p-3 text-left">Slug</th>
           <th class="p-3 text-left">API URL</th>
+          <th class="p-3 text-left">BATCH API URL</th>
+          <th class="p-3 text-left">CHART URL</th>
           <th class="p-3 text-left">Статус</th>
           <th class="px-4 py-2">Ключ для цены</th>
           <th class="px-4 py-2">Ключ для объёма</th>
           <th class="px-4 py-2">Ключ для изменения (%)</th>
           <th class="px-4 py-2">Ключ для количества сделок</th>
           <th class="px-4 py-2">Ключ для символа</th>
-          <th class="p-3 text-right w-32">Действия</th>
-        </tr>
+          <th class="p-3 text-right w-32"></th>
+        </tr> 
       </thead>
       <tbody>
         <% @exchanges.each do |exchange| %>
@@ -27,14 +29,19 @@
             <td class="p-3 font-mono text-gray-400"><%= exchange.id %></td>
             <td class="p-3 font-semibold"><%= exchange.name %></td>
             <td class="p-3"><%= exchange.slug %></td>
-            <td class="p-3"><%= exchange.api_url %></td>
-            <td class="p-3 text-xs"><%= exchange.status == 'active' ? 'Активна' : 'Отключена' %></td>
+            <td class="p-3 break-all"><%= exchange.api_url %></td>
+            <td class="p-3 break-all"><%= exchange.batch_api_url %></td>
+            <td class="p-3 break-all"><%= exchange.chart_url %></td>
+            <td class="p-3 text-xs text-ellipsis overflow-hidden"><%= exchange.status == 'active' ? 'Активна' : 'Отключена' %></td>
             <td class="px-4 py-2"><%= exchange.price_key %></td>
             <td class="px-4 py-2"><%= exchange.volume_key %></td>
             <td class="px-4 py-2"><%= exchange.change_key %></td>
             <td class="px-4 py-2"><%= exchange.trades_key %></td>
             <td class="px-4 py-2"><%= exchange.symbol_key %></td>
             <td class="p-3 text-right w-32">
+              <%= link_to admin_exchange_path(exchange), class: 'text-grreen-400 hover:text-green-600 mr-2', title: 'Просмотреть' do %>
+                <i class="fa-solid fa-eye"></i>
+              <% end %>
               <%= link_to edit_admin_exchange_path(exchange), class: 'text-blue-400 hover:text-blue-600 mr-2', title: 'Редактировать' do %>
                 <i class="fa-solid fa-pen-to-square"></i>
               <% end %>

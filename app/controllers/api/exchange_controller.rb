@@ -26,4 +26,19 @@ class Api::ExchangeController < ApplicationController
   rescue => e
     render json: { error: e.message }, status: 500
   end
+
+  # GET /api/exchange/chart_data
+  # Параметры: exchange, symbol, interval
+  def chart_data
+    exchange = params[:exchange]
+    symbol = params[:symbol]
+    interval = params[:interval] || '1m' # Интервал по умолчанию
+
+    begin
+      chart_data = ExchangeAdapter.fetch_chart_data(exchange, symbol, interval)
+      render json: { chart_data: chart_data }
+    rescue => e
+      render json: { error: e.message }, status: 500
+    end
+  end
 end

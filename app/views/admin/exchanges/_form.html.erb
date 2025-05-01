@@ -12,7 +12,9 @@
           <% end %>
         </ul>
       </div>
-    <% end %>
+    <% end %> 
+
+    <!-- Основная информация -->
     <div class="mx-4">
       <%= form.label :name, 'Название биржи', class: 'block mb-2 text-sm text-gray-300' %>
       <%= form.text_field :name, class: 'px-3 py-2 rounded bg-gray-800 text-white w-full text-sm focus:ring-2 focus:ring-blue-500' %>
@@ -22,10 +24,6 @@
       <%= form.text_field :slug, class: 'px-3 py-2 rounded bg-gray-800 text-white w-full text-sm focus:ring-2 focus:ring-blue-500' %>
     </div>
     <div class="mx-4">
-      <%= form.label :api_url, 'API URL', class: 'block mb-2 text-sm text-gray-300' %>
-      <%= form.text_field :api_url, class: 'px-3 py-2 rounded bg-gray-800 text-white w-full text-sm focus:ring-2 focus:ring-blue-500' %>
-    </div>
-    <div class="mx-4">
       <%= form.label :status, 'Статус', class: 'block mb-2 text-sm text-gray-300' %>
       <%= form.select :status, [['Активна', 'active'], ['Отключена', 'disabled']], {}, class: 'px-3 py-2 rounded bg-gray-800 text-white w-full text-sm' %>
     </div>
@@ -33,6 +31,22 @@
       <%= form.label :description, 'Описание', class: 'block mb-2 text-sm text-gray-300' %>
       <%= form.text_area :description, class: 'px-3 py-2 rounded bg-gray-800 text-white w-full text-sm' %>
     </div>
+
+    <!-- URL -->
+    <div class="mx-4">
+      <%= form.label :api_url, 'API URL', class: 'block mb-2 text-sm text-gray-300' %>
+      <%= form.text_field :api_url, class: 'px-3 py-2 rounded bg-gray-800 text-white w-full text-sm focus:ring-2 focus:ring-blue-500' %>
+    </div>
+    <div class="mx-4">
+    <%= form.label :batch_api_url, 'BATCH API URL (пакетная загрузка)', class: 'block mb-2 text-sm text-gray-300' %>
+    <%= form.text_field :batch_api_url, class: 'px-3 py-2 rounded bg-gray-800 text-white w-full text-sm focus:ring-2 focus:ring-blue-500' %>
+  </div>
+    <div class="mx-4">
+      <%= form.label :chart_url, 'CHART URL', class: 'block mb-2 text-sm text-gray-300' %>
+      <%= form.text_field :chart_url, class: 'px-3 py-2 rounded bg-gray-800 text-white w-full text-sm focus:ring-2 focus:ring-blue-500' %>
+    </div>
+
+    <!-- Ключи -->
     <div class="mx-4">
       <%= form.label :price_key, 'Ключ для цены (price_key)', class: 'block mb-2 text-sm text-gray-300' %>
       <%= form.text_field :price_key, class: 'px-3 py-2 rounded bg-gray-800 text-white w-full text-sm focus:ring-2 focus:ring-blue-500' %>
@@ -53,6 +67,7 @@
       <%= form.label :symbol_key, 'Ключ для символа (symbol_key)', class: 'block mb-2 text-sm text-gray-300' %>
       <%= form.text_field :symbol_key, class: 'px-3 py-2 rounded bg-gray-800 text-white w-full text-sm focus:ring-2 focus:ring-blue-500' %>
     </div>
+
     <div class="mx-4 flex items-center justify-between">
       <%= form.submit(@exchange&.persisted? ? 'Сохранить' : 'Создать', class: 'm-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-2 py-1 rounded shadow transition') %>
       <%= link_to 'Назад', admin_exchanges_path, class: 'text-gray-300 underline hover:text-white text-sm' %>

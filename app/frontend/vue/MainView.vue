@@ -3,6 +3,8 @@
     <div v-if="instrument">
       <div class="text-2xl text-white mb-2">
         {{ instrument.base_asset }}
+        {{ instrument.exchange }}
+        {{ instrument.chart_url }}
       </div>
       
       <!-- Верхний ряд -->

@@ -148,4 +148,32 @@ class ExchangeAdapter
       )
     end
   end
+ 
+  def self.fetch_chart_data(exchange_slug, symbol, interval)
+    ex = Exchange.find_by(slug: exchange_slug, status: 'active')
+    raise "Биржа не найдена или неактивна" unless ex
+
+    url = "#{ex.api_url}/klines?symbol=#{symbol}&interval=#{interval}"
+    response = Net::HTTP.get_response(URI(url))
+    
+    unless response.is_a?(Net::HTTPSuccess)
+      Rails.logger.error("ExchangeAdapter: ошибка API для графика, статус: #{response.code}")
+      return []
+    end
+
+    data = JSON.parse(response.body)
+    data.map do |item|
+      {
+        time: item[0],
+        open: item[1].to_f,
+        high: item[2].to_f,
+        low: item[3].to_f,
+        close: item[4].to_f,
+        volume: item[5].to_f
+      }
+    rescue => e
+      Rails.logger.error("ExchangeAdapter: ошибка обработки данных графика: #{e.message}")
+      nil
+    end.compact
+  end
 end

@@ -4,6 +4,7 @@
   <div class="mb-2"><strong>API URL:</strong> <%= @exchange.api_url %></div>
   <div class="mb-2"><strong>Статус:</strong> <%= @exchange.status == 'active' ? 'Активна' : 'Отключена' %></div>
   <div class="mb-2"><strong>Описание:</strong> <%= @exchange.description %></div>
+  <div class="mb-2"><strong>URL графика:</strong> <%= @exchange.chart_url %></div>
   <div class="mb-4">
     <span class="font-semibold text-gray-400">Ключ для цены:</span>
     <span class="text-white"><%= @exchange.price_key %></span>

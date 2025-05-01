@@ -30,13 +30,14 @@
             style="height:32px;"
           />
         </div>
-        <div class="sort-section flex justify-between items-center mb-4 mx-4 shrink-0" style="max-width: 500px;">
+        <div class="sort-section flex justify-evenly items-center shrink-0" style="max-width: 500px;">
           <button class="sort-btn" @click="sortBy('alpha')" :class="{ active: sortKey === 'alpha' }" title="По алфавиту">
             <i class="fas fa-sort-alpha-down" :style="{ color: '#008137' }"></i>
             <span v-if="sortTouched && sortKey === 'alpha'">
               <i v-if="sortAsc" class="fas fa-arrow-down ml-1 text-yellow-500 drop-shadow font-bold"></i>
               <i v-else class="fas fa-arrow-up ml-1 text-yellow-500 drop-shadow font-bold"></i>
             </span>
+            <span v-else class="arrow-placeholder"></span>
           </button>
           <button class="sort-btn" @click="sortBy('change')" :class="{ active: sortKey === 'change' }" title="Изменение в %">
             <i class="fas fa-percent" :style="{ color: '#008137' }"></i>
@@ -44,6 +45,7 @@
               <i v-if="sortAsc" class="fas fa-arrow-down ml-1 text-yellow-500 drop-shadow font-bold"></i>
               <i v-else class="fas fa-arrow-up ml-1 text-yellow-500 drop-shadow font-bold"></i>
             </span>
+            <span v-else class="arrow-placeholder"></span>
           </button>
           <button class="sort-btn" @click="sortBy('volume')" :class="{ active: sortKey === 'volume' }" title="Объем">
             <i class="fa-solid fa-chart-column" :style="{ color: '#008137' }"></i>
@@ -51,6 +53,7 @@
               <i v-if="sortAsc" class="fas fa-arrow-down ml-1 text-yellow-500 drop-shadow font-bold"></i>
               <i v-else class="fas fa-arrow-up ml-1 text-yellow-500 drop-shadow font-bold"></i>
             </span>
+            <span v-else class="arrow-placeholder"></span>
           </button>
           <button class="sort-btn" @click="sortBy('trades')" :class="{ active: sortKey === 'trades' }" title="Количество сделок">
             <i class="fa-solid fa-money-bill-trend-up" :style="{ color: '#008137' }"></i>
@@ -58,6 +61,7 @@
               <i v-if="sortAsc" class="fas fa-arrow-down ml-1 text-yellow-500 drop-shadow font-bold"></i>
               <i v-else class="fas fa-arrow-up ml-1 text-yellow-500 drop-shadow font-bold"></i>
             </span>
+            <span v-else class="arrow-placeholder"></span>
           </button>
           <button class="sort-btn" @click="sortBy('price')" :class="{ active: sortKey === 'price' }" title="Цена">
             <i class="fas fa-dollar-sign" :style="{ color: '#008137' }"></i>
@@ -65,6 +69,7 @@
               <i v-if="sortAsc" class="fas fa-arrow-down ml-1 text-yellow-500 drop-shadow font-bold"></i>
               <i v-else class="fas fa-arrow-up ml-1 text-yellow-500 drop-shadow font-bold"></i>
             </span>
+            <span v-else class="arrow-placeholder"></span>
           </button>
         </div>
         <!-- Скроллируемый список -->
@@ -242,29 +247,61 @@ function handleSelectInstrument(ins) {
 
 <style scoped>
 .sort-section {
-  margin-bottom: 16px;
+  margin-bottom: 8px;
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
 }
 
 .sort-btn {
-  padding: 8px 12px;
+  padding: 2px 4px;
+  margin: 2px;
   border: none;
   border-radius: 4px;
-  background-color: #f7f7f7;
+  background-color: #364153;
   cursor: pointer;
   display: flex;
   align-items: center;
+  min-width: 28px;
+  justify-content: center;
+  position: relative;
+  height: 28px; /* уменьшенная высота */
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+.arrow-placeholder,
+.sort-btn .ml-1,
+.sort-btn .fa-arrow-down,
+.sort-btn .fa-arrow-up {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 12px;  /* уменьшенная ширина */
+  height: 12px; /* уменьшенная высота */
+  margin-left: 1px;
+  font-size: 12px;
+  line-height: 1;
 }
 
 .sort-btn:hover {
-  background-color: #e7e7e7;
+  color: #4CAF50;
+}
+
+.sort-btn:hover i {
+  filter: brightness(1.5);
+  /* или, если хотите изменить цвет, например: */
+  /* color: #6ee7b7 !important; */
 }
 
 .sort-btn.active {
-  background-color: #4CAF50;
-  color: #fff;
+  background-color: #364153;
 }
 
 .ml-1 {
-  margin-left: 4px;
+  margin-left: 1px;
 }
 </style>
