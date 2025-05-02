@@ -153,9 +153,26 @@ class ExchangeAdapter
     ex = Exchange.find_by(slug: exchange_slug, status: 'active')
     raise "Биржа не найдена или неактивна" unless ex
 
-    url = "#{ex.api_url}/klines?symbol=#{symbol}&interval=#{interval}"
+    # Используем chart_url вместо api_url
+    url_template = ex.chart_url || ex.api_url
+
+    # Поддержка подстановки интервала и символа
+    if url_template.include?('%{interval}')
+      url = url_template % { symbol: symbol, interval: interval }
+    elsif url_template.include?('{interval}')
+      url = url_template.gsub('{symbol}', symbol).gsub('{interval}', interval)
+    elsif url_template.include?('%{symbol}')
+      url = url_template % { symbol: symbol }
+      url += "&interval=#{interval}" unless url.include?("interval=")
+    elsif url_template.include?('{symbol}')
+      url = url_template.gsub('{symbol}', symbol)
+      url += "&interval=#{interval}" unless url.include?("interval=")
+    else
+      url = url_template
+    end
+
     response = Net::HTTP.get_response(URI(url))
-    
+
     unless response.is_a?(Net::HTTPSuccess)
       Rails.logger.error("ExchangeAdapter: ошибка API для графика, статус: #{response.code}")
       return []

@@ -36,7 +36,7 @@ class Api::ExchangeController < ApplicationController
 
     begin
       chart_data = ExchangeAdapter.fetch_chart_data(exchange, symbol, interval)
-      render json: { chart_data: chart_data }
+      render json: chart_data
     rescue => e
       render json: { error: e.message }, status: 500
     end

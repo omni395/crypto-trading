@@ -4,12 +4,11 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
-import { createChart, version as lwcVersion } from 'lightweight-charts'
+import { createChart, version as lwcVersion, CandlestickSeries } from 'lightweight-charts'
 import axios from 'axios'
 
 const props = defineProps({
-  instrument: { type: Object, required: true },
-  chartUrl: { type: String, required: true }
+  instrument: Object
 })
 
 const chartContainer = ref(null)
@@ -43,13 +42,25 @@ const seriesOptions = {
 
 async function fetchChartData() {
   if (!props.instrument || !props.instrument.symbol) return
+  const exchange = props.instrument.exchange
   const symbol = props.instrument.symbol
   const interval = '5m'
-  const url = props.chartUrl.replace('%{symbol}', encodeURIComponent(symbol)) + `&interval=${interval}&limit=200`
+  console.log('Instrument:', symbol)
+  console.log('Chart URL:', props.instrument?.raw.crypto.exchange.chart_url)
+  console.log('interval:', interval)
   try {
-    const response = await axios.get(url)
+    console.log('chart_data params:', { exchange, symbol, interval });
+    const response = await axios.get('/api/exchange/chart_data', { params: { exchange, symbol, interval } })
+    console.log('chart_data response:', response)
+    if (response.status !== 200) {
+      console.error('Ошибка при получении данных для графика:', response.statusText)
+      return
+    }
+    console.log('Полученные данные для графика:', response.data)
+    // Вот здесь добавьте универсальную обработку:
+    const chartData = Array.isArray(response.data) ? response.data : response.data.chart_data
     if (candlestickSeries) {
-      candlestickSeries.setData(response.data)
+      candlestickSeries.setData(chartData)
     }
   } catch (e) {
     console.error('Ошибка при получении данных для графика:', e)
@@ -70,11 +81,7 @@ onMounted(() => {
     height: chartContainer.value.clientHeight,
   })
 
-  candlestickSeries = chart.addSeries(candlestickSeries, seriesOptions)
-  if (candlestickSeries) {
-    candlestickSeries.setData(response.data)
-  }
-
+  candlestickSeries = chart.addSeries(CandlestickSeries, seriesOptions)
   fetchChartData()
 
   window.addEventListener('resize', handleResize)

@@ -2,16 +2,15 @@
   <div class="main-view">
     <div v-if="instrument">
       <div class="text-2xl text-white mb-2">
-        {{ instrument.base_asset }}
+        {{ instrument.symbol }}
         {{ instrument.exchange }}
-        {{ instrument.chart_url }}
       </div>
       
       <!-- Верхний ряд -->
       <div class="flex gap-2 mb-2">
         <!-- Основной график (2/3 ширины) -->
         <div class="w-2/3 bg-gray-900">
-          <MainChart />
+          <MainChart :instrument="instrument" />
         </div>
         
         <!-- Правая колонка (1/3 ширины) -->
