@@ -149,26 +149,35 @@ class ExchangeAdapter
     end
   end
  
-  def self.fetch_chart_data(exchange_slug, symbol, interval)
+  def self.fetch_chart_data(exchange_slug, symbol, interval, start_time = nil, end_time = nil)
     ex = Exchange.find_by(slug: exchange_slug, status: 'active')
     raise "Биржа не найдена или неактивна" unless ex
 
     # Используем chart_url вместо api_url
     url_template = ex.chart_url || ex.api_url
 
-    # Поддержка подстановки интервала и символа
-    if url_template.include?('%{interval}')
-      url = url_template % { symbol: symbol, interval: interval }
-    elsif url_template.include?('{interval}')
-      url = url_template.gsub('{symbol}', symbol).gsub('{interval}', interval)
+    # Поддержка подстановки интервала, символа и дат
+    if url_template.include?('%{interval}') || url_template.include?('%{start_time}') || url_template.include?('%{end_time}')
+      url = url_template % { symbol: symbol, interval: interval, start_time: start_time, end_time: end_time }
+    elsif url_template.include?('{interval}') || url_template.include?('{start_time}') || url_template.include?('{end_time}')
+      url = url_template.gsub('{symbol}', symbol).gsub('{interval}', interval.to_s)
+      url = url.gsub('{start_time}', start_time.to_s) if start_time
+      url = url.gsub('{end_time}', end_time.to_s) if end_time
     elsif url_template.include?('%{symbol}')
       url = url_template % { symbol: symbol }
       url += "&interval=#{interval}" unless url.include?("interval=")
+      url += "&start_time=#{start_time}" if start_time
+      url += "&end_time=#{end_time}" if end_time
     elsif url_template.include?('{symbol}')
       url = url_template.gsub('{symbol}', symbol)
       url += "&interval=#{interval}" unless url.include?("interval=")
+      url += "&start_time=#{start_time}" if start_time
+      url += "&end_time=#{end_time}" if end_time
     else
       url = url_template
+      url += "?symbol=#{symbol}&interval=#{interval}"
+      url += "&startTime=#{start_time}" if start_time
+      url += "&endTime=#{end_time}" if end_time
     end
 
     response = Net::HTTP.get_response(URI(url))
@@ -180,14 +189,25 @@ class ExchangeAdapter
 
     data = JSON.parse(response.body)
     data.map do |item|
-      {
-        time: item[0],
-        open: item[1].to_f,
-        high: item[2].to_f,
-        low: item[3].to_f,
-        close: item[4].to_f,
-        volume: item[5].to_f
-      }
+      if item.is_a?(Hash)
+        {
+          time: item['time'],
+          open: item['open'].to_f,
+          high: item['high'].to_f,
+          low: item['low'].to_f,
+          close: item['close'].to_f,
+          volume: item['volume'].to_f
+        }
+      else
+        {
+          time: item[0],
+          open: item[1].to_f,
+          high: item[2].to_f,
+          low: item[3].to_f,
+          close: item[4].to_f,
+          volume: item[5].to_f
+        }
+      end
     rescue => e
       Rails.logger.error("ExchangeAdapter: ошибка обработки данных графика: #{e.message}")
       nil
