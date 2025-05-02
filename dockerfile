@@ -1,7 +1,7 @@
 FROM ruby:3.3.1
 
 # Установка системных зависимостей
-RUN apt-get update -qq && apt-get install -y curl nodejs postgresql-client \
+RUN apt-get update -qq && apt-get install -y curl nodejs npm postgresql-client \
   && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
   && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
   && apt-get update -qq && apt-get install -y yarn watchman
