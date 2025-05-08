@@ -154,36 +154,22 @@ class ExchangeAdapter
     raise "Биржа не найдена или неактивна" unless ex
 
     # Используем chart_url вместо api_url
-    url_template = ex.chart_url || ex.api_url
-
-    # Поддержка подстановки интервала, символа и дат
-    if url_template.include?('%{interval}') || url_template.include?('%{start_time}') || url_template.include?('%{end_time}')
-      url = url_template % { symbol: symbol, interval: interval, start_time: start_time, end_time: end_time }
-    elsif url_template.include?('{interval}') || url_template.include?('{start_time}') || url_template.include?('{end_time}')
-      url = url_template.gsub('{symbol}', symbol).gsub('{interval}', interval.to_s)
-      url = url.gsub('{start_time}', start_time.to_s) if start_time
-      url = url.gsub('{end_time}', end_time.to_s) if end_time
-    elsif url_template.include?('%{symbol}')
-      url = url_template % { symbol: symbol }
-      url += "&interval=#{interval}" unless url.include?("interval=")
-      url += "&start_time=#{start_time}" if start_time
-      url += "&end_time=#{end_time}" if end_time
-    elsif url_template.include?('{symbol}')
-      url = url_template.gsub('{symbol}', symbol)
-      url += "&interval=#{interval}" unless url.include?("interval=")
-      url += "&start_time=#{start_time}" if start_time
-      url += "&end_time=#{end_time}" if end_time
-    else
-      url = url_template
-      url += "?symbol=#{symbol}&interval=#{interval}"
-      url += "&startTime=#{start_time}" if start_time
+    url = ex.chart_url % { symbol: symbol, interval: interval }
+    
+    # Добавляем параметры времени только если они предоставлены
+    if start_time || end_time
+      url += url.include?('?') ? '&' : '?'
+      url += "startTime=#{start_time}" if start_time
       url += "&endTime=#{end_time}" if end_time
     end
+
+    Rails.logger.info("ExchangeAdapter: URL запроса: #{url}")
 
     response = Net::HTTP.get_response(URI(url))
 
     unless response.is_a?(Net::HTTPSuccess)
       Rails.logger.error("ExchangeAdapter: ошибка API для графика, статус: #{response.code}")
+      Rails.logger.error("ExchangeAdapter: тело ответа: #{response.body}")
       return []
     end
 

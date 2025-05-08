@@ -33,11 +33,14 @@ class Api::ExchangeController < ApplicationController
     exchange = params[:exchange]
     symbol = params[:symbol]
     interval = params[:interval] || '1m' # Интервал по умолчанию
+    start_time = params[:start_time]
+    end_time = params[:end_time]
 
     begin
-      chart_data = ExchangeAdapter.fetch_chart_data(exchange, symbol, interval)
+      chart_data = ExchangeAdapter.fetch_chart_data(exchange, symbol, interval, start_time, end_time)
       render json: chart_data
     rescue => e
+      Rails.logger.error("ExchangeController: ошибка при получении данных графика: #{e.message}")
       render json: { error: e.message }, status: 500
     end
   end
