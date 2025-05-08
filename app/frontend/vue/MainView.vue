@@ -1,11 +1,6 @@
 <template>
   <div class="main-view">
     <div v-if="instrument">
-      <div class="text-2xl text-white mb-2">
-        {{ instrument.symbol }}
-        {{ instrument.exchange }}
-      </div>
-      
       <!-- Верхний ряд -->
       <div class="flex gap-2 mb-2">
         <!-- Основной график (2/3 ширины) -->
