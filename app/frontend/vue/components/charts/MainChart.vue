@@ -1,158 +1,188 @@
 <template>
-  <div class="chart-area h-[380px]" ref="chartContainer"></div>
+  <div class="chart-area h-[380px]">
+    <v-chart
+      :option="option"
+      :autoresize="true"
+      style="width: 100%; height: 100%"
+      @ready="onChartReady"
+    />
+  </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
-import { createChart, version as lwcVersion, CandlestickSeries } from 'lightweight-charts'
+import { ref, onMounted, watch } from 'vue'
+import { use } from 'echarts/core'
+import VChart from 'vue-echarts'
+import { CanvasRenderer } from 'echarts/renderers'
+import { CandlestickChart } from 'echarts/charts'
+import { GridComponent, TooltipComponent, TitleComponent, DataZoomComponent, LegendComponent } from 'echarts/components'
 import axios from 'axios'
+ 
+use([
+  CanvasRenderer,
+  CandlestickChart,
+  GridComponent,
+  TooltipComponent,
+  TitleComponent,
+  DataZoomComponent,
+  LegendComponent
+])
 
 const props = defineProps({
   instrument: Object
 })
 
-const chartContainer = ref(null)
-let chart = null
-let candlestickSeries = null
-let allBars = []
-
-const chartOptions = {
-  layout: {
-    background: { color: '#1f2937' },
-    textColor: '#d1d5db',
+const option = ref({
+  title: { text: '', left: 'center', textStyle: { color: '#d1d5db' } },
+  backgroundColor: '#1f2937',
+  tooltip: { trigger: 'axis' },
+  legend: { data: ['Candlestick'], textStyle: { color: '#d1d5db' } },
+  grid: { left: '5%', right: '5%', bottom: '10%', top: '10%' },
+  xAxis: {
+    type: 'category',
+    data: [],
+    scale: true,
+    boundaryGap: true,
+    axisLine: { lineStyle: { color: '#374151' } },
+    axisLabel: { color: '#d1d5db' }
   },
-  grid: {
-    vertLines: { color: '#374151' },
-    horzLines: { color: '#374151' },
+  yAxis: {
+    scale: true,
+    axisLine: { lineStyle: { color: '#374151' } },
+    splitLine: { lineStyle: { color: '#374151' } },
+    axisLabel: { color: '#d1d5db' }
   },
-  timeScale: {
-    rightOffset: 1,
-    barSpacing: 5,
-    borderVisible: false,
-  }
-}
+  dataZoom: [
+    { type: 'inside', start: 50, end: 100 },
+    { show: true, type: 'slider', bottom: 0, start: 50, end: 100 }
+  ],
+  series: [
+    {
+      name: 'Candlestick',
+      type: 'candlestick',
+      data: []
+    }
+  ]
+})
 
-const seriesOptions = {
-  upColor: '#4caf50',
-  downColor: '#f44336',
-  borderVisible: false,
-  wickVisible: true,
-  borderColor: '#4caf50',
-  wickColor: '#4caf50',
-}
+const bars = ref([]) // Храним все загруженные бары
+const isLoading = ref(false)
+const oldestTime = ref(null) // Для отслеживания самого старого времени
 
 async function fetchChartData(exchange, symbol, interval, limit = 200, end_time) {
   console.log('[fetchChartData] params:', { exchange, symbol, interval, limit, end_time })
-  if (!exchange || !symbol || !interval) return []
+  if (!exchange || !symbol || !interval) {
+    console.warn('[fetchChartData] Не переданы exchange, symbol или interval')
+    return []
+  }
   try {
     const params = { exchange, symbol, interval, limit }
     if (end_time) params.end_time = end_time
+    console.log('[fetchChartData] Request URL:', '/api/exchange/chart_data')
+    console.log('[fetchChartData] Request params:', params)
+    
     const response = await axios.get('/api/exchange/chart_data', { params })
-    console.log('[fetchChartData] response:', response)
+    console.log('[fetchChartData] Full response:', response)
+    console.log('[fetchChartData] Response status:', response.status)
+    console.log('[fetchChartData] Response headers:', response.headers)
+    console.log('[fetchChartData] Raw response data:', response.data)
+    
     if (response.status !== 200) {
-      console.error('Ошибка при получении данных для графика:', response.statusText)
+      console.error('[fetchChartData] Ошибка при получении данных для графика:', response.statusText)
       return []
     }
+    
     const chartData = Array.isArray(response.data) ? response.data : response.data.chart_data
-    console.log('[fetchChartData] chartData:', chartData)
+    console.log('[fetchChartData] Processed chartData:', chartData)
+    console.log('[fetchChartData] chartData type:', typeof chartData)
+    console.log('[fetchChartData] chartData length:', chartData.length)
+    
     return chartData
   } catch (e) {
-    console.error('Ошибка при получении данных для графика:', e)
+    console.error('[fetchChartData] Ошибка при получении данных для графика:', e)
+    console.error('[fetchChartData] Error details:', {
+      message: e.message,
+      response: e.response,
+      request: e.request
+    })
     return []
   }
 }
 
-onMounted(async () => {
-  console.log('Lightweight Charts version:', lwcVersion)
-  chart = createChart(chartContainer.value, {
-    ...chartOptions,
-    width: chartContainer.value.clientWidth,
-    height: chartContainer.value.clientHeight,
+function formatToEcharts(data) {
+  console.log('[formatToEcharts] Входные данные:', data)
+  const categoryData = []
+  const values = []
+  data.forEach(bar => {
+    const date = new Date(bar.time * 1000)
+    categoryData.push(
+      `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2,'0')}-${date.getDate().toString().padStart(2,'0')} ${date.getHours().toString().padStart(2,'0')}:${date.getMinutes().toString().padStart(2,'0')}`
+    )
+    values.push([bar.open, bar.close, bar.low, bar.high])
   })
+  console.log('[formatToEcharts] categoryData:', categoryData)
+  console.log('[formatToEcharts] values:', values)
+  return { categoryData, values }
+}
 
-  candlestickSeries = chart.addSeries(CandlestickSeries, seriesOptions)
-
+async function loadChart(initial = false) {
+  if (isLoading.value) return
+  isLoading.value = true
   const exchange = props.instrument.exchange
   const symbol = props.instrument.symbol
   const interval = '5m'
-
-  // Первая загрузка 200 баров
-  console.log('[onMounted] Загружаем первые 200 баров', { exchange, symbol, interval })
-  allBars = await fetchChartData(exchange, symbol, interval, 200)
-  // Преобразуем time в секунды, если это миллисекунды
-  allBars = allBars.map(bar => ({
+  let end_time = undefined
+  if (!initial && oldestTime.value) {
+    end_time = oldestTime.value
+  }
+  let newBars = await fetchChartData(exchange, symbol, interval, 200, end_time)
+  console.log('[loadChart] Получено баров:', newBars.length)
+  newBars = newBars.map(bar => ({
     ...bar,
     time: bar.time > 9999999999 ? Math.floor(bar.time / 1000) : bar.time
   }))
-  // Сортируем по времени
-  allBars = allBars.sort((a, b) => a.time - b.time)
-  // Удаляем дубликаты по времени
-  const seen = new Set()
-  allBars = allBars.filter(bar => {
-    if (seen.has(bar.time)) return false
-    seen.add(bar.time)
-    return true
-  })
-  console.log('[onMounted] allBars:', allBars)
-  if (candlestickSeries && allBars) {
-    candlestickSeries.setData(allBars)
+  newBars = newBars.sort((a, b) => a.time - b.time)
+  if (initial) {
+    bars.value = newBars
+  } else {
+    bars.value = [...newBars, ...bars.value]
   }
+  if (bars.value.length > 0) {
+    oldestTime.value = bars.value[0].time
+  }
+  const { categoryData, values } = formatToEcharts(bars.value)
+  console.log('[loadChart] categoryData.length:', categoryData.length)
+  console.log('[loadChart] values.length:', values.length)
+  option.value = {
+    ...option.value,
+    xAxis: { ...option.value.xAxis, data: categoryData },
+    series: [{ ...option.value.series[0], data: values }]
+  }
+  isLoading.value = false
+}
 
-  let isLoadingHistory = false
-
-  chart.timeScale().subscribeVisibleLogicalRangeChange(async (logicalRange) => {
-    if (isLoadingHistory) return
-    if (logicalRange.from < 10) {
-      // Округляем до целого числа и ограничиваем минимумом 1
-      const numberBarsToLoad = Math.max(1, Math.ceil(50 - logicalRange.from))
-      if (numberBarsToLoad > 0) {
-        isLoadingHistory = true
-        const earliestBar = allBars[0]
-        const end_time = earliestBar ? earliestBar.time : undefined
-        let newBars = await fetchChartData(exchange, symbol, interval, numberBarsToLoad, end_time)
-        newBars = newBars.map(bar => ({
-          ...bar,
-          time: bar.time > 9999999999 ? Math.floor(bar.time / 1000) : bar.time
-        }))
-        // Фильтруем только те бары, которые действительно старее earliestBar
-        newBars = newBars.filter(bar => bar.time < earliestBar.time)
-        if (Array.isArray(newBars) && newBars.length > 0) {
-          allBars = [...newBars, ...allBars]
-          allBars = allBars.sort((a, b) => a.time - b.time)
-          const seen = new Set()
-          allBars = allBars.filter(bar => {
-            if (seen.has(bar.time)) return false
-            seen.add(bar.time)
-            return true
-          })
-          candlestickSeries.setData(allBars)
-          // Сдвигаем видимую область влево, чтобы пользователь видел новые бары
-          chart.timeScale().setVisibleLogicalRange({
-            from: logicalRange.from + newBars.length,
-            to: logicalRange.to + newBars.length
-          })
-        }
-        isLoadingHistory = false
-      }
+function onDataZoom(params) {
+  // Если пользователь приблизился к левому краю, подгружаем еще свечи
+  if (params.batch && params.batch.length > 0) {
+    const start = params.batch[0].start
+    console.log('[onDataZoom] start:', start)
+    if (start <= 2 && !isLoading.value) {
+      console.log('[onDataZoom] Загружаем дополнительные свечи...')
+      loadChart(false)
     }
-  })
-
-  window.addEventListener('resize', handleResize)
-})
-
-function handleResize() {
-  if (chart && chartContainer.value) {
-    chart.resize(chartContainer.value.clientWidth, chartContainer.value.clientHeight)
   }
 }
 
-onUnmounted(() => {
-  if (chart) {
-    chart.remove()
-    chart = null
-  }
-  window.removeEventListener('resize', handleResize)
+onMounted(() => {
+  loadChart(true)
 })
+
+watch(() => props.instrument, () => loadChart(true), { deep: true })
+
+// Подписка на событие dataZoom
+function onChartReady(chartInstance) {
+  chartInstance.on('dataZoom', onDataZoom)
+}
 </script>
 
 <style scoped>

@@ -21,7 +21,7 @@ class ExchangeAdapter
         # Используем batch-запрос если доступен и есть >1 символа
         fresh_data = fetch_batch_data(ex, missing_symbols)
       else
-        url_template = ex.api_url
+        url_template = ex.api_url 
         price_key = ex.price_key
         volume_key = ex.volume_key
         change_key = ex.change_key
