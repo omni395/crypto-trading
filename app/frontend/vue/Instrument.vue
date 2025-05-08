@@ -1,6 +1,6 @@
 <template>
   <div
-    class="instrument-row mr-2 mt-2 p-2 rounded-md"
+    class="instrument-row mr-2 mt-0.5 p-1.5 rounded-md"
     :class="{
       'selected-instrument': selected,
       'hover-instrument': !selected
@@ -10,8 +10,8 @@
   >
     <!-- Первая строка: иконка, название, процент изменения -->
     <div class="flex items-center justify-between pr-3">
-      <div class="flex items-center">
-        <span class="relative w-[20px] h-[20px] inline-block align-middle mr-2">
+      <div class="flex items-center gap-2">
+        <span class="relative w-[20px] h-[20px] flex items-center justify-center">
           <img
             :src="`https://cdn.jsdelivr.net/gh/vadimmalykhin/binance-icons/crypto/${instrument.base_asset?.toLowerCase()}.svg`"
             @error="showFallback($event)"
@@ -19,11 +19,11 @@
             width="16"
             height="16"
             loading="lazy"
-            class="inline-block align-middle rounded-full bg-gray-800 border border-gray-600"
+            class="rounded-full bg-gray-800 border border-gray-600"
             :id="`icon-${instrument.base_asset?.toLowerCase()}`"
             v-show="!fallbackIcon"
           />
-          <i v-if="fallbackIcon" class="fa-solid fa-coins text-gray-500 align-middle"></i>
+          <i v-if="fallbackIcon" class="fa-solid fa-coins text-gray-500"></i>
         </span>
         <span class="font-mono text-md text-white">{{ instrument.base_asset }}</span>
       </div>
@@ -39,7 +39,7 @@
       </div>
     </div>
     <!-- Вторая строка: цена и котируемая монета -->
-    <div class="flex items-center justify-between pr-3">
+    <div class="flex items-center justify-between pr-3 mt-0.5">
       <div class="text-xs text-gray-400 ml-7">{{ instrument.quote_asset }}</div>
       <div class="flex items-center justify-between ml-7 mt-0.5">
         <span class="font-semibold text-green-400 text-xs">
@@ -55,7 +55,7 @@
       </div>
     </div>
     <!-- Третья строка: Объём и сделки в одну строку -->
-    <div class="flex mt-1 items-center justify-between pr-3">
+    <div class="flex mt-0.5 items-center justify-between pr-3">
       <div>
         <span class="text-xs text-gray-400 mr-1"><i class="fa-solid fa-chart-column"></i></span>
         <span class="text-xs" :style="{
@@ -120,25 +120,21 @@ function formatNumber(val) {
 <style scoped>
 .instrument-row {
   border: 1px solid transparent;
+  box-sizing: border-box;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
 }
 
 .selected-instrument {
   background: linear-gradient(90deg, #183f2f 0%, #1f513c 100%);
-  border: 2px solid #34d399;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  transform: translateY(-2px);
-  position: relative;
-  z-index: 2;
+  border: 1px solid #34d399;
+}
+
+.hover-instrument {
+  border: 1px solid rgba(52, 211, 153, 0.3);
 }
 
 .hover-instrument:hover {
   background: linear-gradient(90deg, #23272f 0%, #2e353f 100%);
-  border-color: rgba(52, 211, 153, 0.3);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Убираем конфликтующие стили */
-.selected-instrument:hover {
-  background: linear-gradient(90deg, #183f2f 0%, #1f513c 100%);
+  border: 1px solid rgba(52, 211, 153, 0.3);
 }
 </style>

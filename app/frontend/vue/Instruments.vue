@@ -73,7 +73,7 @@
           </button>
         </div>
         <!-- Скроллируемый список -->
-        <div class="flex-1 min-h-0 overflow-y-auto w-full max-w-full overflow-x-hidden custom-scrollbar">
+        <div class="mt-1.5 flex-1 min-h-0 overflow-y-auto w-full max-w-full overflow-x-hidden custom-scrollbar">
           <Instrument 
             v-for="ins in filteredInstruments" 
             :key="ins.id" 
