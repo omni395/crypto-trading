@@ -49,7 +49,8 @@ class Admin::ExchangesController < ApplicationController
     params.require(:exchange).permit(
       :name, :slug, :status, :description,
       :api_url, :batch_api_url, :chart_url,
-      :price_key, :volume_key, :change_key, :trades_key, :symbol_key
+      :price_key, :volume_key, :change_key, :trades_key, :symbol_key,
+      :websocket_url
     )
   end
 

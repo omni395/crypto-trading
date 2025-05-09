@@ -14,6 +14,7 @@
           <th class="p-3 text-left">API URL</th>
           <th class="p-3 text-left">BATCH API URL</th>
           <th class="p-3 text-left">CHART URL</th>
+          <th class="p-3 text-left">WebSocket URL</th>
           <th class="p-3 text-left">Статус</th>
           <th class="px-4 py-2">Ключ для цены</th>
           <th class="px-4 py-2">Ключ для объёма</th>
@@ -32,6 +33,7 @@
             <td class="p-3 break-all"><%= exchange.api_url %></td>
             <td class="p-3 break-all"><%= exchange.batch_api_url %></td>
             <td class="p-3 break-all"><%= exchange.chart_url %></td>
+            <td class="p-3 break-all"><%= exchange.websocket_url %></td>
             <td class="p-3 text-xs text-ellipsis overflow-hidden"><%= exchange.status == 'active' ? 'Активна' : 'Отключена' %></td>
             <td class="px-4 py-2"><%= exchange.price_key %></td>
             <td class="px-4 py-2"><%= exchange.volume_key %></td>

@@ -38,12 +38,16 @@
       <%= form.text_field :api_url, class: 'px-3 py-2 rounded bg-gray-800 text-white w-full text-sm focus:ring-2 focus:ring-blue-500' %>
     </div>
     <div class="mx-4">
-    <%= form.label :batch_api_url, 'BATCH API URL (пакетная загрузка)', class: 'block mb-2 text-sm text-gray-300' %>
-    <%= form.text_field :batch_api_url, class: 'px-3 py-2 rounded bg-gray-800 text-white w-full text-sm focus:ring-2 focus:ring-blue-500' %>
-  </div>
+      <%= form.label :batch_api_url, 'BATCH API URL (пакетная загрузка)', class: 'block mb-2 text-sm text-gray-300' %>
+      <%= form.text_field :batch_api_url, class: 'px-3 py-2 rounded bg-gray-800 text-white w-full text-sm focus:ring-2 focus:ring-blue-500' %>
+    </div>
     <div class="mx-4">
       <%= form.label :chart_url, 'CHART URL', class: 'block mb-2 text-sm text-gray-300' %>
       <%= form.text_field :chart_url, class: 'px-3 py-2 rounded bg-gray-800 text-white w-full text-sm focus:ring-2 focus:ring-blue-500' %>
+    </div>
+    <div class="mx-4">
+      <%= form.label :websocket_url, 'WebSocket URL', class: 'block mb-2 text-sm text-gray-300' %>
+      <%= form.text_field :websocket_url, class: 'px-3 py-2 rounded bg-gray-800 text-white w-full text-sm focus:ring-2 focus:ring-blue-500' %>
     </div>
 
     <!-- Ключи -->

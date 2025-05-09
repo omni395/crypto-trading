@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_30_134334) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_08_203252) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -48,6 +48,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_30_134334) do
     t.string "symbol_key", default: "symbol", null: false
     t.string "trades_key", default: "count", null: false
     t.string "chart_url"
+    t.string "websocket_url"
+    t.jsonb "websocket_klines_format"
+    t.jsonb "websocket_klines_mapping"
     t.index ["slug"], name: "index_exchanges_on_slug", unique: true
   end
 
