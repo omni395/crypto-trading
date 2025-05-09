@@ -21,6 +21,7 @@ import { CanvasRenderer } from 'echarts/renderers'
 import { CandlestickChart } from 'echarts/charts'
 import { GridComponent, TooltipComponent, TitleComponent, DataZoomComponent, LegendComponent } from 'echarts/components'
 import axios from 'axios'
+import * as ActionCable from "@rails/actioncable"
 
 use([
   CanvasRenderer,
@@ -348,79 +349,47 @@ function onLegendSelectChanged(params) {
   option.value.legend.selected = selected.value;
 }
 
-// Добавляем WebSocket подключение
-const ws = ref(null)
+let cable = null
+let subscription = null
 
-async function connectWebSocket() {
-  if (!props.instrument) return
-  
-  const exchange = props.instrument.exchange
-  const symbol = props.instrument.symbol
-  const interval = '5m'
-  
-  try {
-    const response = await fetch('/api/websocket/connect', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        exchange,
-        symbol,
-        interval
-      })
-    })
-
-    if (!response.ok) {
-      const errorData = await response.json()
-      console.error('[WebSocket] Ошибка подключения:', errorData.error)
-      return
-    }
-
-    // После успешного подключения подписываемся на канал
-    const channel = `chart_${symbol}_${interval}`
-    ws.value = new WebSocket(`ws://${window.location.host}/cable`)
-    
-    ws.value.onopen = () => {
-      console.log('[WebSocket] Соединение установлено')
-      // Подписываемся на канал
-      ws.value.send(JSON.stringify({
-        command: 'subscribe',
-        identifier: JSON.stringify({
-          channel: 'ChartChannel',
-          symbol,
-          interval
-        })
-      }))
-    }
-    
-    ws.value.onmessage = handleWebSocketMessage
-    
-    ws.value.onclose = () => {
-      console.log('[WebSocket] Соединение закрыто')
-      // Пробуем переподключиться через 5 секунд
-      setTimeout(connectWebSocket, 5000)
-    }
-    
-    ws.value.onerror = (error) => {
-      console.error('[WebSocket] Ошибка:', error)
-    }
-  } catch (error) {
-    console.error('[WebSocket] Ошибка при подключении:', error)
-  }
-}
-
-// Обновляем onMounted
 onMounted(() => {
   console.log('[onMounted] Инициализация компонента')
   loadChart(true)
-  connectWebSocket()
+
+  // Подключение через ActionCable
+  cable = ActionCable.createConsumer("ws://127.0.0.1:3000/cable")
+  subscription = cable.subscriptions.create(
+    {
+      channel: "ChartChannel",
+      symbol: props.instrument.symbol,
+      interval: "5m"
+    },
+    {
+      connected() {
+        console.log("[ActionCable] Connected")
+      },
+      disconnected() {
+        console.log("[ActionCable] Disconnected")
+      },
+      received(data) {
+        console.log("[ActionCable] Received:", data)
+        // Если твои данные приходят в data.message, используй data.message
+        if (data && data.time) {
+          updateChartWithWebSocketData(data)
+        } else if (data && data.message) {
+          updateChartWithWebSocketData(data.message)
+        }
+      }
+    }
+  )
 })
 
-// Добавляем onUnmounted для очистки
 onUnmounted(() => {
-  if (ws.value) {
-    ws.value.close()
+  if (subscription) {
+    subscription.unsubscribe()
+  }
+  if (cable) {
+    cable.disconnect()
   }
 })
 
@@ -428,7 +397,6 @@ onUnmounted(() => {
 watch(() => props.instrument, () => {
   console.log('[watch] Изменен инструмент, перезагружаем график')
   loadChart(true)
-  connectWebSocket()
 }, { deep: true })
 
 function onChartReady(instance) {

@@ -330,6 +330,11 @@ GEM
     snaky_hash (2.0.1)
       hashie
       version_gem (~> 1.1, >= 1.1.1)
+    solid_cable (3.0.7)
+      actioncable (>= 7.2)
+      activejob (>= 7.2)
+      activerecord (>= 7.2)
+      railties (>= 7.2)
     sprockets (4.2.2)
       concurrent-ruby (~> 1.0)
       logger
@@ -404,6 +409,7 @@ DEPENDENCIES
   redis (>= 4.0.1)
   sidekiq
   sidekiq-cron
+  solid_cable
   sprockets-rails
   tzinfo-data
   vite_rails

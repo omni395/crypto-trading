@@ -62,3 +62,4 @@ gem "vite_rails"
 gem "faye-websocket", "~> 0.11.3"
 gem "eventmachine", "~> 1.2.7"
 gem "websocket-driver", "~> 0.7.5"
+gem 'solid_cable'
