@@ -29,6 +29,7 @@ Rails.application.routes.draw do
     get 'exchange', to: 'exchange#index'
     get 'exchange/chart_data', to: 'exchange#chart_data' # Добавленный маршрут
     resource :user_settings, only: [:show, :update], controller: 'user_settings'
+    post 'websocket/connect', to: 'websocket#connect'
   end
 
   namespace :admin do

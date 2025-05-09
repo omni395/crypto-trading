@@ -11,6 +11,7 @@ class WebsocketService
   def connect
     return if @ws&.connected?
 
+    Rails.logger.info "Попытка подключения к WebSocket для #{@exchange.name} по адресу #{@exchange.websocket_url}"
     EM.run do
       @ws = Faye::WebSocket::Client.new(@exchange.websocket_url)
 
@@ -20,6 +21,7 @@ class WebsocketService
       end
 
       @ws.on :message do |event|
+        Rails.logger.debug "WebSocket получил сообщение для #{@exchange.name}: #{event.data}"
         handle_message(event.data)
       end
 
@@ -52,6 +54,7 @@ class WebsocketService
   def subscribe_to_channel(symbol, interval)
     # Используем URL из базы, подставляя symbol и interval
     url = @exchange.websocket_url.gsub('%{symbol}', symbol).gsub('%{interval}', interval)
+    Rails.logger.info "Отправка подписки на канал: symbol=#{symbol}, interval=#{interval}, url=#{url}"
     @ws.send({ method: 'SUBSCRIBE', params: [url], id: 1 }.to_json)
   end
 

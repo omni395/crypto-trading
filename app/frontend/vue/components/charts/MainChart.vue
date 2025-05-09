@@ -14,14 +14,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, computed } from 'vue'
+import { ref, onMounted, watch, computed, onUnmounted } from 'vue'
 import { use } from 'echarts/core'
 import VChart from 'vue-echarts'
 import { CanvasRenderer } from 'echarts/renderers'
 import { CandlestickChart } from 'echarts/charts'
 import { GridComponent, TooltipComponent, TitleComponent, DataZoomComponent, LegendComponent } from 'echarts/components'
 import axios from 'axios'
- 
+
 use([
   CanvasRenderer,
   CandlestickChart,
@@ -348,14 +348,87 @@ function onLegendSelectChanged(params) {
   option.value.legend.selected = selected.value;
 }
 
+// Добавляем WebSocket подключение
+const ws = ref(null)
+
+async function connectWebSocket() {
+  if (!props.instrument) return
+  
+  const exchange = props.instrument.exchange
+  const symbol = props.instrument.symbol
+  const interval = '5m'
+  
+  try {
+    const response = await fetch('/api/websocket/connect', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        exchange,
+        symbol,
+        interval
+      })
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      console.error('[WebSocket] Ошибка подключения:', errorData.error)
+      return
+    }
+
+    // После успешного подключения подписываемся на канал
+    const channel = `chart_${symbol}_${interval}`
+    ws.value = new WebSocket(`ws://${window.location.host}/cable`)
+    
+    ws.value.onopen = () => {
+      console.log('[WebSocket] Соединение установлено')
+      // Подписываемся на канал
+      ws.value.send(JSON.stringify({
+        command: 'subscribe',
+        identifier: JSON.stringify({
+          channel: 'ChartChannel',
+          symbol,
+          interval
+        })
+      }))
+    }
+    
+    ws.value.onmessage = handleWebSocketMessage
+    
+    ws.value.onclose = () => {
+      console.log('[WebSocket] Соединение закрыто')
+      // Пробуем переподключиться через 5 секунд
+      setTimeout(connectWebSocket, 5000)
+    }
+    
+    ws.value.onerror = (error) => {
+      console.error('[WebSocket] Ошибка:', error)
+    }
+  } catch (error) {
+    console.error('[WebSocket] Ошибка при подключении:', error)
+  }
+}
+
+// Обновляем onMounted
 onMounted(() => {
   console.log('[onMounted] Инициализация компонента')
   loadChart(true)
+  connectWebSocket()
 })
 
+// Добавляем onUnmounted для очистки
+onUnmounted(() => {
+  if (ws.value) {
+    ws.value.close()
+  }
+})
+
+// Обновляем watch для переподключения при смене инструмента
 watch(() => props.instrument, () => {
   console.log('[watch] Изменен инструмент, перезагружаем график')
   loadChart(true)
+  connectWebSocket()
 }, { deep: true })
 
 function onChartReady(instance) {
@@ -373,6 +446,58 @@ function onChartReady(instance) {
   instance.on('click', (params) => {
     console.log('[Instance Event] click:', params)
   })
+}
+
+// Добавляем функцию обновления графика
+function updateChartWithWebSocketData(data) {
+  // Преобразуем данные в формат ECharts
+  const candleData = formatToEcharts([data])
+  
+  // Обновляем последнюю свечу или добавляем новую
+  const lastBar = bars.value[bars.value.length - 1]
+  if (lastBar && lastBar.time === data.time) {
+    // Обновляем последнюю свечу
+    bars.value[bars.value.length - 1] = data
+  } else {
+    // Добавляем новую свечу
+    bars.value.push(data)
+    
+    // Если превысили лимит, удаляем старые свечи
+    if (bars.value.length > MAX_BARS) {
+      bars.value = bars.value.slice(-MAX_BARS)
+    }
+  }
+  
+  // Обновляем график
+  const { categoryData, values } = formatToEcharts(bars.value)
+  option.value = {
+    ...option.value,
+    xAxis: { ...option.value.xAxis, data: categoryData },
+    series: [{ ...option.value.series[0], data: values }]
+  }
+}
+
+// Добавляем обработчик WebSocket сообщений
+function handleWebSocketMessage(event) {
+  try {
+    const data = JSON.parse(event.data)
+    // Логируем всё, что приходит
+    console.log('[WebSocket] RAW:', data)
+
+    // Обработка служебных сообщений ActionCable
+    if (data.type === 'ping' || data.type === 'confirm_subscription' || data.type === 'welcome') {
+      console.log('[WebSocket] Service message:', data.type)
+      return
+    }
+
+    // Если есть поле message — это данные свечи
+    if (data.message) {
+      updateChartWithWebSocketData(data.message)
+      console.log('[WebSocket] Candle update:', data.message)
+    }
+  } catch (e) {
+    console.error('[WebSocket] Ошибка при обработке сообщения:', e)
+  }
 }
 </script>
 

@@ -106,12 +106,16 @@ GEM
     erubis (2.7.0)
     et-orbi (1.2.11)
       tzinfo
+    eventmachine (1.2.7)
     faraday (2.13.1)
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
     faraday-net_http (3.4.0)
       net-http (>= 0.5.0)
+    faye-websocket (0.11.3)
+      eventmachine (>= 0.12.0)
+      websocket-driver (>= 0.5.1)
     ffi (1.17.2-aarch64-linux-gnu)
     ffi (1.17.2-aarch64-linux-musl)
     ffi (1.17.2-arm-linux-gnu)
@@ -175,7 +179,6 @@ GEM
       net-pop
       net-smtp
     marcel (1.0.4)
-    method_source (1.1.0)
     mini_magick (5.2.0)
       benchmark
       logger
@@ -346,10 +349,6 @@ GEM
     uri (1.0.3)
     useragent (0.16.11)
     version_gem (1.1.7)
-    view_component (3.21.0)
-      activesupport (>= 5.2.0, < 8.1)
-      concurrent-ruby (~> 1.0)
-      method_source (~> 1.0)
     vite_rails (3.0.19)
       railties (>= 5.1, < 9)
       vite_ruby (~> 3.0, >= 3.2.2)
@@ -389,6 +388,8 @@ DEPENDENCIES
   cssbundling-rails
   debug
   devise
+  eventmachine (~> 1.2.7)
+  faye-websocket (~> 0.11.3)
   haml-rails
   html2haml
   image_processing (~> 1.2)
@@ -405,9 +406,9 @@ DEPENDENCIES
   sidekiq-cron
   sprockets-rails
   tzinfo-data
-  view_component
   vite_rails
   web-console
+  websocket-driver (~> 0.7.5)
 
 RUBY VERSION
    ruby 3.3.1p55

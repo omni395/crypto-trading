@@ -46,9 +46,6 @@ group :development do
   # gem "spring"  
 end
 
-#gem "sassc-rails"
-#gem "tailwindcss-ruby"
-#gem "tailwindcss-rails"
 gem "sprockets-rails"
 gem "haml-rails"
 gem "devise"
@@ -56,10 +53,12 @@ gem "omniauth"
 gem "omniauth-google-oauth2"
 gem "pundit"
 gem "kaminari"
-gem "view_component" # пока не используем.
 gem "active_decorator"
 gem "cssbundling-rails"
 gem "sidekiq"
-gem 'sidekiq-cron'
-gem 'ransack'
+gem "sidekiq-cron"
+gem "ransack"
 gem "vite_rails"
+gem "faye-websocket", "~> 0.11.3"
+gem "eventmachine", "~> 1.2.7"
+gem "websocket-driver", "~> 0.7.5"
